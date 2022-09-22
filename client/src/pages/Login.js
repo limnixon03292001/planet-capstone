@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
 
+import LoginForm from '../components/LoginForm';
 import planetLogo from '../assets/PLANeTlogo.png';
 
 const Login = () => {
@@ -19,25 +19,7 @@ const Login = () => {
 
                     <h1 className="font-bold text-3xl mb-7">Login to your account</h1>
 
-                    <form>
-                        <div className="mb-5">
-                            <label htmlFor="email" className="block text-[#536471] mb-3">Email address</label>
-                            <input type="text" placeholder="email address" id="email"
-                            className="rounded-md border border-[#536471] w-full p-4"/>
-                        </div>
-                        <div className="mb-7">
-                            <label htmlFor="password" className="block text-[#536471] mb-3">Password</label>
-                            <input type="password" placeholder="password" id="password"
-                            className="rounded-md border border-[#536471] w-full p-4"/>
-                        </div>
-
-                        <button type="submit" className="bg-[#3DDAB4] text-white px-5 py-3 w-full rounded-full
-                        focus:outline-none focus:ring-4 focus:ring-green-100">Login</button>
-
-                        <Link to="/register" className="mt-3 text-sm font-light text-center block w-full underline text-blue-500">
-                            Don’t have an account? Click here to Sign up!
-                        </Link>
-                    </form>
+                    <LoginForm/>
                 </div>
             </div>
 

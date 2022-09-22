@@ -1,33 +1,150 @@
+import { Route, Routes } from 'react-router-dom';
+import decode from 'jwt-decode'
+import io from 'socket.io-client';
 
 import Sidebar from '../components/Sidebar';
+import Marketplace from './Marketplace';
+import Messages from './Messages';
+import NotFound from './NotFound';
+import PostFeeds from './PostFeeds';
+import Profile from './Profile';
+import { useEffect } from 'react';
+import { MyContext } from '../context/ContextProvider';
+import toast from 'react-hot-toast';
+
+
+const ENDPOINT = "http://localhost:5000";
+var socket;
 
 const Home = () => {
+  const { id: authUserId } = decode(localStorage?.token); //id of currently logged in user
+  const {setSocket, setOnlineUsers, onlineUsers} = MyContext();
+
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    setSocket(socket);
+    socket.emit("addUser", authUserId)
+    socket.on("getUsers", (users) => {
+      setOnlineUsers(users);
+    });
+  },[]);
+
+  console.log(onlineUsers)
+
+  useEffect(() => {
+    socket.on("notifReceived", (newNotif) => {
+          // refetch();
+          
+          // setAdminNotif([ newNotif, ...adminNotif]); 
+          console.log("all notif", newNotif)
+          toast.custom((t) => (
+            <div
+              className={`${
+                t.visible ? 'animate-enter' : 'animate-leave'
+              } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
+            >
+              <div className="flex-1 w-0 p-4">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0 pt-0.5">
+                    <img
+                      className="h-10 w-10 rounded-full object-cover object-center"
+                      src={newNotif?.pic}
+                      alt=""
+                    />
+                  </div>
+                  <div className="ml-3 flex-1">
+                    <p className="mt-1 text-xs text-gray-500">
+                        {newNotif}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex border-l border-gray-200">
+                <button
+                  onClick={() => toast.dismiss(t.id)}
+                  className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-blue-600 hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          ))
+    });
+  },[]) 
+
+
   return (
-    <div className='block w-full min-h-full h-full'>
+    <div className='block w-full max-w-[1500px] m-auto min-h-full h-full '>
         <div className='flex w-full h-full'>
             {/* Sidebar */}
-          
             <Sidebar/>
-          
+            {/* Sidebar */}
+
             {/* main-content */}
-            <div className='flex-1 w-full h-full p-4'>
-                <span className='font-extrabold mt-2 '>Home</span>
-                <p className='mt-5 break-words'>
-                    is LTE every week, there would be a whole year of sentences for people to translate. There are approximantly 523 sentences in this LTE. Divide that by 9 sentences each week, and you get 58 weeks worth of sentences, which is approximantly the number of weeks in a year. Quick maths. I actually suck at math, but that’s besides the point. I should go now. Goodbye! Hello, I’m back again. I really need to come up with different hello and goodbye messages, because I’ve already said “Hello, I’m back again” once before. Same with the “I should go now. Goodbye!” I said at the end of the previous section. I was going to explain what a “section” is, but I’m terrible at explaining things, so I’m not going to anymore. I guess you’ll just have to figure it out yourself. It’s probably not very hard to figure out, anyways. I guess I can just say that a section starts with me saying hello, and ends with me saying goodbye. That should be enough explaination, now that I think about it. Hey, do you ever feel like you never have any idea what you’re talking about? That’s my entire life. I just summarized it all in one sentence. On an unrelated note, I feel like half this LTE is just me talking about the LTE itself. I mean, press CTRL+F on this webpage, then type “LTE”. Look at all the times I use it in this text! Not counting the ‘lte’ in the word ‘multe’, of course. Dang, now the search results will include that, too. Anyways, half of this text is just me talking about how I’m trying to get this text to be the longest. Well, the longest LTE, anyways. I still have a long way to go. I’m only 12.7% of the way there. I mean, minus the four month gap, my estimation is that I’ve only been writing this for not even two weeks. So it makes sense that this LTE isn’t very long yet. Whenever I look at this webpage, it looks long at first glance, but the longer I look at it, the more I realize how short it actually is. It’s something that I can’t explain. For real this time. I just realized that none of this is helping the fact that half this LTE is about the LTE itself. I should bring up a new topic, but I don’t feel comfortable talking about much else. Why? Because, like I said, I never have any idea what I’m talking about. Most of this LTE is just me talking about LTEs or languages. Sometimes furries, but I don’t wanna go back into that territory at this point. But it doesn’t matter, because I’m still gonna write this LTE for as long as possible, even if it means talking about the same things half the time. Also, LEARN VIESA! Haven’t said that in a while, so I might as well bring it back. The documentation for Viesa is on this very website, so go ahead and read it! You might need to know some linguistic knowledge to understand it, though. In fact, you probably won’t understand most of it unless you know some amount about lingusitics, so you have been warned. If Viesa is too much for you, Pig Latin will probably be better for you. If it's so easy that kids can learn it, you can too! It's a language you can learn in probably five minutes, so why not give it a try? You may also enjoy Ubbi Dubbi, where you place 'ub' before every vowel sound. It's also a very easy language to learn, although not quite as popular. The thing is, none of these are even real languages. They're just codes, and very simple codes at that. You could probably crask Pig Latin or Ubbi Dubbi rather easily. Viesa too, actually. But I still enjoy them occasionally, even if Pig Latin and Ubbi Dubbi are inefficient and easy to crack, and Viesa is easy to crack yet unneccesarily difficult. I do make real languages, but I never put in the effort to learn them to fluency. At least I make them at all. Here’s a fun game: I will open up a random page from a book, and tell you the first word I see. English. That’s the word. Stay tuned for more fun games as you read through this LTE. We’re back, and we’re gonna play the same game as before. Ready? Subject. Now we’re gonna do it again. Reading. And again. Itself. Constituent. Grammar. Colloquial. Black. Outline. Add. About four of those words were language related. You’ll never guess why! (Spoiler alert: it’s a conlanging book). I’m running out of ideas now. I’m just gonna generate a random word and try to talk about it. Forbid. That’s the opposite of “allow”, I’m pretty sure. I don’t really know what else to say. Well, I guess I failed at generating a topic I could talk about. You know what's weird? My favorite word hasn't been used once in this entire text. I'm about to change that forever. Epic. Yup, my favorite word is "epic". I use it on a regular basis. I say "That's epic" all the time. It's a word I can't live without. Hey, I've now written more of this text after the 4 month gap than before it! Just thought I'd share that fact. Also, I'm gonna try and write as much as possible in this LTE today. I've already written more today than the day I first said I was gonna write as much as possible, so that's a good sign. The thing is, I don't know what to write about. I need to write about something, otherwise I won't write at all and I won't accomplish my goal. Wait, what goal should I set? How many characters should I write today? I'm gonna try and get 10,000 characters. I've already written almost 5,000 today, so from here I just have to write the equivellant of everything I've already written today. I'm just gonna try it and see if I make it. Maybe sometime in the future I'll do a bigger goal, like 15,000 or even 20,000 in one day. Actually, I don't know if 20,000 would even be possible for me. It might be, but it sounds like somewhat of a stretch for me to write that much in a single day. We'll see how long 10,000 takes, though. I'm already doing a bad job at this. I haven't typed anything here in several minutes. I need a topic. Um, Vabungula, I guess? Basically, it's a conlang created by Bill Price in 1965. It amazes me how one can work on a single conlang for that long. Most of the conlangs I start making die after 15 minutes. Anyways, I really like it because... um, I don't know, actually. There's not really anything about it that's super interesting (other than how long it's existed), it's just his personal conlang. Maybe it's the amount of development that went into it. It has over 5,000 dictionary entries and several texts written in the language. I'm sure most people reading this don't care about my language related talk, but I gotta make this long. I'm desperate to reach my 10,000 character goal. I've got 4,000 to go. I just found a website that generates random art from a seed. I just put this entire text as the seed, and it generated something quite nice. I would put the picture here, but I want this LTE to be nothing but text, so I won't do that. I've been playing with this for a while now. Many of the seeds produce boring pictures, but some of them are nice. For example, I just used "e" as the seed and it produced a nice looking picture. "a" looks nice too, arguably nicer. I've been using nothing but the word "nice" to describe these pictures. Maybe it's time to get a bigger vocabulary? "b" looks, um, good? I don't have the right vocabulary for this. I also don't feel like doing every single letter, because the pictures take some time to generate. But if you want to do it for yourself, just go to random-art.org and try it out! By the way, this is another website I found through pointlesssites.com. You know, the same website that lead me to the FlamingChicken LTE, which lead me to begin writing this whole thing. But what made me discover pointlesssites.com? Vsauce mentioned it. But what made me discover Vsauce? YouTube Reccomendations, probably. But what made me discover YouTube? As far as I remember, my dad showed it to me when I was 6. So I would like to thank my dad for being the reason I started writing this. He's the one who showed me YouTube, which reccomended me Vsauce, which mentioned pointlesssites.com, which brought me to the FlamingChicken LTE, which inspired me to start my own LTE. If he had never shown me YouTube, I wouldn't be here writing this text, and you wouldn't be reading it. Well, that's probably not true, because I probably would have discovered YouTube by other means, thus leading me to Vsauce, leading me to Vsauce, leading me to pointlesssites.com, leading me to the FlamingChicken LTE, leading me to... okay, I really need to stop now. I've gone too far. But you know what I haven't gone too far with? This LTE. I don't think I even can go too far with writing this text. Unless this text gets so long that it surpasses the 1GB storage limit of Neocities. In which case, I'll need to upgrade to Supporter in order to get a 50GB storage limit. But what if the text gets so long that is surpasses that? I don't think I'll ever make it there. I mean, 50GB is about 50 trillion characters. So I think we're good. I still need to get to 10,000 by the end of today. I've got 1,500 to go. Currently watching a livestream. It's reminding me of when I used to livestream back in 2016. I still kinda miss those days. But at the same time, I was quite awkward and had zero social skills, so I'm not sure if I'd want to go back. At this point, everything I've written today is longer than what can fit on the screen at once. At least on my computer screen. It probably changes with different screen resolutions and devices. But anyways, it's pretty unusual for that much of the LTE to be written in a single day. I don't want to pressure myself into writing this much every day, though. Last time I forced myself to complete a certain amount of something every day, it was overwhelming and I ended up losing motivation, thus letting down all my fans who were anticipating the August 30th, 2016 release date. Okay, the amount of eager fans was probably a number you could count on one hand, but still. By the way, if you're wondering what this "something" was, it was GoAnimated Garbage: The Movie, which was supposed to be an hour long episode of a series I made to make fun of random GoAnimate videos. In case you're not the type of person who knows what GoAnimate is... hoo boy. Basically, it's a drag-and-drop animation website infamous for the "grounded videos" that people made with it, among other types of videos. It's this whole community that I neither can explain nor want to explain. But I had somewhat of an association with that community back in the day. On my YouTube channel, I used to make a genre of GoAnimate video known as the "OS video". Typically an OS video is where some sort of hated character within the GoAnimate community forcefully installs their operating system onto a user's computer, and the user has to deal with this OS until they eventually find a way to "destroy" it. I made five of these videos. In chronological order: Caillou OS, Boots OS, Franklin OS, Little Bill OS, and Crap OS X. Caillou OS is the most viewed video on my main channel, which is unsurprising since Caillou is pretty much THE character associated with the GoAnimate community. When I made that video, it was a big transition for my channel. The channel's name was changed from Infinite Budgets, which had been my name since 2013 when I made crappy Roblox videos, to Allisima. All of my old videos were deleted, with the exception of my "Barney Errors", which was yet another genre of GoAnimate video. Basically, a Barney error is when a user's computer/console/whatever session is interrupted by a "Barney Error", a message informing the user that Barney has been killed, and the device must not be turned off because it's an "important message". There's also a bomb that's placed in Barney's "lair", the timer for which is displayed in the error. The user gets some amount of "chances", and every time the device is turned off, the user looses a chance and the time until the bomb explodes decreases. Eventually, the user turns off the computer enough times that there are no more chances left, the bomb explodes, and some sort of punishment happens. These punishments can range from having to downgrade your operating system, to having your computer destroyed, and in extreme cases, even to death. I once made a whole channel for Barney Errors, where I made about twenty of them before quitting. After that, I eventually quit GoAnimate all together, but I still made Crap OS X, an OS video made with Powerpoint. I also made an interactive OS parody called Windows Poop Editon, again with Powerpoint. Before that, I also made one called "Atch OS" using my old Windows XP netbook. I just checked to see if my old Weebly website still exists, since there's an Atch OS download on there and I wanted to see if it dissapeared from existence or not. Appearantly it does! I'm getting so much nostalgia from this website. It's like a window into 2016, when I had fun making these videos on a regular basis. I'm way past my 10,000 character goal now. I'm kinda glad I set this goal, but again, I'm not gonna force myself to do it everyday. I think I'm gonna stop writing for today. Bye! Hey, I'm back. Yes, that hello wasn't original either, since I already said it once. Specifically, after my sister seized the LTE and started spamming. You remember that, right? I hope you read through this whole thing instead of just picking a random part (which just happened to be this part) and reading only a tiny bit. Nah, I'm just kidding. Read this text however you want to, it doesn't matter if you read this entire text from start to finish or not. I mean, I did put some cringy stuff in here, as I keep mentioning. But it's on the Internet, and since recently, on my homepage, so I know people are gonna read it. Really the only reason I'm making this is because I have a weird obsession for writing giant walls of text. Guess what? I just added translations of this LTE into various conlangs on my website! But they're all very incomplete, and I probably won't finish them ever... I mean, if I'm gonna finish any of them, 'twill probably be the Viesa translation since it's the easiest to do.
-                    is helping the fact that half this LTE is about the LTE itself. I should bring up a new topic, but I don’t feel comfortable talking about much else. Why? Because, like I said, I never have any idea what I’m talking about. Most of this LTE is just me talking about LTEs or languages. Sometimes furries, but I don’t wanna go back into that territory at this point. But it doesn’t matter, because I’m still gonna write this LTE for as long as possible, even if it means talking about the same things half the time. Also, LEARN VIESA! Haven’t said that in a while, so I might as well bring it back. The documentation for Viesa is on this very website, so go ahead and read it! You might need to know some linguistic knowledge to understand it, though. In fact, you probably won’t understand most of it unless you know some amount about lingusitics, so you have been warned. If Viesa is too much for you, Pig Latin will probably be better for you. If it's so easy that kids can learn it, you can too! It's a language you can learn in probably five minutes, so why not give it a try? You may also enjoy Ubbi Dubbi, where you place 'ub' before every vowel sound. It's also a very easy language to learn, although not quite as popular. The thing is, none of these are even real
-                    is helping the fact that half this LTE is about the LTE itself. I should bring up a new topic, but I don’t feel comfortable talking about much else. Why? Because, like I said, I never have any idea what I’m talking about. Most of this LTE is just me talking about LTEs or languages. Sometimes furries, but I don’t wanna go back into that territory at this point. But it doesn’t matter, because I’m still gonna write this LTE for as long as possible, even if it means talking about the same things half the time. Also, LEARN VIESA! Haven’t said that in a while, so I might as well bring it back. The documentation for Viesa is on this very website, so go ahead and read it! You might need to know some linguistic knowledge to understand it, though. In fact, you probably won’t understand most of it unless you know some amount about lingusitics, so you have been warned. If Viesa is too much for you, Pig Latin will probably be better for you. If it's so easy that kids can learn it, you can too! It's a language you can learn in probably five minutes, so why not give it a try? You may also enjoy Ubbi Dubbi, where you place 'ub' before every vowel sound. It's also a very easy language to learn, although not quite as popular. The thing is, none of these are even real
-                    is helping the fact that half this LTE is about the LTE itself. I should bring up a new topic, but I don’t feel comfortable talking about much else. Why? Because, like I said, I never have any idea what I’m talking about. Most of this LTE is just me talking about LTEs or languages. Sometimes furries, but I don’t wanna go back into that territory at this point. But it doesn’t matter, because I’m still gonna write this LTE for as long as possible, even if it means talking about the same things half the time. Also, LEARN VIESA! Haven’t said that in a while, so I might as well bring it back. The documentation for Viesa is on this very website, so go ahead and read it! You might need to know some linguistic knowledge to understand it, though. In fact, you probably won’t understand most of it unless you know some amount about lingusitics, so you have been warned. If Viesa is too much for you, Pig Latin will probably be better for you. If it's so easy that kids can learn it, you can too! It's a language you can learn in probably five minutes, so why not give it a try? You may also enjoy Ubbi Dubbi, where you place 'ub' before every vowel sound. It's also a very easy language to learn, although not quite as popular. The thing is, none of these are even real
-                    is helping the fact that half this LTE is about the LTE itself. I should bring up a new topic, but I don’t feel comfortable talking about much else. Why? Because, like I said, I never have any idea what I’m talking about. Most of this LTE is just me talking about LTEs or languages. Sometimes furries, but I don’t wanna go back into that territory at this point. But it doesn’t matter, because I’m still gonna write this LTE for as long as possible, even if it means talking about the same things half the time. Also, LEARN VIESA! Haven’t said that in a while, so I might as well bring it back. The documentation for Viesa is on this very website, so go ahead and read it! You might need to know some linguistic knowledge to understand it, though. In fact, you probably won’t understand most of it unless you know some amount about lingusitics, so you have been warned. If Viesa is too much for you, Pig Latin will probably be better for you. If it's so easy that kids can learn it, you can too! It's a language you can learn in probably five minutes, so why not give it a try? You may also enjoy Ubbi Dubbi, where you place 'ub' before every vowel sound. It's also a very easy language to learn, although not quite as popular. The thing is, none of these are even real
-                    is helping the fact that half this LTE is about the LTE itself. I should bring up a new topic, but I don’t feel comfortable talking about much else. Why? Because, like I said, I never have any idea what I’m talking about. Most of this LTE is just me talking about LTEs or languages. Sometimes furries, but I don’t wanna go back into that territory at this point. But it doesn’t matter, because I’m still gonna write this LTE for as long as possible, even if it means talking about the same things half the time. Also, LEARN VIESA! Haven’t said that in a while, so I might as well bring it back. The documentation for Viesa is on this very website, so go ahead and read it! You might need to know some linguistic knowledge to understand it, though. In fact, you probably won’t understand most of it unless you know some amount about lingusitics, so you have been warned. If Viesa is too much for you, Pig Latin will probably be better for you. If it's so easy that kids can learn it, you can too! It's a language you can learn in probably five minutes, so why not give it a try? You may also enjoy Ubbi Dubbi, where you place 'ub' before every vowel sound. It's also a very easy language to learn, although not quite as popular. The thing is, none of these are even real
-                    is helping the fact that half this LTE is about the LTE itself. I should bring up a new topic, but I don’t feel comfortable talking about much else. Why? Because, like I said, I never have any idea what I’m talking about. Most of this LTE is just me talking about LTEs or languages. Sometimes furries, but I don’t wanna go back into that territory at this point. But it doesn’t matter, because I’m still gonna write this LTE for as long as possible, even if it means talking about the same things half the time. Also, LEARN VIESA! Haven’t said that in a while, so I might as well bring it back. The documentation for Viesa is on this very website, so go ahead and read it! You might need to know some linguistic knowledge to understand it, though. In fact, you probably won’t understand most of it unless you know some amount about lingusitics, so you have been warned. If Viesa is too much for you, Pig Latin will probably be better for you. If it's so easy that kids can learn it, you can too! It's a language you can learn in probably five minutes, so why not give it a try? You may also enjoy Ubbi Dubbi, where you place 'ub' before every vowel sound. It's also a very easy language to learn, although not quite as popular. The thing is, none of these are even real
-                    is helping the fact that half this LTE is about the LTE itself. I should bring up a new topic, but I don’t feel comfortable talking about much else. Why? Because, like I said, I never have any idea what I’m talking about. Most of this LTE is just me talking about LTEs or languages. Sometimes furries, but I don’t wanna go back into that territory at this point. But it doesn’t matter, because I’m still gonna write this LTE for as long as possible, even if it means talking about the same things half the time. Also, LEARN VIESA! Haven’t said that in a while, so I might as well bring it back. The documentation for Viesa is on this very website, so go ahead and read it! You might need to know some linguistic knowledge to understand it, though. In fact, you probably won’t understand most of it unless you know some amount about lingusitics, so you have been warned. If Viesa is too much for you, Pig Latin will probably be better for you. If it's so easy that kids can learn it, you can too! It's a language you can learn in probably five minutes, so why not give it a try? You may also enjoy Ubbi Dubbi, where you place 'ub' before every vowel sound. It's also a very easy language to learn, although not quite as popular. The thing is, none of these are even realis helping the fact that half this LTE is about the LTE itself. I should bring up a new topic, but I don’t feel comfortable talking about much else. Why? Because, like I said, I never have any idea what I’m talking about. Most of this LTE is just me talking about LTEs or languages. Sometimes furries, but I don’t wanna go back into that territory at this point. But it doesn’t matter, because I’m still gonna write this LTE for as long as possible, even if it means talking about the same things half the time. Also, LEARN VIESA! Haven’t said that in a while, so I might as well bring it back. The documentation for Viesa is on this very website, so go ahead and read it! You might need to know some linguistic knowledge to understand it, though. In fact, you probably won’t understand most of it unless you know some amount about lingusitics, so you have been warned. If Viesa is too much for you, Pig Latin will probably be better for you. If it's so easy that kids can learn it, you can too! It's a language you can learn in probably five minutes, so why not give it a try? You may also enjoy Ubbi Dubbi, where you place 'ub' before every vowel sound. It's also a very easy language to learn, although not quite as popular. The thing is, none of these are even real
-                    is helping the fact that half this LTE is about the LTE itself. I should bring up a new topic, but I don’t feel comfortable talking about much else. Why? Because, like I said, I never have any idea what I’m talking about. Most of this LTE is just me talking about LTEs or languages. Sometimes furries, but I don’t wanna go back into that territory at this point. But it doesn’t matter, because I’m still gonna write this LTE for as long as possible, even if it means talking about the same things half the time. Also, LEARN VIESA! Haven’t said that in a while, so I might as well bring it back. The documentation for Viesa is on this very website, so go ahead and read it! You might need to know some linguistic knowledge to understand it, though. In fact, you probably won’t understand most of it unless you know some amount about lingusitics, so you have been warned. If Viesa is too much for you, Pig Latin will probably be better for you. If it's so easy that kids can learn it, you can too! It's a language you can learn in probably five minutes, so why not give it a try? You may also enjoy Ubbi Dubbi, where you place 'ub' before every vowel sound. It's also a very easy language to learn, although not quite as popular. The thing is, none of these are even real
-                    is helping the fact that half this LTE is about the LTE itself. I should bring up a new topic, but I don’t feel comfortable talking about much else. Why? Because, like I said, I never have any idea what I’m talking about. Most of this LTE is just me talking about LTEs or languages. Sometimes furries, but I don’t wanna go back into that territory at this point. But it doesn’t matter, because I’m still gonna write this LTE for as long as possible, even if it means talking about the same things half the time. Also, LEARN VIESA! Haven’t said that in a while, so I might as well bring it back. The documentation for Viesa is on this very website, so go ahead and read it! You might need to know some linguistic knowledge to understand it, though. In fact, you probably won’t understand most of it unless you know some amount about lingusitics, so you have been warned. If Viesa is too much for you, Pig Latin will probably be better for you. If it's so easy that kids can learn it, you can too! It's a language you can learn in probably five minutes, so why not give it a try? You may also enjoy Ubbi Dubbi, where you place 'ub' before every vowel sound. It's also a very easy language to learn, although not quite as popular. The thing is, none of these are even real
-                </p>
+            <div className='w-full h-full'>
+                <div className='min-h-screen w-full h-full'>
+                  <Routes>
+                    <Route path= "/" element={<PostFeeds/>}/>
+                    <Route path="/profile/:id" element={<Profile/>}/>
+                    <Route path="/messages" element={<Messages/>}/>
+                    <Route path="/marketplace" element={<Marketplace/>}/>
+                    {/* 404 PAGE  */}
+
+                    <Route path="*" element={<NotFound/>}/>
+
+                    {/* 404 PAGE  */}
+                  </Routes>
+                </div>
             </div>
+          {/* main-content */}
+
         </div>
     </div>
   )
 }
 
 export default Home
+
+
+
+// {/* <div className=' h-full w-full max-w-max lg:max-w-[230px] xl:max-w-[320px] transition-all sticky top-0 hidden lg:block'>
+// <div className='py-3'>
+//   <h1 className='font-extrabold text-xl mt-2 px-4'>Trending now!</h1>
+
+//   <div className='flex items-center justify-start px-4 mt-4'>
+//     <p className='text-[#536471] text-lg mr-2'>#1</p>
+//     <>
+//     <img src={user} className="w-[30px] h-[30px] flex-shrink-0 rounded-full object-cover object-center mr-2"/>
+//     <div className="block">
+//         <h1 className='text-md block'>Nixon Lim's post</h1>
+//         {/* <p className='font-extralight text-xs break-words text-[#536471]'>13 mins ago.</p> */}
+//     </div>
+//     </>
+//   </div>
+
+//   <div className='flex items-center justify-start px-4 mt-4'>
+//     <p className='text-[#536471] text-lg mr-2'>#2</p>
+//     <>
+//     <img src={user} className="w-[30px] h-[30px] flex-shrink-0 rounded-full object-cover object-center mr-2"/>
+//     <div className="block">
+//         <h1 className='text-md block'>Nixon Lim's post</h1>
+//         {/* <p className='font-extralight text-xs break-words text-[#536471]'>13 mins ago.</p> */}
+//     </div>
+//     </>
+//   </div>
+
+//   <div className='flex items-center justify-start px-4 mt-4'>
+//     <p className='text-[#536471] text-lg mr-2'>#3</p>
+//     <>
+//     <img src={user} className="w-[30px] h-[30px] flex-shrink-0 rounded-full object-cover object-center mr-2"/>
+//     <div className="block">
+//         <h1 className='text-md block'>Nixon Lim's post</h1>
+//         {/* <p className='font-extralight text-xs break-words text-[#536471]'>13 mins ago.</p> */}
+//     </div>
+//     </>
+//   </div>
+
+
+
+// </div>
+// </div> */}
