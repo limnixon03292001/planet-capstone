@@ -10,9 +10,12 @@ body{
     height:100%;
 }
 
-
 .stick {
     position: sticky !important;
     top: 0 !important;;
     border: 1px solid yellow;
+}
+
+.msgOuterContainer {
+    height: calc(100vh - 230px);
 }

@@ -6,7 +6,6 @@ const cloudinary = require("../utils/cloudinary");
 
 dotenv.config();
 
-
 exports.registerController = async (req,res) => {
    
     const {

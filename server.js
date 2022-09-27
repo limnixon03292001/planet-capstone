@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 
 const userRoutes = require('./routes/userRoutes');
+const messagesRoutes = require('./routes/messagesRoutes');
 
 const PORT = process.env.PORT || 5000; //dotenv config? check...
 
@@ -11,6 +12,7 @@ app.use(cors());
 app.use(express.json({limit: '30mb'}));
 
 app.use('/api/users', userRoutes);
+app.use('/api/chats', messagesRoutes);
 
 // Function to start the server
 const server = app.listen(PORT, () => {
@@ -39,13 +41,14 @@ const removeUser = (socketId) => {
     users = users.filter((user) => user.socketId !== socketId);
 };
 
-// const getUser = (userId) => {
-//     return userId.map((u) => {
-//         return users.filter((user) => user.userId === u?._id);
-//     })
-// };
-
 const getUser = (userId) => {
+    return userId.map((u) => {
+        return users.filter((user) => user.userId === u?._id);
+    })
+};
+
+//for following
+const getUserFollow = (userId) => {
     return users.filter((user) => user?.userId === userId);
 }
 
@@ -59,19 +62,33 @@ io.on("connection", (socket) => {
         io.emit("getUsers", users);
     });
 
-     // send a notification to admin
+
      socket.on("sendNotifUser", (newNotif) => {
         // console.log("notif", newNotif);
-
-        const user = getUser(Number(newNotif?.userId)); // here we are getting the user that we want to notify
+//for following
+        const user = getUserFollow(Number(newNotif?.userId)); // here we are getting the user that we want to notify
 
         // console.log(user);
         // users.forEach(currentUser => {
             // socket.to(currentUser?.socketId).emit("notifReceived", newNotif);
+            console.log("fire")
             socket.to(user[0]?.socketId).emit("notifReceived", newNotif?.message); // sending the notification
         // });
     });
 
+    //send a and receive a message 
+    socket.on("sendMessage", (newMessageReceived) => {
+        console.log("socketnew", newMessageReceived?.data?.msg);
+
+        const users = getUser([{_id: newMessageReceived?.data?.sendTo}]); 
+        users.forEach(user => {
+            // console.log("socket:",)
+            socket.to(user[0]?.socketId).emit("messageReceived", {msgContent: newMessageReceived?.data?.msg,
+            chatRoomLink: newMessageReceived?.data?.chatRoomLink}); // sending the notification 
+        });
+    });
+
+   
     //when disconnect
     socket.on("disconnect", () => {
         console.log("a user disconnected!");

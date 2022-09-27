@@ -60,3 +60,28 @@ export const addCommentPost = (data) => {
 export const deleteCommentPost = (comment_id) => {
     return request({url: '/api/users/deletecomment', method: 'DELETE', data: comment_id});
 }
+
+
+//chats
+
+export const getSelectedRoom = ({ queryKey }) => {
+    const id = queryKey[1];
+    return request({url: `/api/chats/getchatroom?chatroom_id=${id}`, method: 'GET'});
+}
+
+export const getMessagesRoom = ({ queryKey }) => {
+    const id = queryKey[1];
+    return request({url: `/api/chats/all-messages?chatroom_id=${id}`, method: 'GET'});
+}
+
+export const getAllChats = () => {
+    return request({url: '/api/chats/all-chats', method: 'GET'});
+}
+
+export const sendMessage = (data) => {
+    return request({url: '/api/chats/send-message', method: 'POST', data: data});
+}
+
+export const createRoom = (data) => {
+    return request({url: '/api/chats/create-room', method: 'POST', data:data});
+}

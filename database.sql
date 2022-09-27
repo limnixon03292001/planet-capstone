@@ -59,3 +59,57 @@ CREATE TABLE posts_comment(
     FOREIGN KEY (post_id) REFERENCES user_posts(post_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES user_acc(user_id) ON DELETE CASCADE
 );
+
+
+----TEST TABLE SCHEMA FOR  CHAT FEATURE (NOT FINAL YET)------
+
+CREATE TABLE user_chatroom(
+    chatroom_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    friend_id INT NOT NULL,
+    last_msg TEXT,
+    created_at timestamp NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (user_id) REFERENCES user_acc(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (friend_id) REFERENCES user_acc(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE messages(
+    msg_id SERIAL PRIMARY KEY,
+    chatroom_id INT NOT NULL,
+    sent_by INT NOT NULL,
+    msg_content TEXT,
+    created_at timestamp NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (chatroom_id) REFERENCES user_chatroom(chatroom_id) ON DELETE CASCADE,
+    FOREIGN KEY (sent_by) REFERENCES user_acc(user_id) ON DELETE CASCADE
+);
+
+
+
+
+
+
+--i just gave up for now atleast
+
+-- CREATE TABLE room(
+--     room_id SERIAL PRIMARY KEY,
+--     name TEXT,
+--     isGroupChat BOOLEAN DEFAULT FALSE
+-- )
+
+
+-- CREATE TABLE participants(
+--     participant_id SERIAL PRIMARY KEY,
+--     user_id INT NOT NULL,
+--     room_id INT NOT NULL,
+--     FOREIGN KEY (user_id) REFERENCES user_acc(user_id) ON DELETE CASCADE,
+--     FOREIGN KEY (room_id) REFERENCES room(room_id) ON DELETE CASCADE
+-- )
+
+-- CREATE TABLE messages(
+--     msg_id SERIAL PRIMARY KEY,
+--     room_id INT NOT NULL,
+--     user_id INT NOT NULL,
+--     msg_content TEXT NOT NULL,
+--     FOREIGN KEY (room_id) REFERENCES room(room_id) ON DELETE CASCADE,
+--     FOREIGN KEY (user_id) REFERENCES user_acc(user_id) ON DELETE CASCADE
+-- )
