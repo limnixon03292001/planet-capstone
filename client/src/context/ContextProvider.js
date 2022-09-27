@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, } from 'react';
+import { createContext, useContext, useState, } from 'react';
 
 
 const MainContext = createContext();
@@ -10,8 +10,8 @@ const ContextProvider = ({ children }) => {
     const [posts, setPosts] = useState([]); //state for all posts of user.
     const [chats, setChats] = useState([]); // all chats of authenticated user.
     const [onlineUsers, setOnlineUsers] = useState([]); //state for online users.
-    const [ntf, setNtf] = useState(0); // state for incoming notification.
     const [socket, setSocket] = useState();
+    const [messages, setMessages] = useState([]);
 
     return (
         <MainContext.Provider value={{
@@ -20,7 +20,7 @@ const ContextProvider = ({ children }) => {
             socket, setSocket,
             onlineUsers, setOnlineUsers,
             chats, setChats,
-            ntf, setNtf,
+            messages, setMessages,
         }}>
             {children}
         </MainContext.Provider>

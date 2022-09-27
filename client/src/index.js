@@ -7,11 +7,13 @@ import ContextProvider from './context/ContextProvider';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
-  <ContextProvider>
+ 
     <Router>
+       <ContextProvider>
       <App />
+      </ContextProvider>
     </Router>
-  </ContextProvider>
+ 
 );
 
 

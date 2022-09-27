@@ -9,38 +9,24 @@ import toast from 'react-hot-toast';
 import ScrollMainMessages from '../components/ScrollMainMessages';
 import SendMessage from '../components/SendMessage';
 
-const MainMessages = () => {
+const MainMessages = ({ refetchAllChats }) => {
+
     const { id: authId } = decode(localStorage?.token);
     const { id } = useParams();
-    const { onlineUsers, socket, ntf, setNtf } = MyContext();
+    const { onlineUsers, socket, messages, setMessages } = MyContext();
     const [msgContent, setMsgContent] = useState('');
     const [selectedRoom, setSelectedRoom] = useState({});
-    const [messages, setMessages] = useState([]);
+
     const scrollRef = useRef();     
     
 
     //when a new message arrived auto scroll down
     //listener for upcoming messages sent by other user
     useEffect(() => {
-        setNtf(parseInt(id));
         scrollRef?.current?.scrollIntoView({ behavior: 'smooth'});
+        // console.log("all msg", messages);
     },[messages]);
-    
-    //F I X NOTIFCATION
-    useEffect(() => {
-        socket?.on("messageReceived", (newMsgReceived) => {
-            //here its important that we check the room_id here
-            //we want to send the message to the correct room and not send it to other room lol!
-            console.log("newMsg", newMsgReceived)
-            if(parseInt(id) === newMsgReceived?.msgContent?.chatroom_id){
-                // console.log("in socket", newMsgReceived);
-               setMessages([...messages, newMsgReceived?.msgContent]);  
-            } else {
-               setNtf(parseInt(id));
-            }
-        });
 
-    },[socket]);
 
     //here we are fetching the participants/member of the selected room
     const { isLoading } = useQuery(['selected-room',id], getSelectedRoom,
@@ -59,7 +45,7 @@ const MainMessages = () => {
     const { isLoading: messagesLoading } = useQuery(['messages',id], getMessagesRoom,
     {
         onSuccess: ({ data }) => {
-            console.log("allmessages", data?.messages);
+            // console.log("allmessages", data?.messages);
             setMessages(data?.messages);
         },
         onError: (err) => {
@@ -142,7 +128,7 @@ const MainMessages = () => {
         </div>
 
         {/* main messages of  two users */}
-        <ScrollMainMessages scrollRef={scrollRef} messages={messages} authId={authId}/>
+        <ScrollMainMessages scrollRef={scrollRef} authId={authId} id={id} refetchAllChats={refetchAllChats}/>
         {/* end of main messages of  two users */}
 
         {/* input and button for sending the message */}

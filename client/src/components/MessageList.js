@@ -11,21 +11,8 @@ const MessageList = () => {
 
     const { id } = decode(localStorage?.token);
     const authId = id;
-    const { onlineUsers } = MyContext();
-    const [chats, setChats] = useState([]);
+    const { onlineUsers, chats } = MyContext();
 
-    //fetching all chats of a user
-    const { isLoading } = useQuery('all-chats', getAllChats,
-    {
-        onSuccess: ({ data }) => {
-            console.log("all-chats", data?.allChats);
-            setChats(data?.allChats);
-        },
-        onError: (err) => {
-            const errObject = err.response.data.error;
-            console.log(errObject)
-        }
-    });
 
     //here we are checking the user that we are sending a message
     const check = (chat) => {

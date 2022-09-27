@@ -18,7 +18,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="font-interFont h-full w-full antialiased">
-        <Toaster position='bottom-left'/>
+        <Toaster position='top-left'/>
         <Routes>
           <Route path="/login" element={<Login/>} />
           <Route path="/register" element={<Register/>} />
