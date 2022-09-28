@@ -13,7 +13,6 @@ const MessageList = () => {
     const authId = id;
     const { onlineUsers, chats } = MyContext();
 
-
     //here we are checking the user that we are sending a message
     const check = (chat) => {
 

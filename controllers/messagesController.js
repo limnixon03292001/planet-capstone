@@ -16,11 +16,12 @@ exports.createRoom = async (req, res) => {
         `, [authUserId, userId]);
 
         console.log(existRoom?.rows[0]);
-
+        //if there's already existing room from the two user return that chatroom
         if(existRoom.rows.length !== 0){
             return res.status(200).json({chatroom: existRoom?.rows[0]});
         }
-       
+        
+        //if there's no existing chatroom then create new room
         const newRoom = await pool.query(`
         WITH new_chatroom as (
             INSERT INTO user_chatroom (user_id, friend_id) VALUES ($1, $2) RETURNING *
@@ -35,7 +36,7 @@ exports.createRoom = async (req, res) => {
 
         console.log("newRoom", newRoom?.rows[0]);
 
-        res.status(201).json({newRoom: newRoom?.rows[0]})
+       return res.status(201).json({newRoom: newRoom?.rows[0]})
 
 
     } catch (error) {

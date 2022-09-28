@@ -7,6 +7,7 @@ import Register from "./pages/Register";
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import ProtectedRoutes from './pages/ProtectedRoutes';
+import MyMap from './pages/MyMap';
 
 // primary text  - black
 // secondary - #536471
@@ -17,15 +18,16 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="font-interFont h-full w-full antialiased">
+      <div className="font-interFont  antialiased text-gray-900 h-full w-full">
         <Toaster position='top-left'/>
         <Routes>
           <Route path="/login" element={<Login/>} />
           <Route path="/register" element={<Register/>} />
-
+          <Route path="/map-sample" element={<MyMap/>}/>
           {/* PROTECTED ROUTES */}
           <Route element={<ProtectedRoutes path="/login"/>}>
             <Route path="/*" element={<Home/>}/>
+          
           </Route>
 
           {/* PROTECTED ROUTES */}

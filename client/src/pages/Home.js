@@ -5,17 +5,15 @@ import Messages from './Messages';
 import NotFound from './NotFound';
 import PostFeeds from './PostFeeds';
 import Profile from './Profile';
+import MyMap from './MyMap';
 import { useEffect } from 'react';
 import { MyContext } from '../context/ContextProvider';
 import toast from 'react-hot-toast';
 
 
-
 const Home = () => {
 
-  const { onlineUsers, socket } = MyContext();
-
-  // console.log("Online",onlineUsers)
+  const { socket } = MyContext();
   
   useEffect(() => {
     socket?.on("notifReceived", (newNotif) => {
@@ -55,7 +53,6 @@ const Home = () => {
       });
   },[socket]); 
 
-
   return (
     <div className='block w-full max-w-[1500px] m-auto min-h-full h-full '>
         <div className='flex w-full h-full'>
@@ -71,6 +68,8 @@ const Home = () => {
                     <Route path="/profile/:id" element={<Profile/>}/>
                     <Route path="/messages/*" element={<Messages/>}/>
                     <Route path="/marketplace" element={<Marketplace/>}/>
+                    <Route path="/map" element={<MyMap/>}/>
+
                     {/* 404 PAGE  */}
 
                     <Route path="*" element={<NotFound/>}/>
