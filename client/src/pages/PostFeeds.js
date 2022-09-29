@@ -19,7 +19,7 @@ const PostFeeds = () => {
 
 
   return (
-    <div className='block border-x border-gray-200  w-full max-w-[660px] min-h-screen h-full py-6'>
+    <div className='block border-x border-gray-200  w-full max-w-[860px] min-h-screen h-full py-6'>
         <h1 className='font-extrabold text-lg mt-1 px-4'>Home</h1>
         <MakePost/>
         <FetchPost/>

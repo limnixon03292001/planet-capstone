@@ -20,7 +20,12 @@ body{
     height: calc(100vh - 230px);
 }
 
+/* overide css of leaflet */
 .leaflet-container{
     height: calc(100vh - 99px);
     width: 100%;
+}
+
+.leaflet-popup-content p{
+    margin: 12px 0px !important;
 }

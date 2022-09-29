@@ -68,7 +68,7 @@ const Home = () => {
                     <Route path="/profile/:id" element={<Profile/>}/>
                     <Route path="/messages/*" element={<Messages/>}/>
                     <Route path="/marketplace" element={<Marketplace/>}/>
-                    <Route path="/map" element={<MyMap/>}/>
+                    <Route path="/map/*" element={<MyMap/>}/>
 
                     {/* 404 PAGE  */}
 
