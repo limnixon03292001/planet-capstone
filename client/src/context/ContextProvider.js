@@ -5,7 +5,7 @@ const MainContext = createContext();
 
 
 const ContextProvider = ({ children }) => {
-
+    const [authUser, setAuthUser] = useState({});
     const [authId, setAuthId] = useState(null)
     const [posts, setPosts] = useState([]); //state for all posts of user.
     const [chats, setChats] = useState([]); // all chats of authenticated user.
@@ -15,6 +15,7 @@ const ContextProvider = ({ children }) => {
 
     return (
         <MainContext.Provider value={{
+            authUser, setAuthUser,
             posts, setPosts,
             authId, setAuthId,
             socket, setSocket,

@@ -8,7 +8,9 @@ const { registerController, loginController, addPostController,
         getUserProfile,
         followUser,
         unFollowUser,
-        getIsFollowingUser
+        getIsFollowingUser,
+        getAuthUser,
+        searchUser
 } = require('../controllers/userController'); 
 
 const router = express.Router();
@@ -18,7 +20,9 @@ router.post("/register", registerController);
 router.post("/login", loginController); 
 // end of route for authentication
 
+router.get("/auth-user", auth, getAuthUser); //route for getting the authenticated user
 router.get("/user", auth, getUserProfile); //route for getting the users profile
+router.get("/search", auth, searchUser); //route for searching a user.
 router.post("/follow-user", auth, followUser); //route for following a user
 router.post("/unfollow-user", auth, unFollowUser); //route for unfollowing a user
 router.get("/isfollowing-user", auth, getIsFollowingUser); //route for checking, if the currently logged in user followed a user
@@ -36,6 +40,8 @@ router.post("/post-dislike", auth, postDislike); //route for disliking certain p
 router.get("/getcomment", auth, getComment); //route for getting a comment of a certain post
 router.post("/addcomment", auth, addComment); //route for adding a comment of a certain post
 router.delete("/deletecomment", auth, deleteComment); //route for deleteing a comment of a certain post
+
+
 
 
 module.exports = router;

@@ -18,7 +18,7 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="font-interFont  antialiased text-gray-900 h-full w-full">
+      <div className="font-interFont tracking-normal antialiased text-gray-900 h-full w-full">
         <Toaster position='top-left'/>
         <Routes>
           <Route path="/login" element={<Login/>} />

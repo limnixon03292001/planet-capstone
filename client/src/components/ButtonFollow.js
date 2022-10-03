@@ -4,7 +4,7 @@ import { followUser, getIsFollowingUser, unfollowUser } from '../api/userApi';
 import { MyContext } from '../context/ContextProvider';
 
 const ButtonFollow = ({ id, userFollowers , setUserFollowers}) => {
-    const { socket } = MyContext();
+    const { socket, authUser } = MyContext();
     const [isFollowing, setIsFollowing] = useState(false);
 
     //checking if a user following a user
@@ -40,7 +40,8 @@ const ButtonFollow = ({ id, userFollowers , setUserFollowers}) => {
             console.log("followed", data);
             setUserFollowers(userFollowers + 1);
             setIsFollowing(true);
-            socket.emit("sendNotifUser", {userId: id, message: "Test user followed you"});
+            socket.emit("sendNotifUser", {userId: id, message: "Test user followed you", 
+            user: authUser});
         },
         onError: (err) => {
             const errObject = err.response.data.error;

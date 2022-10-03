@@ -68,7 +68,7 @@ const Post = ({ postData, like}) => {
     <div className='my-5 border-b border-gray-200'>
         <div className="flex justify-start items-center px-4">
 
-            <div className='flex-shrink-0 w-[43px] h-[44px] relative mr-2'>
+            <div className='flex-shrink-0 w-[41px] h-[41px] relative mr-2'>
                 <img src={postData?.profile} className="w-full h-full rounded-full object-cover object-center "/>
                 {checkOnline(onlineUsers,postData?.user_id) ?
                     <div className='bg-green-500 p-[5px] h-2 w-2 rounded-full z-10 inline-block mr-1 absolute -bottom-1 -right-1 border-[3px]
@@ -79,7 +79,7 @@ const Post = ({ postData, like}) => {
                 }
              </div>
 
-            <div className="block">
+            <div className="block self-start">
                 <Link to={`/profile/${postData?.user_id}`} className='font-extrabold block'>{postData?.firstname} {postData?.lastname}</Link>
                 <p className='font-extralight text-xs break-words text-[#536471]'>{moment(postData.created_at).fromNow()}</p>
             </div>
@@ -98,7 +98,7 @@ const Post = ({ postData, like}) => {
         </div>
 
         {/* description section */}
-        <div className='px-4 mt-8 text-sm text-justify'>
+        <div className='px-4 mt-8 text-sm text-gray-700 text-justify'>
             <p>{postData?.description}</p>
         </div>
         {/* description section */}

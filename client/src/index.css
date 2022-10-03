@@ -22,7 +22,7 @@ body{
 
 /* overide css of leaflet */
 .leaflet-container{
-    height: calc(100vh - 99px);
+    height: calc(100vh - 126px);
     width: 100%;
 }
 

@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const cloudinary = require("../utils/cloudinary");
+const format = require("pg-format");
 
 dotenv.config();
 
@@ -86,6 +87,46 @@ exports.loginController = async (req, res) => {
             error: error?.message
         })
     }   
+}
+
+exports.getAuthUser = async (req, res) => {
+    const authId = req.user.id;
+
+    try {
+        
+        const row = await pool.query(`
+            SELECT user_id, firstname, lastname, profile, email FROM user_acc WHERE user_id = $1
+        `,[authId]);
+
+        return res.status(200).json({data: row.rows[0]});
+
+    } catch (error) {
+        console.log(error?.message);
+        return res.status(500).json({
+            error: error?.message
+        })
+    }
+}
+
+exports.searchUser = async (req, res) => {
+    const { searchText } = req.query;
+
+    try {
+        const queryText = format(`
+            SELECT user_id, firstname, lastname, email, profile, cover FROM user_acc
+            WHERE firstname || ' ' || lastname ILIKE %L`,
+            `%${searchText}%`);
+        
+        const rows = await pool.query(queryText);
+        
+        return res.status(200).json({result: rows.rows});
+
+    } catch (error) {
+        console.log(error?.message);
+        return res.status(500).json({
+            error: error?.message
+        })
+    }
 }
 
 exports.addPostController = async (req, res) => {
@@ -571,4 +612,3 @@ exports.getIsFollowingUser = async (req, res) => {
         })
     }
 }
-

@@ -7,7 +7,7 @@ const MyMap = () => {
 
   return (
 
-    <div className='block border border-gray-200 w-full max-w-[860px] min-h-screen pt-6 overflow-hidden'>
+    <div className='block border border-gray-200 w-full max-w-full min-h-screen pt-6 overflow-hidden'>
 
       <Routes>
         <Route path="/" element={<MainMap/>} />

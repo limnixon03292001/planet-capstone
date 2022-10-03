@@ -60,9 +60,7 @@ CREATE TABLE posts_comment(
     FOREIGN KEY (user_id) REFERENCES user_acc(user_id) ON DELETE CASCADE
 );
 
-
-----TEST TABLE SCHEMA FOR  CHAT FEATURE (NOT FINAL YET)------
-
+--CREATE TABLE FOR USER CHATROOM
 CREATE TABLE user_chatroom(
     chatroom_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
@@ -73,6 +71,7 @@ CREATE TABLE user_chatroom(
     FOREIGN KEY (friend_id) REFERENCES user_acc(user_id) ON DELETE CASCADE
 );
 
+--CREATE TABLE FOR USER CHATROOM MESSAGES
 CREATE TABLE messages(
     msg_id SERIAL PRIMARY KEY,
     chatroom_id INT NOT NULL,
@@ -82,6 +81,29 @@ CREATE TABLE messages(
     FOREIGN KEY (chatroom_id) REFERENCES user_chatroom(chatroom_id) ON DELETE CASCADE,
     FOREIGN KEY (sent_by) REFERENCES user_acc(user_id) ON DELETE CASCADE
 );
+
+--CREATE TABLE FOR PLANT MAP DATA
+CREATE TABLE map_plants(
+    mapPlant_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    plant_name TEXT NOT NULL,
+    description TEXT NOT NULL,
+    plant_img TEXT,
+    lat TEXT NOT NULL,
+    lng TEXT NOT NULL,
+    created_at timestamp NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (user_id) REFERENCES user_acc(user_id) ON DELETE CASCADE
+);
+
+
+
+
+
+
+
+
+
+
 
 
 

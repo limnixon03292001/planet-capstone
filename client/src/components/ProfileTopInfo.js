@@ -85,7 +85,7 @@ const ProfileTopInfo = () => {
                     <a className="text-gray-500 text-xs underline block">{user?.email}</a>
                     <span className="text-xs text-gray-900 mr-2 font-bold">{userFollowers ?? 0} 
                     {userFollowers > 1 ?  <span className='text-gray-500 font-light'> followers</span> : <span className='text-gray-500 font-light'> follower</span>}</span>
-                    <span className="text-xs text-gray-900 font-bold">{user?.followingcount} <span className='text-gray-500 font-light'>following</span></span>
+                    <span className="text-xs text-gray-900 font-bold">{user?.followingcount ?? 0} <span className='text-gray-500 font-light'>following</span></span>
                     </div>
                     
                     {authId !== user?.user_id &&
@@ -113,7 +113,7 @@ const ProfileTopInfo = () => {
 
         {/* user descrip birthday etc */}
         <div className='mt-6'>
-            <p className='mx-9 text-gray-700 text-sm font-extralight break-all tracking-tight'>{user?.description}</p>
+            <p className='mx-9 text-gray-600 text-sm break-all'>{user?.description}</p>
 
             <div className='mx-8 mt-4 flex flex-wrap items-center justify-start'>
             <div className='text-gray-500 mb-1 mr-3 md:mr-7'>

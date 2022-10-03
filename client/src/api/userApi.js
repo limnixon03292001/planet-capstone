@@ -10,6 +10,10 @@ export const loginUser = (data) => {
     return axios.post('/api/users/login', data);
 }
 
+export const getAuthUser = () => {
+    return request({url: '/api/users/auth-user', method: 'GET'});
+}
+
 export const addUserPost = (data) => {
     return request({url: '/api/users/post', method: 'POST', data});
 }
@@ -17,6 +21,11 @@ export const addUserPost = (data) => {
 export const getUserProfile = ({queryKey}) => {
     const userId = queryKey[1]
     return request({url: `/api/users/user?userId=${userId}`, method: 'GET'});
+}
+
+export const searchUser = ({queryKey}) => {
+    const searchText = queryKey[1]
+    return request({url: `/api/users/search?searchText=${searchText}`, method: 'GET'});
 }
 
 export const getIsFollowingUser = ({queryKey}) => {
@@ -83,5 +92,16 @@ export const sendMessage = (data) => {
 }
 
 export const createRoom = (data) => {
-    return request({url: '/api/chats/create-room', method: 'POST', data:data});
+    return request({url: '/api/chats/create-room', method: 'POST', data :data});
+}
+
+
+//map data api's
+
+export const getPlants = () => {
+    return request({url: '/api/map/getPlants', method: 'GET'});
+}
+
+export const addPlant = (data) => {
+    return request({url: '/api/map/addPlant', method: 'POST', data: data});
 }
