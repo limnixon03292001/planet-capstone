@@ -10,7 +10,8 @@ const { registerController, loginController, addPostController,
         unFollowUser,
         getIsFollowingUser,
         getAuthUser,
-        searchUser
+        searchUser,
+        getFollowers
 } = require('../controllers/userController'); 
 
 const router = express.Router();
@@ -23,6 +24,7 @@ router.post("/login", loginController);
 router.get("/auth-user", auth, getAuthUser); //route for getting the authenticated user
 router.get("/user", auth, getUserProfile); //route for getting the users profile
 router.get("/search", auth, searchUser); //route for searching a user.
+router.get("/get-followers", auth, getFollowers);
 router.post("/follow-user", auth, followUser); //route for following a user
 router.post("/unfollow-user", auth, unFollowUser); //route for unfollowing a user
 router.get("/isfollowing-user", auth, getIsFollowingUser); //route for checking, if the currently logged in user followed a user

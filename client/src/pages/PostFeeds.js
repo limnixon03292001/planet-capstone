@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import FetchPost from '../components/FetchPost';
+import Followers from '../components/Followers';
 import MakePost from '../components/MakePost'
 import SearchUser from '../components/SearchUser';
 import { MyContext } from '../context/ContextProvider';
@@ -37,42 +38,7 @@ const PostFeeds = () => {
               <p>{onlineUsers?.length} Online users.</p>
             </div>
 
-            <h1 className='font-extrabold text-xl'>Your followers</h1>
-            <div className='h-full min-h-[200px]'>
-              <div className="flex justify-start items-center mt-8">
-                <img src={authUser?.profile} className="w-[40px] self-start flex-shrink-0 h-[42px] rounded-full object-cover object-center lg:mr-2"/>
-                <div>
-                    <h1 className='font-medium block text-sm'>{authUser?.firstname} {authUser?.lastname}  
-                    <span className='text-sm text-gray-500 font-extralight'> followed you.</span></h1>
-                    <span className='text-sm text-gray-500 font-extralight'>2 mins ago.</span>
-                </div>
-              </div>
-
-              <div className="flex justify-start items-center my-10">
-                <img src={authUser?.profile} className="w-[40px] self-start flex-shrink-0 h-[42px] rounded-full object-cover object-center lg:mr-2"/>
-                <div>
-                    <h1 className='font-medium block text-sm'>
-                    <span className='text-sm text-gray-500 font-extralight'> New message from </span>
-                      {authUser?.firstname} {authUser?.lastname}  
-                    </h1>
-                    <span className='text-sm text-gray-500 font-extralight'>2 mins ago.</span>
-                </div>
-              </div>
-
-              <div className="flex justify-start items-center my-10">
-                <img src={authUser?.profile} className="w-[40px] self-start flex-shrink-0 h-[42px] rounded-full object-cover object-center lg:mr-2"/>
-                <div>
-                    <h1 className='font-medium block text-sm'>
-                    <span className='text-sm text-gray-500 font-extralight'> New message from </span>
-                      {authUser?.firstname} {authUser?.lastname}  
-                    </h1>
-                    <span className='text-sm text-gray-500 font-extralight'>2 mins ago.</span>
-                </div>
-              </div>
-
-          
-
-            </div>
+            <Followers/>         
         </div>
 
       </div>

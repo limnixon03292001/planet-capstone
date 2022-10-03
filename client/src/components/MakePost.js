@@ -8,7 +8,7 @@ import { request } from '../utils/axios-utils';
 
 const MakePost = () => {
 
-    const { posts, setPosts } = MyContext();
+    const { posts, setPosts, authUser } = MyContext();
     const [pictureUrl, setPictureUrl] = useState('');
     const [description, setDescription] = useState('');
 
@@ -49,7 +49,7 @@ const MakePost = () => {
   return (
     <div className='py-4 w-full h-full border-b border-gray-200'>
         <div className='px-4 w-full h-full flex'>
-            <img src={user} className="w-[48px] flex-shrink-0 h-[50px] rounded-full object-cover object-center mr-2"/>
+            <img src={authUser?.profile} className="w-[48px] flex-shrink-0 h-[50px] rounded-full object-cover object-center mr-2"/>
             <div className='w-full h-full flex-1'>
                 <textarea placeholder="Flex your plant" name="description"
                 onChange={(e) => setDescription(e.target.value)}

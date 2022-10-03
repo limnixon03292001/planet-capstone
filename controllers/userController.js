@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const cloudinary = require("../utils/cloudinary");
 const format = require("pg-format");
+const auth = require('../middlewares/auth');
 
 dotenv.config();
 
@@ -541,7 +542,30 @@ exports.getUserProfile = async (req, res) => {
         
         res.status(200).json({profile: rows?.rows[0]});
     } catch (error) {
-        console.log("x",error?.message);
+        console.log(error?.message);
+        return res.status(500).json({
+            error: error?.message
+        })
+    }
+}
+
+exports.getFollowers = async (req, res) => {
+    const authUserId = req.user.id;
+
+    try {
+        
+        const rows = await pool.query(`
+            SELECT uf.followers_user_id, ua.firstname, ua.lastname, ua.profile, ua.cover, ua.email, 
+            uf.created_at FROM user_followers uf
+            LEFT JOIN user_acc ua ON uf.followers_user_id = ua.user_id
+            WHERE uf.user_id = $1
+            ORDER BY uf.created_at DESC
+        `, [authUserId]);
+
+        return res.status(200).json({followers: rows?.rows});
+
+    } catch (error) {
+        console.log(error?.message);
         return res.status(500).json({
             error: error?.message
         })

@@ -33,6 +33,10 @@ export const getIsFollowingUser = ({queryKey}) => {
     return request({url: `/api/users/isfollowing-user?userId=${userId}`, method: 'GET'});
 }
 
+export const getFollower = () => {
+    return request({url: `/api/users/get-followers`, method: 'GET'});
+}
+
 export const followUser = (data) => {
     return request({url: `/api/users/follow-user`, method: 'POST', data: { userId: data }});
 }

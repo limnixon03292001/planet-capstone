@@ -71,10 +71,10 @@ const Post = ({ postData, like}) => {
             <div className='flex-shrink-0 w-[41px] h-[41px] relative mr-2'>
                 <img src={postData?.profile} className="w-full h-full rounded-full object-cover object-center "/>
                 {checkOnline(onlineUsers,postData?.user_id) ?
-                    <div className='bg-green-500 p-[5px] h-2 w-2 rounded-full z-10 inline-block mr-1 absolute -bottom-1 -right-1 border-[3px]
+                    <div className='bg-green-500 p-[5px] h-2 w-2 rounded-full inline-block mr-1 absolute -bottom-1 -right-1 border-[3px]
                     border-white'/>
                 :
-                    <div className='bg-gray-400 p-[5px] h-2 w-2 rounded-full z-10 inline-block mr-1 absolute -bottom-1 -right-1 border-[3px]
+                    <div className='bg-gray-400 p-[5px] h-2 w-2 rounded-full inline-block mr-1 absolute -bottom-1 -right-1 border-[3px]
                     border-white'/>
                 }
              </div>

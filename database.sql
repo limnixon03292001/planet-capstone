@@ -25,6 +25,7 @@ CREATE TABLE user_followers (
     followers_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     followers_user_id INT NOT NULL,
+    created_at timestamp NOT NULL DEFAULT NOW(),
     FOREIGN KEY (user_id) REFERENCES user_acc(user_id) ON DELETE CASCADE,
     FOREIGN KEY (followers_user_id) REFERENCES user_acc(user_id) ON DELETE CASCADE
 );
