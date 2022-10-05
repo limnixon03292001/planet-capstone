@@ -16,6 +16,10 @@ app.use('/api/users', userRoutes);
 app.use('/api/chats', messagesRoutes);
 app.use('/api/map', mapRoutes);
 
+if(process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, "client/build")));
+}
+
 // Function to start the server
 const server = app.listen(PORT, () => {
     console.log(`The server is running at localhost ${PORT}`)
