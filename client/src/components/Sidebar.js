@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
 import { getAuthUser } from '../api/userApi';
 
-const ENDPOINT = "http://localhost:5000";
+const ENDPOINT = "https://planet-capstone-production.up.railway.app/";
 var socket;
 
 const Sidebar = () => {
