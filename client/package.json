@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:5000",
+  "proxy": "http://localhost:7846",
   "dependencies": {
     "@headlessui/react": "^1.7.2",
     "@react-google-maps/api": "^2.13.1",
