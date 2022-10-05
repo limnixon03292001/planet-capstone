@@ -80,7 +80,7 @@ const Post = ({ postData, like}) => {
              </div>
 
             <div className="block self-start">
-                <Link to={`/profile/${postData?.user_id}`} className='font-extrabold block'>{postData?.firstname} {postData?.lastname}</Link>
+                <Link to={`/profile/${postData?.user_id}`} className='font-medium block'>{postData?.firstname} {postData?.lastname}</Link>
                 <p className='font-extralight text-xs break-words text-[#536471]'>{moment(postData.created_at).fromNow()}</p>
             </div>
             
