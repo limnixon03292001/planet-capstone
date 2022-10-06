@@ -18,7 +18,6 @@ const PostFeeds = () => {
    } 
   },[location]);
 
-
   return (
     <div className='flex w-full max-w-[940px]'>
 

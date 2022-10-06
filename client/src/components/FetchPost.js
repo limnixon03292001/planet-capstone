@@ -9,7 +9,7 @@ import ScrollTop from './ScrollTop';
 
 const FetchPost = () => {
   const location = useLocation();
-  const { posts, setPosts } = MyContext();
+  const { posts, setPosts, socket } = MyContext();
   const [pageNumber, setPageNumber] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingPost, setIsLoadingPost] = useState(true);

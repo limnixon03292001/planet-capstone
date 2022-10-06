@@ -17,9 +17,10 @@ app.use('/api/users', userRoutes);
 app.use('/api/chats', messagesRoutes);
 app.use('/api/map', mapRoutes);
 
-if(process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname, "client/build")));
-}
+//fixed when refresh canot get the route
+// if(process.env.NODE_ENV === "production") {
+//     app.use(express.static(path.join(__dirname, "client/build")));
+// }
 
 // Function to start the server
 const server = app.listen(PORT, () => {
@@ -32,7 +33,8 @@ const server = app.listen(PORT, () => {
 const io = require("socket.io")(server, {
     pingTimeout: 60000,
     cors: {
-        origin: ["http://localhost:3000"],
+        // https://planet-capstone-production.up.railway.app/
+        origin: ["http://localhost:3000"], 
     },
 });
 
@@ -72,7 +74,7 @@ io.on("connection", (socket) => {
 
      socket.on("sendNotifUser", (newNotif) => {
         // console.log("notif", newNotif);
-//for following
+        //for following
         const user = getUserFollow(Number(newNotif?.userId)); // here we are getting the user that we want to notify
 
         // console.log(user);
@@ -85,7 +87,7 @@ io.on("connection", (socket) => {
 
     //send a and receive a message 
     socket.on("sendMessage", (newMessageReceived) => {
-        console.log("socketnew", newMessageReceived?.data?.msg);
+        // console.log("socketnew", newMessageReceived?.data?.msg);
 
         const users = getUser([{_id: newMessageReceived?.data?.sendTo}]); 
         users.forEach(user => {
@@ -93,6 +95,16 @@ io.on("connection", (socket) => {
             socket.to(user[0]?.socketId).emit("messageReceived", {msgContent: newMessageReceived?.data?.msg,
             chatRoomLink: newMessageReceived?.data?.chatRoomLink}); // sending the notification 
         });
+    });
+
+    //for realttime like
+
+    socket.on("likeSend", ({ likedPost }) => {
+
+        users.forEach(user => {
+            socket.to(user?.socketId).emit("likeReceived", { likedPost })
+        })
+        
     });
 
    

@@ -12,7 +12,7 @@ const Post = ({ postData, like}) => {
     // console.log("like", like)
     const { id } = decode(localStorage?.token);
     const authId = id;
-    const { posts, setPosts, onlineUsers } = MyContext();
+    const { posts, setPosts, onlineUsers, socket } = MyContext();
     const [liked, setLiked] = useState(false);
     // const [likeCount, setLikeCount] = useState(like);
 
@@ -25,20 +25,34 @@ const Post = ({ postData, like}) => {
         fetchLiked();
     },[like])
     // console.log(postData)
+    
+    //this useEffect is responsible for catching realtime likes and dislikes
+    useEffect(() => {
+        socket?.on("likeReceived", ({ likedPost }) => {
+            const newSet = posts.map((post) => {
+                return post.post_id === likedPost.post_id ?
+                {...post, likecount: likedPost.likecount.toString()} : post
+            });
+        
+            setPosts(newSet);
+        });
+    },[postData]);
 
     const likeAndDislikePost = async (id) => {
         if (liked) {
           if (like > 0) {
             await request({url:"/api/users/post-dislike", method: 'POST', data: {post_id: postData?.post_id} }).then(({data}) => {
                 console.log("dislike succes", data);
-                like--;
-                setLiked(false);
+                // like--;
+             
+                socket?.emit("likeSend", {likedPost: data?.dislikePost});
 
                 const newSet = posts.map((post) => {
                     return post.post_id == data.dislikePost.post_id ?
                     {...post, likecount: data.dislikePost.likecount === null ? 0 : data.dislikePost.likecount.toString()} : post
                  })
- 
+
+                 setLiked(false);
                  setPosts(newSet)
                 
             }).catch((err) => {
@@ -48,14 +62,14 @@ const Post = ({ postData, like}) => {
         } else {
             await request({url:"/api/users/post-like", method: 'POST', data: { post_id: id } }).then(({data}) => {
                 console.log("like success", data.likePost)
-                like++;
-                setLiked(true);
+                // like++;
+                socket?.emit("likeSend", {likedPost: data?.likePost});
 
                 const newSet = posts.map((post) => {
                    return post.post_id == data.likePost.post_id ?
                    {...post, likecount: data.likePost.likecount.toString()} : post
-                })
-
+                });
+                setLiked(true);
                 setPosts(newSet)
 
             }).catch((err) => {
