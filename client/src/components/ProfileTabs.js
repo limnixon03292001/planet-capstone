@@ -1,9 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Tab } from '@headlessui/react'
-import FetchPost from './FetchPost'
 import FetchUserPost from './FetchUserPost'
-import { MyContext } from '../context/ContextProvider'
-import { useLocation } from 'react-router-dom'
+import ItemCard from '../components/ItemCard'
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -52,8 +50,11 @@ const ProfileTabs = () => {
               <FetchUserPost/>
             </Tab.Panel>
             <Tab.Panel className={classNames('p-3')}>
-              <div>
-               On sale
+              <div className='grid grid-cols-2'>
+              <ItemCard/>
+              <ItemCard/>
+              <ItemCard/>
+              <ItemCard/>
               </div>
             </Tab.Panel>
             <Tab.Panel className={classNames('p-3')}>

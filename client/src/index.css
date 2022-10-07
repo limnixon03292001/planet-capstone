@@ -29,3 +29,25 @@ body{
 .leaflet-popup-content p{
     margin: 12px 0px !important;
 }
+
+/* like aniamtion/styles */
+.Grid .Likes{
+    cursor: pointer;
+}
+.Grid .Likes .goUp{
+    display: inline-flex;
+    opacity: 0;
+    transform: translate3d(0, -20px, 0);
+    transition: 0.1s ease-in-out;
+}
+.Grid .Likes .waitDown{
+    display: inline-flex;
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+}
+.Grid .Likes .initial{
+    display: inline-flex;
+    opacity: 1;
+    transform: translate3d(0, 0px, 0);
+    transition: 0.1s ease-in-out;
+}

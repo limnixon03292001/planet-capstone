@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { request } from '../utils/axios-utils'
 import EditPostModal from '../components/EditPostModal'
@@ -16,6 +16,7 @@ const PostSettings = ({ posts, setPosts, postId, currentPost }) => {
           }); 
 
           setPosts(newFilteredPosts);
+          window.location.reload();
 
         }, 
         onError: (err) => {

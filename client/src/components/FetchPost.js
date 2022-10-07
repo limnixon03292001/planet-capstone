@@ -14,15 +14,15 @@ const FetchPost = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingPost, setIsLoadingPost] = useState(true);
 
-  useEffect(() => {
-    setPosts([])
-    setPageNumber(1);
+  // useEffect(() => {
+  //   setPosts([])
+  //   setPageNumber(1);
 
-    // return(() =>{
-    //     setPosts([])
-    //     console.log("allposts")
-    // })
-  },[location])
+  //   // return(() =>{
+  //   //     setPosts([])
+  //   //     console.log("allposts")
+  //   // })
+  // },[location])
 
   useEffect(() => {
     request({url: `/api/users/post?page=${pageNumber}`, method: 'GET'}).then(({data}) => {
@@ -38,29 +38,29 @@ const FetchPost = () => {
       setPageNumber(pageNumber+1);
       // console.log("ha", pageNumber);
   }
-  // console.log("out", posts, pageNumber);
+  // console.log("out", posts);
   return (
     <div>
-      <ScrollTop/>
-    {!isLoadingPost ? 
-    <InfiniteScroll
-    dataLength={posts.length}
-    next={fetchMoreData}
-    hasMore={hasMore}
-    loader={<h4>Loading...</h4>}
-    endMessage={
-      <p className='text-center mt-4'>
-       🤪 No more posts to show..
-      </p>
+    <ScrollTop/>
+      {!isLoadingPost ? 
+        <InfiniteScroll
+        dataLength={posts.length}
+        next={fetchMoreData}
+        hasMore={hasMore}
+        loader={<h4>Loading...</h4>}
+        endMessage={
+          <p className='text-center mt-4'>
+          🤪 No more posts to show..
+          </p>
+        }
+      >
+        {posts?.map((post, id) => (
+          <Post postData={post} like={post?.likecount} key={id}/>
+        ))}
+      </InfiniteScroll>
+    :
+        <p className='text-3xl'>LOADING POST</p>
     }
-  >
-    {posts?.map((post, id) => (
-      <Post postData={post} like={Number(post?.likecount)} key={id}/>
-    ))}
-  </InfiniteScroll>
-   :
-      <p className='text-3xl'>LOADING POST</p>
-   }
       
     </div>
   )

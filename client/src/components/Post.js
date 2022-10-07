@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { MyContext } from '../context/ContextProvider';
 import { request } from '../utils/axios-utils';
 import moment from 'moment';
@@ -7,14 +7,16 @@ import decode from 'jwt-decode'
 import PostSettings from './PostSettings';
 import { Link } from 'react-router-dom';
 import { checkOnline } from '../utils/checkOnline';
+import LikeCount from './LikeCount';
 
 const Post = ({ postData, like}) => {
-    // console.log("like", like)
+
     const { id } = decode(localStorage?.token);
     const authId = id;
     const { posts, setPosts, onlineUsers, socket } = MyContext();
     const [liked, setLiked] = useState(false);
-    // const [likeCount, setLikeCount] = useState(like);
+    const [animationLikes, setAnimationLikes] = useState('initial');
+    const [count, setCount] = useState(Number(like)); //storing the current number of likes of a certain post
 
     const fetchLiked = async () => {
         const { data } = await request({url:`/api/users/post-liked?post_id=${postData?.post_id}`, method: 'GET', });
@@ -24,36 +26,28 @@ const Post = ({ postData, like}) => {
     useEffect(() => {
         fetchLiked();
     },[like])
-    // console.log(postData)
-    
-    //this useEffect is responsible for catching realtime likes and dislikes
-    useEffect(() => {
-        socket?.on("likeReceived", ({ likedPost }) => {
-            const newSet = posts.map((post) => {
-                return post.post_id === likedPost.post_id ?
-                {...post, likecount: likedPost.likecount.toString()} : post
-            });
-        
-            setPosts(newSet);
-        });
-    },[postData]);
 
     const likeAndDislikePost = async (id) => {
         if (liked) {
-          if (like > 0) {
+          if (count > 0) {
             await request({url:"/api/users/post-dislike", method: 'POST', data: {post_id: postData?.post_id} }).then(({data}) => {
-                console.log("dislike succes", data);
+                // console.log("dislike succes", data);
                 // like--;
              
                 socket?.emit("likeSend", {likedPost: data?.dislikePost});
 
-                const newSet = posts.map((post) => {
-                    return post.post_id == data.dislikePost.post_id ?
-                    {...post, likecount: data.dislikePost.likecount === null ? 0 : data.dislikePost.likecount.toString()} : post
-                 })
-
-                 setLiked(false);
-                 setPosts(newSet)
+                setLiked(false);
+                
+                // 1. Old number goes up
+                setTimeout(() => setAnimationLikes('goUp'), 0);
+                // 2. Incrementing the counter  
+                setTimeout(() => {
+                    setCount(count - 1);
+                }, 100);
+                // 3. New number waits down  
+                setTimeout(() => setAnimationLikes('waitDown'), 100);
+                // 4. New number stays in the middle
+                setTimeout(() => setAnimationLikes('initial'), 200);
                 
             }).catch((err) => {
                 console.log("err disliking post", err);
@@ -61,16 +55,25 @@ const Post = ({ postData, like}) => {
           }
         } else {
             await request({url:"/api/users/post-like", method: 'POST', data: { post_id: id } }).then(({data}) => {
-                console.log("like success", data.likePost)
+                // console.log("like success", data.likePost)
                 // like++;
-                socket?.emit("likeSend", {likedPost: data?.likePost});
 
-                const newSet = posts.map((post) => {
-                   return post.post_id == data.likePost.post_id ?
-                   {...post, likecount: data.likePost.likecount.toString()} : post
-                });
+                socket?.emit("likeSend", {likedPost: data?.likePost});
+              
                 setLiked(true);
-                setPosts(newSet)
+                
+            
+                // 1. Old number goes up
+                setTimeout(() => setAnimationLikes('goUp'), 0);
+                // 2. Incrementing the counter  
+                setTimeout(() => {
+                    setCount(count + 1);
+                }, 100);
+                // 3. New number waits down  
+                setTimeout(() => setAnimationLikes('waitDown'), 100);
+                // 4. New number stays in the middle
+                setTimeout(() => setAnimationLikes('initial'), 200);
+      
 
             }).catch((err) => {
                 console.log("err liking post", err);
@@ -128,19 +131,20 @@ const Post = ({ postData, like}) => {
 
         {/* react and comment section */}
         <div className='mt-6 py-3 border-t border-gray-200'>
-            <div className='flex justify-evenly items-center'>
-                <button className='flex justify-center items-center' onClick={() => likeAndDislikePost(postData.post_id)}>
+            <div className='flex justify-evenly items-center text-gray-500 font-extralight Grid'>
+                <button className='flex justify-center items-center Likes' onClick={() => likeAndDislikePost(postData.post_id)}>
                     { liked ? 
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-6 h-6 mr-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" strokeWidth={1} stroke="" className="w-6 h-6 mr-1">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                         </svg> 
                     :
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-6 h-6 mr-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="#536471" className="w-6 h-6 mr-1">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                         </svg>
                     }
 
-                    <span className='text-sm'>{like ?? 0}</span>
+                    <LikeCount like={count} setLike={setCount} postData={postData} animationLikes={animationLikes} setAnimationLikes={setAnimationLikes}/>
+                  
                 </button>
                  
 

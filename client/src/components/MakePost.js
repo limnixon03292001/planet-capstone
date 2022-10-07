@@ -17,8 +17,10 @@ const MakePost = () => {
             // console.log("new post", data?.data);
             setPictureUrl('');
             setDescription('');
-            setPosts([data?.data, ...posts]);
             window.location.reload();
+            setPosts([data?.data, ...posts]);
+           
+            
         }, 
         onError: (err) => {
             const errObject = err.response.data.error;
