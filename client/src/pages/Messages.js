@@ -8,7 +8,7 @@ import MainMessages from './MainMessages'
 
 const Messages = () => {
 
-  const { chats, setChats } = MyContext();
+  const { chats, setChats, onlineUsers } = MyContext();
 
     //fetching all chats of a user
     const { isLoading, refetch: refetchAllChats } = useQuery('all-chats', getAllChats,
@@ -34,6 +34,7 @@ const Messages = () => {
         <Route path="/chatroom/:id" element={<MainMessages />}/>
       </Routes>
     </div>
+
   </div>
   )
 }

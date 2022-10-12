@@ -9,6 +9,7 @@ import MyMap from './MyMap';
 import { useEffect } from 'react';
 import { MyContext } from '../context/ContextProvider';
 import toast from 'react-hot-toast';
+import AddPlantCollections from '../pages/AddPlantCollections';
 
 
 const Home = () => {
@@ -69,6 +70,7 @@ const Home = () => {
                     <Route path="/messages/*" element={<Messages/>}/>
                     <Route path="/marketplace" element={<Marketplace/>}/>
                     <Route path="/map/*" element={<MyMap/>}/>
+                    <Route path="/add-plantCollections" element={<AddPlantCollections/>}/>
 
                     {/* 404 PAGE  */}
 

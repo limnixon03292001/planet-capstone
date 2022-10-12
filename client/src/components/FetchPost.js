@@ -9,41 +9,53 @@ import ScrollTop from './ScrollTop';
 
 const FetchPost = () => {
   const location = useLocation();
-  const { posts, setPosts, socket } = MyContext();
-  const [pageNumber, setPageNumber] = useState(1);
+  const { posts, setPosts,x , setX, pageNumber, setPageNumber } = MyContext();
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingPost, setIsLoadingPost] = useState(true);
 
-  // useEffect(() => {
-  //   setPosts([])
-  //   setPageNumber(1);
-
-  //   // return(() =>{
-  //   //     setPosts([])
-  //   //     console.log("allposts")
-  //   // })
-  // },[location])
-
   useEffect(() => {
-    request({url: `/api/users/post?page=${pageNumber}`, method: 'GET'}).then(({data}) => {
-      setHasMore(data.posts.length > 0);
-      setPosts([...posts, ...data?.posts]);
-      setIsLoadingPost(false);
-    }).catch((err) => {
-      console.log(err?.message);
-    });
-  },[pageNumber, location]);
+    return () => {
+      setPageNumber(1);
+      setPosts([])
+    }
+  },[]);
+  
+  useEffect(() => {
+      request({url: `/api/users/post?page=${pageNumber}`, method: 'GET'}).then(({data}) => {
+        setHasMore(data.posts.length > 0);
+        setPosts(posts => [...posts, ...data?.posts]);
+        setIsLoadingPost(false);
+      }).catch((err) => {
+        console.log(err?.message);
+      });
+  },[pageNumber, location, x]);
 
   const fetchMoreData = () => {
       setPageNumber(pageNumber+1);
-      // console.log("ha", pageNumber);
   }
-  // console.log("out", posts);
+
+  const refresh = () =>{
+    console.log("pulled")
+    setPosts([]);
+    setPageNumber(1);
+    setX(x + 1);
+
+    // request({url: `/api/users/post?page=${1}`, method: 'GET'}).then(({data}) => {
+    //   setHasMore(data.posts.length > 0);
+    //   setPosts([...data?.posts, ...posts]);
+    //   console.log(data?.posts)
+    //   setIsLoadingPost(false);
+    // }).catch((err) => {
+    //   console.log(err?.message);
+    // });
+  }
+
   return (
     <div>
     <ScrollTop/>
       {!isLoadingPost ? 
         <InfiniteScroll
+       
         dataLength={posts.length}
         next={fetchMoreData}
         hasMore={hasMore}
@@ -53,9 +65,18 @@ const FetchPost = () => {
           🤪 No more posts to show..
           </p>
         }
+        refreshFunction={refresh}
+        pullDownToRefresh
+        pullDownToRefreshThreshold={50}
+        pullDownToRefreshContent={
+          <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
+        }
+        releaseToRefreshContent={
+          <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
+        }
       >
         {posts?.map((post, id) => (
-          <Post postData={post} like={post?.likecount} key={id}/>
+          <Post postData={post} key={id} index={id}/>
         ))}
       </InfiniteScroll>
     :

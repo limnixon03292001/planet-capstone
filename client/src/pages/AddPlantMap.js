@@ -93,7 +93,7 @@ const AddPlantMap = () => {
 
       <form className='flex'>
         <div className='flex-1'>
-          <div className="mb-5">
+            <div className="mb-5">
               <label htmlFor="name" className="block text-[#536471] mb-3">Plant's name</label>
               <input type="text" placeholder="plant's name" id="name" name="name" required
               value={plantName}

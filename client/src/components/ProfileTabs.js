@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Tab } from '@headlessui/react'
 import FetchUserPost from './FetchUserPost'
 import ItemCard from '../components/ItemCard'
+import PlantCollectionsTab from './PlantCollectionsTab'
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -10,7 +11,7 @@ function classNames(...classes) {
 const ProfileTabs = () => {
 
     let [categories] = useState([
-        'Posts', 'On Sale', 'Plants', 'Favorites'
+        'Posts', 'On Sale', 'Plant Collections',
     ]);
     // const { setPosts} = MyContext();
     // const location = useLocation();
@@ -51,21 +52,14 @@ const ProfileTabs = () => {
             </Tab.Panel>
             <Tab.Panel className={classNames('p-3')}>
               <div className='grid grid-cols-2'>
-              <ItemCard/>
-              <ItemCard/>
-              <ItemCard/>
-              <ItemCard/>
+                <ItemCard/>
+                <ItemCard/>
+                <ItemCard/>
+                <ItemCard/>
               </div>
             </Tab.Panel>
-            <Tab.Panel className={classNames('p-3')}>
-              <div>
-                Plants
-              </div>
-            </Tab.Panel>
-            <Tab.Panel className={classNames('p-3')}>
-              <div>
-                favorites
-              </div>
+            <Tab.Panel>
+              <PlantCollectionsTab/>
             </Tab.Panel>
         </Tab.Panels>
       </Tab.Group>

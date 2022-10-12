@@ -8,7 +8,7 @@ import { request } from '../utils/axios-utils';
 
 const MakePost = () => {
 
-    const { posts, setPosts, authUser } = MyContext();
+    const { posts, setPosts, authUser, setX, x, setPageNumber } = MyContext();
     const [pictureUrl, setPictureUrl] = useState('');
     const [description, setDescription] = useState('');
 
@@ -17,10 +17,13 @@ const MakePost = () => {
             // console.log("new post", data?.data);
             setPictureUrl('');
             setDescription('');
-            window.location.reload();
-            setPosts([data?.data, ...posts]);
-           
-            
+            setPosts([]);
+            setPageNumber(1);
+            setX(x + 1);
+
+            // window.location.reload();
+            // setPosts(posts => [data?.data, ...posts]);
+        
         }, 
         onError: (err) => {
             const errObject = err.response.data.error;

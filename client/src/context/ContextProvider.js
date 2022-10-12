@@ -12,7 +12,8 @@ const ContextProvider = ({ children }) => {
     const [onlineUsers, setOnlineUsers] = useState([]); //state for online users.
     const [socket, setSocket] = useState();
     const [messages, setMessages] = useState([]);
-
+    const [x, setX] = useState(0);
+    const [pageNumber, setPageNumber] = useState(1);
     return (
         <MainContext.Provider value={{
             authUser, setAuthUser,
@@ -22,6 +23,8 @@ const ContextProvider = ({ children }) => {
             onlineUsers, setOnlineUsers,
             chats, setChats,
             messages, setMessages,
+            pageNumber, setPageNumber,
+            x, setX
         }}>
             {children}
         </MainContext.Provider>

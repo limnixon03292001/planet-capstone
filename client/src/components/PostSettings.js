@@ -4,20 +4,24 @@ import { request } from '../utils/axios-utils'
 import EditPostModal from '../components/EditPostModal'
 import { deleteUserPost } from '../api/userApi'
 import { useMutation } from 'react-query'
+import { MyContext } from '../context/ContextProvider'
 
-const PostSettings = ({ posts, setPosts, postId, currentPost }) => {
-
+const PostSettings = ({ postId, currentPost }) => {
+   const { posts, setPosts, setPageNumber, x, setX } = MyContext();
     const { mutate, isLoading: isLoadingDelete } = useMutation(deleteUserPost,{
         onSuccess: ({ data }) => {
-          console.log("deleted post", data);
 
-          const newFilteredPosts = posts.filter((post) => {
-            return post.post_id !== postId
-          }); 
+          // const newFilteredPosts = posts.filter((post) => {
+          //   return post.post_id !== postId
+          // }); 
 
-          setPosts(newFilteredPosts);
-          window.location.reload();
+          setPosts([]);
+          setPageNumber(1);
+          setX(x + 1);
 
+          // setPosts(newFilteredPosts);
+          // window.location.reload();
+         
         }, 
         onError: (err) => {
             const errObject = err.response.data.error;

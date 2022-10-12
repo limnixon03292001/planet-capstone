@@ -15,6 +15,7 @@ const plantsCategories = [
   { name: 'Homeplant' },
   { name: 'Fruit' },
   { name: 'Vegetable' },
+  { name: 'Flowers'},
   { name: 'Seed' },
   { name: 'Herbs' },
   { name: 'Waterplant' },

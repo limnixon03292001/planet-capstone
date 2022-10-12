@@ -3,21 +3,20 @@ import { MyContext } from '../context/ContextProvider';
 import { request } from '../utils/axios-utils';
 import moment from 'moment';
 import CommentButton from './CommentButton';
-import decode from 'jwt-decode'
 import PostSettings from './PostSettings';
 import { Link } from 'react-router-dom';
 import { checkOnline } from '../utils/checkOnline';
 import LikeCount from './LikeCount';
 
-const Post = ({ postData, like}) => {
 
-    const { id } = decode(localStorage?.token);
-    const authId = id;
-    const { posts, setPosts, onlineUsers, socket } = MyContext();
+const Post = ({ postData }) => {
+   
+    const { onlineUsers, socket, authUser } = MyContext();
     const [liked, setLiked] = useState(false);
     const [animationLikes, setAnimationLikes] = useState('initial');
-    const [count, setCount] = useState(Number(like)); //storing the current number of likes of a certain post
-
+    var countx  = Number(postData?.likecount);
+    const [count, setCount] = useState(countx);//storing the current number of likes of a certain post
+    
     const fetchLiked = async () => {
         const { data } = await request({url:`/api/users/post-liked?post_id=${postData?.post_id}`, method: 'GET', });
         setLiked(data.liked);
@@ -25,8 +24,8 @@ const Post = ({ postData, like}) => {
 
     useEffect(() => {
         fetchLiked();
-    },[like])
-
+    },[postData]);
+   
     const likeAndDislikePost = async (id) => {
         if (liked) {
           if (count > 0) {
@@ -43,6 +42,16 @@ const Post = ({ postData, like}) => {
                 // 2. Incrementing the counter  
                 setTimeout(() => {
                     setCount(count - 1);
+                    
+                    // const a = posts?.map(p => {
+                    //    return p.post_id === postData?.post_id ?
+                    //       {...p, likecount: Number(p.likecount) - 1}
+                    //     :
+                    //     p
+                    // })
+
+                    // console.log(a)
+                    // setPosts(a);
                 }, 100);
                 // 3. New number waits down  
                 setTimeout(() => setAnimationLikes('waitDown'), 100);
@@ -62,12 +71,21 @@ const Post = ({ postData, like}) => {
               
                 setLiked(true);
                 
-            
                 // 1. Old number goes up
                 setTimeout(() => setAnimationLikes('goUp'), 0);
                 // 2. Incrementing the counter  
                 setTimeout(() => {
                     setCount(count + 1);
+                   
+                    // const a = posts?.map(p => {
+                    //    return p.post_id === postData?.post_id ?
+                    //       {...p, likecount: Number(p.likecount) + 1}
+                    //     :
+                    //     p
+                    // })
+                    
+                    // console.log(a)
+                    // setPosts(a);
                 }, 100);
                 // 3. New number waits down  
                 setTimeout(() => setAnimationLikes('waitDown'), 100);
@@ -102,11 +120,9 @@ const Post = ({ postData, like}) => {
             </div>
             
             {
-                authId === postData.user_id 
+                authUser?.user_id === postData.user_id 
             &&
                <PostSettings 
-                    posts={posts} 
-                    setPosts={setPosts} 
                     postId={postData.post_id} 
                     currentPost={postData}
                 />
@@ -143,7 +159,8 @@ const Post = ({ postData, like}) => {
                         </svg>
                     }
 
-                    <LikeCount like={count} setLike={setCount} postData={postData} animationLikes={animationLikes} setAnimationLikes={setAnimationLikes}/>
+                    <LikeCount like={count} setLike={setCount} postData={postData} 
+                    animationLikes={animationLikes} setAnimationLikes={setAnimationLikes}/>
                   
                 </button>
                  
