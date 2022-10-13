@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { DebounceInput } from 'react-debounce-input'
 import FilterButton from '../components/FilterButton'
 import ItemCard from '../components/ItemCard'
@@ -29,8 +29,15 @@ const dateAdded = [
 ]
 
 
-
 const Marketplace = () => {
+  const [lowHigh, setLowHigh] = useState('');
+  const [plantCat, setPlantCat] = useState('');
+  const [dateAdd, setDateAdd] = useState('');
+
+  // useEffect(() => {
+  //   console.log(lowHigh, plantCat,dateAdd)
+  // },[lowHigh, plantCat, dateAdd])
+
   return (
     // max-w-[660px]
     <div className='block border border-gray-200 w-full min-h-screen pt-6 overflow-hidden'>
@@ -53,17 +60,17 @@ const Marketplace = () => {
 
           <div className='mr-2'>
             <p className='text-gray-500 text-sm mb-2'>Date Added</p>
-            <FilterButton data={dateAdded}/>
+            <FilterButton data={dateAdded} setData={setDateAdd}/>
           </div>
 
           <div className='mr-2'>
             <p className='text-gray-500 text-sm mb-2'>Price</p>
-            <FilterButton data={lowestHighest}/>
+            <FilterButton data={lowestHighest} setData={setLowHigh}/>
           </div>
 
           <div>
             <p className='text-gray-500 text-sm mb-2'>Category</p>
-            <FilterButton data={plantsCategories} />
+            <FilterButton data={plantsCategories} setData={setPlantCat}/>
           </div>
 
           <div className='ml-auto '>

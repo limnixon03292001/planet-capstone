@@ -1,8 +1,15 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 
-const FilterButton = ({data}) => {
+const FilterButton = ({data, setData}) => {
     const [selected, setSelected] = useState(data[0])
+
+
+    useEffect(() => {
+      
+      setData(selected?.name);
+   
+    }, [selected])
     
   return (
     <div>
@@ -11,7 +18,7 @@ const FilterButton = ({data}) => {
           <Listbox.Button className="relative w-full cursor-pointer rounded-lg bg-white py-3 pl-3 pr-10 text-left 
             border border-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-300
              focus-visible:ring-opacity-75 text-sm">
-            <span className="block truncate">{selected.name}</span>
+            <span className="block truncate">{selected?.name}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -25,7 +32,7 @@ const FilterButton = ({data}) => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            <Listbox.Options className="absolute mt-1 z-20 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
               {data.map((d, dataIdx) => (
                 <Listbox.Option
                   key={dataIdx}
