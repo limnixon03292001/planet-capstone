@@ -1,4 +1,3 @@
-import e from 'cors'
 import React from 'react'
 
 const SendMessage = ({setMsgContent, mutate, msgContent, chatroomId}) => {

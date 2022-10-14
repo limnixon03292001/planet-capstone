@@ -651,7 +651,27 @@ exports.addPlantCollection = async (req,res) => {
 
     const client = await pool.connect();
 
+    let plant_img = '';
+
     try {
+        //upload image to cloudinary
+        if(data?.plantDetails?.pictureUrl) {
+            const { secure_url } = await cloudinary.uploader.upload(data?.plantDetails?.pictureUrl, 
+                {
+                    upload_preset: 'capstone',
+                    allowed_formats : ['png', 'jpg', 'jpeg',],
+                }, 
+                function(error, result) {
+                    if(error){
+                        console.log(error);
+                    }
+                }
+            );
+            plant_img = secure_url;
+        } else {
+            plant_img = '';
+        }
+
         await client.query('BEGIN');
         const queryPlantDetails = ` 
             INSERT INTO coll_plant_details 
@@ -661,7 +681,7 @@ exports.addPlantCollection = async (req,res) => {
         `;
         const resPlantDetails = await client.query(queryPlantDetails, [ authUserId, data?.plantDetails?.plantName, 
             data?.plantDetails?.desc, data?.plantDetails?.plantCat, 
-            data?.plantDetails?.datePlanted, data?.plantDetails?.pictureUrl ]);
+            data?.plantDetails?.datePlanted, plant_img ]);
         
         const idPlantDetail = resPlantDetails.rows[0]?.plant_detail_id;
         
@@ -691,11 +711,42 @@ exports.addPlantCollection = async (req,res) => {
         
     } catch (error) {
         await client.query('ROLLBACK');
-        console.log("transaction failed",error?.message);
+        console.log("adding plant into your collection failed",error?.message);
         return res.status(500).json({
             error: error?.message
         })
     } finally {
         client.release();
+    }
+}
+
+//get all plant collection of a user
+exports.getPlantCollection = async (req, res) => {
+
+    const { userId } = req.body;
+
+    try {
+        
+        const query = ` 
+            SELECT cpd.*, cgp.*, cgi.*, ua.user_id, ua.firstname, ua.lastname, ua.email, ua.profile
+            FROM coll_plant_details cpd
+
+            LEFT JOIN user_acc ua ON cpd.user_id = ua.user_id
+            LEFT JOIN coll_growing_pref cgp ON cpd.plant_detail_id = cgp.plant_detail_id
+            LEFT JOIN coll_growing_info cgi ON cpd.plant_detail_id = cgi.plant_detail_id
+
+            WHERE cpd.user_id = $1
+        `
+
+        const result = await pool.query(query, [userId]);
+
+        return res.status(200).json({data: result.rows});
+
+
+    } catch (error) {
+        console.log("error",error?.message);
+        return res.status(500).json({
+            error: error?.message
+        })
     }
 }
