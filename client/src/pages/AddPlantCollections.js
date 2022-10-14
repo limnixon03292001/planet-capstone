@@ -3,6 +3,8 @@ import FilterButton from "../components/FilterButton"
 import GrowingInformation from "../components/GrowingInformation"
 import GrowingPreferences from "../components/GrowingPreferences"
 import logo from '../assets/PLANeTlogo.png';
+import { useMutation } from "react-query";
+import { addPlantCollection } from "../api/userApi";
 
 const plantsCategories = [
   { name: 'Homeplant' },
@@ -45,6 +47,18 @@ const AddPlantCollections = () => {
   const [repeatBloom, setRepeatBloom] = useState('');
   const [floweringPer, setFloweringPer] = useState({flowPer: []});
 
+
+  const { mutate, isLoading } = useMutation(addPlantCollection,
+    {
+      onSuccess: ({ data }) => {
+        console.log(data?.message);
+      },
+      onError: (err) => {
+        const errObject = err.response.data.error;
+        console.log(errObject);
+      }
+    })
+
   const handleSubmit = () => {
     let data = {
       plantDetails: {
@@ -66,7 +80,8 @@ const AddPlantCollections = () => {
         floweringPer: floweringPer?.flowPer.join(', '),
       },
     }
-    console.log(data);
+
+    mutate(data);
   }
 
 
@@ -186,7 +201,7 @@ const AddPlantCollections = () => {
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
 
-          <span className='text-md block mt-[1px]'>Add Plant</span>
+          <span className='text-md block mt-[1px]'>{isLoading ? <span>Loading</span> : <span>Add Plant</span>}</span>
         </button>
       </div>
 

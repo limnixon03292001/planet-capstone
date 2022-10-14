@@ -11,7 +11,8 @@ const { registerController, loginController, addPostController,
         getIsFollowingUser,
         getAuthUser,
         searchUser,
-        getFollowers
+        getFollowers,
+        addPlantCollection
 } = require('../controllers/userController'); 
 
 const router = express.Router();
@@ -44,6 +45,8 @@ router.post("/addcomment", auth, addComment); //route for adding a comment of a 
 router.delete("/deletecomment", auth, deleteComment); //route for deleteing a comment of a certain post
 
 
+//plant collection route
+router.post("/addPlantCollection", auth, addPlantCollection);//adding plant to users plant collections
 
 
 module.exports = router;

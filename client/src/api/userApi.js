@@ -109,3 +109,10 @@ export const getPlants = () => {
 export const addPlant = (data) => {
     return request({url: '/api/map/addPlant', method: 'POST', data: data});
 }
+
+
+//plant collection
+
+export const addPlantCollection = (data) => {
+    return request({url: '/api/users/addPlantCollection', method: 'POST', data: data});
+}

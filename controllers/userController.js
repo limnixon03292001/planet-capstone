@@ -636,3 +636,66 @@ exports.getIsFollowingUser = async (req, res) => {
         })
     }
 }
+
+//add plant collection
+exports.addPlantCollection = async (req,res) => {
+    const authUserId = req.user.id;
+    const data = req.body;
+    
+    //converting array values into a string
+    const sunPref = data?.growingPref?.sunPref.join(", ");
+    const interLight = data?.growingPref?.interLight.join(", ");
+    const soilPref = data?.growingPref?.soilPref.join(", ");
+    const waterReq = data?.growingPref?.waterReq.join(", ");
+    const nativeHab = data?.growingPref?.nativeHab.join(", ");
+
+    const client = await pool.connect();
+
+    try {
+        await client.query('BEGIN');
+        const queryPlantDetails = ` 
+            INSERT INTO coll_plant_details 
+            (user_id, plant_name, description, category, date_planted, plant_img) 
+            VALUES ($1, $2 ,$3 , $4, $5, $6)
+            RETURNING plant_detail_id
+        `;
+        const resPlantDetails = await client.query(queryPlantDetails, [ authUserId, data?.plantDetails?.plantName, 
+            data?.plantDetails?.desc, data?.plantDetails?.plantCat, 
+            data?.plantDetails?.datePlanted, data?.plantDetails?.pictureUrl ]);
+        
+        const idPlantDetail = resPlantDetails.rows[0]?.plant_detail_id;
+        
+        
+        const queryGrowingPref = `
+            INSERT INTO coll_growing_pref
+            (plant_detail_id, sun_pref, inter_light, soil_pref, water_req, native_habitat)
+            VALUES ($1, $2 ,$3, $4, $5, $6)
+        `;
+        await client.query(queryGrowingPref, [ idPlantDetail, sunPref, interLight, soilPref, waterReq, nativeHab ]);
+        
+        const queryGrowingInformation = `
+            INSERT INTO coll_growing_info
+            (plant_detail_id, avg_h, avg_w, foliage_color, foliage_type,
+            foliage_scent, flower_color, fragrant, nocturnal_flowering,
+            repeat_blooming, flowering_period)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        `;
+        await client.query(queryGrowingInformation, [ idPlantDetail,
+            data?.growingInfo?.avgHeight, data?.growingInfo?.avgWidth, data?.growingInfo?.foliageColor, data?.growingInfo?.foliageType,
+            data?.growingInfo?.foliageScent, data?.growingInfo?.flowerColor, data?.growingInfo?.fragrant, data?.growingInfo?.nocturnalFlow,
+            data?.growingInfo?.repeatBloom, data?.growingInfo?.floweringPer ]);
+
+        await client.query('COMMIT');
+
+        return res.status(201).json({message: "Added plant successfully into your collections! "});
+        
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.log("transaction failed",error?.message);
+        return res.status(500).json({
+            error: error?.message
+        })
+    } finally {
+        client.release();
+    }
+}
