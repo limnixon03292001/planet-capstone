@@ -1,22 +1,25 @@
 import React, { useEffect } from 'react'
+import { useParams } from 'react-router-dom';
 import { MyContext } from '../context/ContextProvider';
 
-const ScrollMainMessages = ({  scrollRef, authId, id, }) => {
+const ScrollMainMessages = ({  scrollRef, authId }) => {
 
     const { socket, messages, setMessages } = MyContext();
 
+    console.log();
     useEffect(() => {
         socket?.on("messageReceived", (newMsgReceived) => {
             //here its important that we check the room_id here
             //we want to send the message to the correct room and not send it to other room lol!
-            // console.log("newMsg", newMsgReceived)
-            if(parseInt(id) === newMsgReceived?.msgContent?.chatroom_id){
-               setMessages([...messages, newMsgReceived?.msgContent]);  
-            //    console.log("new msg", newMsgReceived?.msgContent);
+            console.log("newMsgPath", newMsgReceived?.msgContent)
+            if(Number(window.location.pathname.split("/")[3]) !== newMsgReceived?.msgContent?.chatroom_id){
+                return ;
+            } else {
+                console.log("truee", newMsgReceived?.msgContent)
+                setMessages([...messages, newMsgReceived?.msgContent]);  
             }
-            return;
         });
-    }, [messages, socket]);
+    }, [messages]);
 
 
   return (

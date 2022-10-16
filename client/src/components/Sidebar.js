@@ -97,7 +97,7 @@ const Sidebar = () => {
     // console.log(onlineUsers)
 
   return (
-    <div className='h-full w-full max-w-max lg:max-w-[282px] xl:max-w-[380px] transition-all block sticky top-0'>
+    <div className='h-full w-full max-w-max lg:max-w-[282px] xl:max-w-[370px] transition-all block sticky top-0'>
         <div className='py-4 px-4 h-auto w-full max-w-[280px] ml-auto overflow-auto '>
             <div className="flex justify-center lg:justify-start items-end mb-10 lg:mb-5">
                 <img src={planetLogo} className="w-[33px] h-[38px] mr-0 lg:mr-2"/>

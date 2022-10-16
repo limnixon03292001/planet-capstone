@@ -723,7 +723,7 @@ exports.addPlantCollection = async (req,res) => {
 //get all plant collection of a user
 exports.getPlantCollection = async (req, res) => {
 
-    const { userId } = req.body;
+    const { userId } = req.query;
 
     try {
         
@@ -736,9 +736,10 @@ exports.getPlantCollection = async (req, res) => {
             LEFT JOIN coll_growing_info cgi ON cpd.plant_detail_id = cgi.plant_detail_id
 
             WHERE cpd.user_id = $1
+            ORDER BY cpd.created_at DESC
         `
 
-        const result = await pool.query(query, [userId]);
+        const result = await pool.query(query, [Number(userId)]);
 
         return res.status(200).json({data: result.rows});
 

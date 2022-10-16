@@ -14,6 +14,7 @@ const ContextProvider = ({ children }) => {
     const [messages, setMessages] = useState([]);
     const [x, setX] = useState(0);
     const [pageNumber, setPageNumber] = useState(1);
+    
     return (
         <MainContext.Provider value={{
             authUser, setAuthUser,

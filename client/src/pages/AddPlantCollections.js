@@ -5,6 +5,7 @@ import GrowingPreferences from "../components/GrowingPreferences"
 import logo from '../assets/PLANeTlogo.png';
 import { useMutation } from "react-query";
 import { addPlantCollection } from "../api/userApi";
+import { useNavigate } from "react-router-dom";
 
 const plantsCategories = [
   { name: 'Homeplant' },
@@ -19,6 +20,9 @@ const plantsCategories = [
 
 const growingPrefInitialState = {sunPref: [], interLight: [], soilPref: [], waterReq: [], nativeHab: []};
 const AddPlantCollections = () => {
+
+  const navigate = useNavigate();
+
   //plant details state data
   const [plantName, setPlantName] = useState('');
   const [desc, setDesc] = useState('');
@@ -52,6 +56,7 @@ const AddPlantCollections = () => {
     {
       onSuccess: ({ data }) => {
         console.log(data?.message);
+        navigate("/my-plants");
       },
       onError: (err) => {
         const errObject = err.response.data.error;
@@ -79,7 +84,7 @@ const AddPlantCollections = () => {
         repeatBloom: repeatBloom,
         floweringPer: floweringPer?.flowPer.join(', '),
       },
-    }
+  }
 
     mutate(data);
   }

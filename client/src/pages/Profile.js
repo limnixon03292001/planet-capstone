@@ -10,7 +10,7 @@ const Profile = () => {
   const { onlineUsers } = MyContext();
 
   return (
-    <div className='flex w-full max-w-[1000px]'>
+    <div className='flex w-full max-w-[1080px]'>
       <div className='block border-x border-gray-200  w-full min-h-screen h-full py-6 overflow-hidden'>
           <ProfileTopInfo/>
           <ProfileTabs/>

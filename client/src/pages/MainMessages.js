@@ -128,7 +128,7 @@ const MainMessages = ({ refetchAllChats }) => {
         </div>
 
         {/* main messages of  two users */}
-        <ScrollMainMessages scrollRef={scrollRef} authId={authId} id={id} refetchAllChats={refetchAllChats}/>
+        <ScrollMainMessages scrollRef={scrollRef} authId={authId} refetchAllChats={refetchAllChats}/>
         {/* end of main messages of  two users */}
 
         {/* input and button for sending the message */}

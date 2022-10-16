@@ -1,13 +1,12 @@
 import { Fragment, useState } from 'react'
 import { Popover, Transition } from '@headlessui/react'
-import { request } from '../utils/axios-utils'
 import EditPostModal from '../components/EditPostModal'
 import { deleteUserPost } from '../api/userApi'
 import { useMutation } from 'react-query'
 import { MyContext } from '../context/ContextProvider'
 
 const PostSettings = ({ postId, currentPost }) => {
-   const { posts, setPosts, setPageNumber, x, setX } = MyContext();
+    const { posts, setPosts, setPageNumber, x, setX } = MyContext();
     const { mutate, isLoading: isLoadingDelete } = useMutation(deleteUserPost,{
         onSuccess: ({ data }) => {
 
@@ -21,7 +20,7 @@ const PostSettings = ({ postId, currentPost }) => {
 
           // setPosts(newFilteredPosts);
           // window.location.reload();
-         
+          
         }, 
         onError: (err) => {
             const errObject = err.response.data.error;

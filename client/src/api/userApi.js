@@ -116,3 +116,8 @@ export const addPlant = (data) => {
 export const addPlantCollection = (data) => {
     return request({url: '/api/users/addPlantCollection', method: 'POST', data: data});
 }
+
+export const getPlantCollection = ({ queryKey }) => {
+    const id = queryKey[1]    
+    return request({url: `/api/users/getPlantCollections?userId=${id}`, method: 'GET'});
+}

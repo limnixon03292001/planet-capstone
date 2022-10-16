@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { getCommentPost } from '../api/userApi';
 
@@ -8,6 +8,7 @@ const CommentButton = ({ post_id}) => {
 
     let [isOpen, setIsOpen] = useState(false);
     const [comments, setComments] = useState([]);
+
     function closeModal() {
         setIsOpen(false)
     }
@@ -25,7 +26,7 @@ const CommentButton = ({ post_id}) => {
                 const errObject = err.response.data.error;
                 console.log(errObject)
             }
-        });
+    });
 
   return (
     <>

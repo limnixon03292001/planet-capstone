@@ -19,7 +19,7 @@ const PostFeeds = () => {
   },[location]);
 
   return (
-    <div className='flex w-full max-w-[1000px]'>
+    <div className='flex w-full max-w-[1080px]'>
 
       <div className='block border-x border-gray-200 w-full min-h-screen h-full py-6 '>
           <h1 className='font-extrabold text-lg px-4 py-2 sticky z-10 bg-white/60 backdrop-blur top-0'>Home</h1>

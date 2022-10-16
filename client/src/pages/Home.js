@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { MyContext } from '../context/ContextProvider';
 import toast from 'react-hot-toast';
 import AddPlantCollections from '../pages/AddPlantCollections';
+import MyPlantCollections from './MyPlantCollections';
 
 
 const Home = () => {
@@ -55,7 +56,7 @@ const Home = () => {
   },[socket]); 
 
   return (
-    <div className='block w-full max-w-[1500px] m-auto min-h-full h-full '>
+    <div className='block w-full max-w-[1500px] m-auto min-h-full h-full'>
         <div className='flex w-full h-full'>
             {/* Sidebar */}
             <Sidebar/>
@@ -71,7 +72,8 @@ const Home = () => {
                     <Route path="/marketplace" element={<Marketplace/>}/>
                     <Route path="/map/*" element={<MyMap/>}/>
                     <Route path="/add-plantCollections" element={<AddPlantCollections/>}/>
-
+                    <Route path="/my-plants" element={<MyPlantCollections/>}/>
+                    
                     {/* 404 PAGE  */}
 
                     <Route path="*" element={<NotFound/>}/>
