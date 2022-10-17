@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const cloudinary = require("../utils/cloudinary");
 const format = require("pg-format");
-const auth = require('../middlewares/auth');
 
 dotenv.config();
 
@@ -738,6 +737,41 @@ exports.getPlantCollection = async (req, res) => {
             WHERE cpd.user_id = $1
             ORDER BY cpd.created_at DESC
         `
+
+        const result = await pool.query(query, [Number(userId)]);
+
+        return res.status(200).json({data: result.rows});
+
+
+    } catch (error) {
+        console.log("error",error?.message);
+        return res.status(500).json({
+            error: error?.message
+        })
+    }
+}
+
+exports.filterPlantCollections = async (req, res) => {
+    const { userId, category, sunPref, interLight } = req.query;
+    console.log("f", userId, category, sunPref, interLight);   
+    try {
+        
+        const query =  format(` 
+            SELECT cpd.*, cgp.*, cgi.*, ua.user_id, ua.firstname, ua.lastname, ua.email, ua.profile
+            FROM coll_plant_details cpd
+
+            LEFT JOIN user_acc ua ON cpd.user_id = ua.user_id
+            LEFT JOIN coll_growing_pref cgp ON cpd.plant_detail_id = cgp.plant_detail_id
+            LEFT JOIN coll_growing_info cgi ON cpd.plant_detail_id = cgi.plant_detail_id
+
+            WHERE cpd.user_id = $1 AND
+
+            cgp.sun_pref || '' || cpd.category || '' || cgp.inter_light ILIKE %L
+
+
+            ORDER BY cpd.created_at DESC
+        `, [`%${sunPref || category || interLight}%`])
+
 
         const result = await pool.query(query, [Number(userId)]);
 

@@ -13,7 +13,8 @@ const { registerController, loginController, addPostController,
         searchUser,
         getFollowers,
         addPlantCollection,
-        getPlantCollection
+        getPlantCollection,
+        filterPlantCollections, 
 } = require('../controllers/userController'); 
 
 const router = express.Router();
@@ -49,5 +50,5 @@ router.delete("/deletecomment", auth, deleteComment); //route for deleteing a co
 //plant collection route
 router.post("/addPlantCollection", auth, addPlantCollection);//adding plant to users plant collections
 router.get("/getPlantCollections", auth, getPlantCollection); //getting plant collections of a user
-
+router.get("/filterPlantCollections", auth, filterPlantCollections); //filter plantcollections
 module.exports = router;

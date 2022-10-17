@@ -4,32 +4,33 @@ import { Link, useParams } from 'react-router-dom'
 import { getPlantCollection } from '../api/userApi';
 import PlantDetailCollectionModal from './PlantDetailCollectionModal';
 import EllipsisText from "react-ellipsis-text";
+import { MyContext } from '../context/ContextProvider';
 
 const PlantCollectionsTab = () => {
 
-  const { id } = useParams();
-  let [isOpen, setIsOpen] = useState(false);
-  const [selectedPlant, setSelectedPlant] = useState({});
+    const { authUser } = MyContext();
+    const { id } = useParams();
+    let [isOpen, setIsOpen] = useState(false);
+    const [selectedPlant, setSelectedPlant] = useState({});
+    const { data, isLoading } = useQuery(['plant-collections', id], getPlantCollection,
+    {
+        onSuccess: ({ data }) => {
+            console.log(data);
+        },
+        onError: (err) => {
+            const errObject = err.response.data.error;
+            console.log(errObject);
+        }
+    })
 
-  const { data, isLoading } = useQuery(['plant-collections', id], getPlantCollection,
-  {
-      onSuccess: ({ data }) => {
-          console.log(data);
-      },
-      onError: (err) => {
-          const errObject = err.response.data.error;
-          console.log(errObject);
-      }
-  })
+    function closeModal() {
+        setIsOpen(false);
+    }
 
-  function closeModal() {
-      setIsOpen(false);
-  }
-
-  function openModal(p) {
-      setIsOpen(true);
-      setSelectedPlant(p);
-  }
+    function openModal(p) {
+        setIsOpen(true);
+        setSelectedPlant(p);
+    }
 
   return (
     <div className='border-b border-gray-200'>
@@ -39,17 +40,19 @@ const PlantCollectionsTab = () => {
               {data?.data?.data?.length} plants
           </h1>
 
-          
-          <Link to="/add-plantCollections" className='inline-block ml-auto'>
-            <button 
-                type='button'
-                className='bg-green-200 text-green-800 rounded-full focus:outline-none focus:ring-4 
-              focus:ring-green-300 flex items-center justify-center p-2'>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5  self-center">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-            </button>
-          </Link>
+            {   authUser?.user_id === Number(id) 
+            &&
+                <Link to="/add-plantCollections" className='inline-block ml-auto'>
+                    <button 
+                        type='button'
+                        className='bg-green-200 text-green-800 rounded-full focus:outline-none focus:ring-4 
+                    focus:ring-green-300 flex items-center justify-center p-2'>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5  self-center">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                    </button>
+                </Link>
+            }
         </nav>
 
         <div className='h-full w-full px-7'>

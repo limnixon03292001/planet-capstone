@@ -81,7 +81,7 @@ const MyPlantCollections = () => {
         </div>
 
         {/* button start */}
-        <div className='transition-all block sticky top-0 w-full h-max px-4 py-4 mt-4 border-y border-gray-200 shadow'>
+        <div className='transition-all z-10 block sticky top-0 w-full h-max px-4 py-4 mt-4 border-y border-gray-200 shadow'>
         <div className='flex items-center'>
 
           <div className='mr-2'>
@@ -149,16 +149,21 @@ const MyPlantCollections = () => {
             <main className='px-4 mt-4 flex flex-wrap items-center justify-start'>
                 {data?.data?.data.map((p, id) => (
                     <Fragment key={id}>
-                        <div className="overflow-hidden rounded-md mx-4 my-4 w-full max-w-[230px] shadow-md self-start">
+                        <div className="relative overflow-hidden rounded-md mx-3 my-4 w-full max-w-[250px] shadow-md self-start">
                             <img src={p?.plant_img} alt="plant_img" 
-                            className='w-full h-[160px] object-cover object-center bg-emerald-300 text-white'/>
-                            <div className='mt-2 px-3 h-[70px]'>
-                                <h1 className='font-bold text-lg'>{p?.plant_name}</h1>
-                                <p className='text-gray-500 font-light text-sm mt-1'>
-                                    <EllipsisText text={p?.description} length={60} />
-                                </p>
+                            className='w-full h-[280px] object-cover object-center bg-emerald-300 text-white'/>
+
+                            <div className='px-3 py-2 w-full h-[140px] bg-slate-800/40 
+                            backdrop-blur-sm text-white absolute left-0 right-0 bottom-0 flex flex-col'>
+                                <div className='flex-1'>
+                                    <h1 className='font-bold text-lg'>{p?.plant_name}</h1>
+                                    <p className='text-gray-300 font-light text-[13px] mt-1'>
+                                        <EllipsisText text={p?.description} length={60} />
+                                    </p>
+                                </div>
+                                <button className='rounded-md bg-emerald-500 text-white w-full inline-block mt-auto py-1 self-end' onClick={() => openModal(p)}><span>Full Details</span></button>
                             </div>
-                            <button className='bg-[#3DDAB4] text-white w-full inline-block mt-3 py-1' onClick={() => openModal(p)}><span>Full Details</span></button>
+                           
                         </div>
                     </Fragment>
                 ))}
