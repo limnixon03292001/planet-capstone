@@ -57,6 +57,7 @@ const PlantDetailCollectionModal = ({ isOpen, closeModal, p }) => {
                                 <div className='px-4'>
                                     <p className='text-lg font-bold mb-2 text-center'>Growing Preference</p>
                                     <p className='text-gray-500 mb-1'>Sun Preference: <span className='text-gray-900'>{p?.sun_pref}</span> </p>
+                                    <p className='text-gray-500 mb-1'>Soil Preference: <span className='text-gray-900'>{p?.soil_pref}</span> </p>
                                     <p className='text-gray-500 mb-1'>Interior Light: <span className='text-gray-900'>{p?.inter_light}</span> </p>
                                     <p className='text-gray-500 mb-1'>Water Requirement: <span className='text-gray-900'>{p?.water_req}</span> </p>
                                     <p className='text-gray-500 mb-1'>Native Habitat: <span className='text-gray-900'>{p?.native_habitat}</span> </p>

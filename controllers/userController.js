@@ -752,8 +752,8 @@ exports.getPlantCollection = async (req, res) => {
 }
 
 exports.filterPlantCollections = async (req, res) => {
-    const { userId, category, sunPref, interLight } = req.query;
-    console.log("f", userId, category, sunPref, interLight);   
+    const { userId, category, sunPref, interLight, soilPref } = req.query;
+    console.log("p", soilPref)
     try {
         
         const query =  format(` 
@@ -765,15 +765,17 @@ exports.filterPlantCollections = async (req, res) => {
             LEFT JOIN coll_growing_info cgi ON cpd.plant_detail_id = cgi.plant_detail_id
 
             WHERE cpd.user_id = $1 AND
+            cgp.sun_pref ILIKE %L AND
+            cgp.soil_pref ILIKE %L 
+            ${category !== 'n' ? `AND cpd.category = $2`: `OR cpd.category = $2`}
+            ${interLight !=='n' ? `AND cgp.inter_light = $3` : `OR cgp.inter_light = $3`}
 
-            cgp.sun_pref || '' || cpd.category || '' || cgp.inter_light ILIKE %L
+           
+
+        `, `%${sunPref}%`, `%${soilPref}%`)
 
 
-            ORDER BY cpd.created_at DESC
-        `, [`%${sunPref || category || interLight}%`])
-
-
-        const result = await pool.query(query, [Number(userId)]);
+        const result = await pool.query(query, [Number(userId), category, interLight]);
 
         return res.status(200).json({data: result.rows});
 
