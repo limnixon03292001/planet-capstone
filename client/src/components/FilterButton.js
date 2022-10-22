@@ -13,7 +13,7 @@ const FilterButton = ({data, setData}) => {
     
   return (
     <div>
-        <Listbox value={selected} onChange={setSelected}>
+      <Listbox value={selected} onChange={setSelected}>
         <div className="relative w-[180px]">
           <Listbox.Button className="relative w-full cursor-pointer rounded-lg bg-white py-3 pl-3 pr-10 text-left 
             border border-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-300

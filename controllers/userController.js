@@ -751,9 +751,47 @@ exports.getPlantCollection = async (req, res) => {
     }
 }
 
+// exports.filterPlantCollections = async (req, res) => {
+//     const { userId, filters } = req.query;
+//     console.log("filter data", filters)
+//     try {
+        
+//         const query =  format(` 
+//             SELECT cpd.*, cgp.*, cgi.*, ua.user_id, ua.firstname, ua.lastname, ua.email, ua.profile
+//             FROM coll_plant_details cpd
+
+//             LEFT JOIN user_acc ua ON cpd.user_id = ua.user_id
+//             LEFT JOIN coll_growing_pref cgp ON cpd.plant_detail_id = cgp.plant_detail_id
+//             LEFT JOIN coll_growing_info cgi ON cpd.plant_detail_id = cgi.plant_detail_id
+
+//             WHERE cpd.user_id = $1 
+
+//            AND to_tsvector(cpd.user_id || ' ' || cpd.category || ' ' || cgp.sun_pref 
+//            || ' ' || cgp.inter_light || ' ' || cgp.soil_pref || ' ' || cgp.water_req 
+//            || ' ' || cgp.native_habitat) @@ plainto_tsquery(%L)  
+
+
+//            ORDER BY cpd.created_at DESC
+
+//         `, `%${filters}%`,)
+
+
+//         const result = await pool.query(query, [Number(userId)]);
+
+//         return res.status(200).json({data: result.rows});
+
+
+//     } catch (error) {
+//         console.log("error",error?.message);
+//         return res.status(500).json({
+//             error: error?.message
+//         })
+//     }
+// }
+
 exports.filterPlantCollections = async (req, res) => {
-    const { userId, category, sunPref, interLight, soilPref } = req.query;
-    console.log("p", soilPref)
+    const { userId, category, sunPref, interLight, soilPref, waterReq, nativeHab } = req.query;
+   
     try {
         
         const query =  format(` 
@@ -764,18 +802,32 @@ exports.filterPlantCollections = async (req, res) => {
             LEFT JOIN coll_growing_pref cgp ON cpd.plant_detail_id = cgp.plant_detail_id
             LEFT JOIN coll_growing_info cgi ON cpd.plant_detail_id = cgi.plant_detail_id
 
-            WHERE cpd.user_id = $1 AND
-            cgp.sun_pref ILIKE %L AND
-            cgp.soil_pref ILIKE %L 
-            ${category !== 'n' ? `AND cpd.category = $2`: `OR cpd.category = $2`}
-            ${interLight !=='n' ? `AND cgp.inter_light = $3` : `OR cgp.inter_light = $3`}
+            WHERE cpd.user_id = $1
 
-           
+            ${category && category !== 'All' ? `AND to_tsvector(cpd.user_id || ' ' || cpd.category) @@ plainto_tsquery(%L)` : 
+            `AND NOT to_tsvector(cpd.user_id || ' ' || cpd.category) @@ plainto_tsquery(%L)` }
+            
+            ${sunPref ? `AND to_tsvector(cpd.user_id || ' ' || cgp.sun_pref) @@ plainto_tsquery(%L)` :
+            `AND NOT to_tsvector(cpd.user_id || ' ' || cgp.sun_pref) @@ plainto_tsquery(%L)`}
 
-        `, `%${sunPref}%`, `%${soilPref}%`)
+            ${interLight ? `AND to_tsvector(cpd.user_id || ' ' || cgp.inter_light) @@ plainto_tsquery(%L)` :
+            `AND NOT to_tsvector(cpd.user_id || ' ' || cgp.inter_light) @@ plainto_tsquery(%L)`}
+            
+            ${soilPref ? `AND to_tsvector(cpd.user_id || ' ' || cgp.soil_pref) @@ plainto_tsquery(%L)` :
+            `AND NOT to_tsvector(cpd.user_id || ' ' || cgp.soil_pref) @@ plainto_tsquery(%L)`}
+            
+            ${waterReq ? `AND to_tsvector(cpd.user_id || ' ' || cgp.water_req) @@ plainto_tsquery(%L)` :
+            `AND NOT to_tsvector(cpd.user_id || ' ' || cgp.water_req) @@ plainto_tsquery(%L)`}
+
+            ${nativeHab ? `AND to_tsvector(cpd.user_id || ' ' || cgp.native_habitat) @@ plainto_tsquery(%L)` : 
+            `AND NOT to_tsvector(cpd.user_id || ' ' || cgp.native_habitat) @@ plainto_tsquery(%L)`}
+            
+            ORDER BY cpd.created_at DESC
+
+        `, `%${category}%`, `%${sunPref}%`, `%${interLight}%`, `%${soilPref}%`, `%${waterReq}%`, `%${nativeHab}%`)
 
 
-        const result = await pool.query(query, [Number(userId), category, interLight]);
+        const result = await pool.query(query, [Number(userId)]);
 
         return res.status(200).json({data: result.rows});
 

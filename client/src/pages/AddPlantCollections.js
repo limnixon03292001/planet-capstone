@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import FilterButton from "../components/FilterButton"
 import GrowingInformation from "../components/GrowingInformation"
 import GrowingPreferences from "../components/GrowingPreferences"
@@ -6,17 +6,8 @@ import logo from '../assets/PLANeTlogo.png';
 import { useMutation } from "react-query";
 import { addPlantCollection } from "../api/userApi";
 import { useNavigate } from "react-router-dom";
+import { plantsCategories } from "../data";
 
-const plantsCategories = [
-  { name: 'Homeplant' },
-  { name: 'Fruit' },
-  { name: 'Vegetable' },
-  { name: 'Flowers'},
-  { name: 'Seed' },
-  { name: 'Herbs' },
-  { name: 'Waterplant' },
-  { name: 'Others' },
-]
 
 const growingPrefInitialState = {sunPref: [], interLight: [], soilPref: [], waterReq: [], nativeHab: []};
 const AddPlantCollections = () => {
@@ -33,7 +24,7 @@ const AddPlantCollections = () => {
 
   //growing preferences
   const [gp, setGp] = useState(growingPrefInitialState);
-
+ 
   //growing information
   //i could have make this into an object
   //h-w
@@ -209,7 +200,6 @@ const AddPlantCollections = () => {
           <span className='text-md block mt-[1px]'>{isLoading ? <span>Loading</span> : <span>Add Plant</span>}</span>
         </button>
       </div>
-
     </div>
   )
 }

@@ -56,5 +56,57 @@ export const shortcutsNavigationBar = [
     // },
 ];
 
+//filters data
+
+export const plantsCategories = [
+    { name: 'Homeplant' },
+    { name: 'Fruit' },
+    { name: 'Vegetable' },
+    { name: 'Flowers'},
+    { name: 'Seed' },
+    { name: 'Herbs' },
+    { name: 'Waterplant' },
+    { name: 'Others' },
+  ]
+
+export const SunPreferences = [
+    { name: 'sunPref', value: 'Full Sun' },
+    { name: 'sunPref', value: 'Part Sun' },
+    { name: 'sunPref', value: 'Part Shade' },
+    { name: 'sunPref', value: 'Shade' },
+]
+
+export const InteriorLight = [
+    { name: 'interLight', value: 'Direct Sun' },
+    { name: 'interLight', value: 'Bright' },
+    { name: 'interLight', value: 'Medium' },
+    { name: 'interLight', value: 'Low' },
+]
+
+export const SoilPreferences = [
+    { name: 'soilPref', value: 'Fertile' },
+    { name: 'soilPref', value: 'Moist' },
+    { name: 'soilPref', value: 'Wet' },
+    { name: 'soilPref', value: 'Dry' },
+    { name: 'soilPref', value: 'Well-Drained' },
+]
+
+export const WaterRequirements = [
+    { name: 'waterReq', value: 'Low' },
+    { name: 'waterReq', value: 'Medium' },
+    { name: 'waterReq', value: 'High' },
+]
+
+export const NativeHab = [
+    { name: 'nativeHab', value: 'Wetland' },
+    { name: 'nativeHab', value: 'Meadow/Field' },
+    { name: 'nativeHab', value: 'Prairie/Grassland' },
+    { name: 'nativeHab', value: 'Desert' },
+    { name: 'nativeHab', value: 'Coastal' },
+    { name: 'nativeHab', value: 'Woodland/Forest' },
+    { name: 'nativeHab', value: 'Mountains' },
+    { name: 'nativeHab', value: 'Roadside' },
+]
+
 
 

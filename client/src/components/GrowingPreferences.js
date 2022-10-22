@@ -1,44 +1,5 @@
-import React, { useEffect, useState } from 'react'
-
-const SunPreferences = [
-    { name: 'sunPref', value: 'Full Sun' },
-    { name: 'sunPref', value: 'Part Sun' },
-    { name: 'sunPref', value: 'Part Shade' },
-    { name: 'sunPref', value: 'Shade' },
-]
-
-const InteriorLight = [
-    { name: 'interLight', value: 'Direct Sun' },
-    { name: 'interLight', value: 'Bright' },
-    { name: 'interLight', value: 'Medium' },
-    { name: 'interLight', value: 'Low' },
-]
-
-const SoilPreferences = [
-    { name: 'soilPref', value: 'Fertile' },
-    { name: 'soilPref', value: 'Moist' },
-    { name: 'soilPref', value: 'Wet' },
-    { name: 'soilPref', value: 'Dry' },
-    { name: 'soilPref', value: 'Well-Drained' },
-]
-
-const WaterRequirements = [
-    { name: 'waterReq', value: 'Low' },
-    { name: 'waterReq', value: 'Medium' },
-    { name: 'waterReq', value: 'High' },
-]
-
-const NativeHab = [
-    { name: 'nativeHab', value: 'Wetland' },
-    { name: 'nativeHab', value: 'Meadow/Field' },
-    { name: 'nativeHab', value: 'Prairie/Grassland' },
-    { name: 'nativeHab', value: 'Desert' },
-    { name: 'nativeHab', value: 'Coastal' },
-    { name: 'nativeHab', value: 'Woodland/Forest' },
-    { name: 'nativeHab', value: 'Mountains' },
-    { name: 'nativeHab', value: 'Roadside' },
-]
-
+import React from 'react'
+import {SunPreferences, InteriorLight, WaterRequirements, NativeHab, SoilPreferences } from '../data';
 
 const GrowingPreferences = ({gp, setGp}) => {
     

@@ -121,3 +121,10 @@ export const getPlantCollection = ({ queryKey }) => {
     const id = queryKey[1]    
     return request({url: `/api/users/getPlantCollections?userId=${id}`, method: 'GET'});
 }
+
+export const filterPlantCollections = ({ queryKey }) => {
+    const id = queryKey[1];
+    const gp = queryKey[2];
+    const category = queryKey[3];
+    return request({url: `/api/users/filterPlantCollections?&userId=${id}&category=${category}&sunPref=${gp?.sunPref}&interLight=${gp?.interLight}&soilPref=${gp?.soilPref}&waterReq=${gp?.waterReq}&nativeHab=${gp?.nativeHab}`, method: 'GET'});
+}
