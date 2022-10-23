@@ -1,4 +1,19 @@
-
+import linear from './assets/Linear.png'
+import ovate from './assets/Ovate.png'
+import elliptical from './assets/Elliptical.png'
+import oblong from './assets/Oblong.png'
+import Cordate from './assets/Cordate.png'
+import Lanceolate from './assets/Lanceolate.png'
+import Acicular from './assets/Acicular.png'
+import Reniform from './assets/Reniform.png'
+import Orbicular from './assets/Orbicular.png'
+import Sagittate from './assets/Sagittate.png'
+import Hastate from './assets/Hastate.png'
+import Lyrate from './assets/Lyrate.png'
+import Spatulate from './assets/Spatulate.png'
+import Rhomboid from './assets/Rhomboid.png'
+import Oblique from './assets/Oblique.png'
+import Cuneate from './assets/Cuneate.png'
 
 export const linkNavigationBar = [
     {
@@ -106,6 +121,54 @@ export const NativeHab = [
     { name: 'nativeHab', value: 'Woodland/Forest' },
     { name: 'nativeHab', value: 'Mountains' },
     { name: 'nativeHab', value: 'Roadside' },
+]
+
+export const Measurement = [
+    { name: 'None' },
+    { name: 'Inches' },
+    { name: 'Meter' },
+    { name: 'Feet' },
+]
+
+export const Foliage = [
+    { name: 'None' },
+    { name: 'Linear', img: linear },
+    { name: 'Ovate', img: ovate },
+    { name: 'Elliptical', img: elliptical },
+    { name: 'Oblong', img: oblong },
+    { name: 'Cordate', img: Cordate },
+    { name: 'Lanceolate', img: Lanceolate },
+    { name: 'Acicular', img: Acicular },
+    { name: 'Reniform', img: Reniform },
+    { name: 'Orbicular', img: Orbicular},
+    { name: 'Sagittate', img: Sagittate },
+    { name: 'Hastate', img: Hastate },
+    { name: 'Lyrate', img: Lyrate },
+    { name: 'Spatulate', img: Spatulate },
+    { name: 'Rhomboid', img: Rhomboid },
+    { name: 'Oblique', img: Oblique },
+    { name: 'Cuneate', img: Cuneate },
+]
+
+export const FoliageYesOrNo = [
+    { name: 'None' },
+    { name: 'Yes' },
+    { name: 'No' },
+]
+
+export const FloweringPeriod = [
+    { name: 'flowPer', value: 'Jan' },
+    { name: 'flowPer', value: 'Feb' },
+    { name: 'flowPer', value: 'Mar' },
+    { name: 'flowPer', value: 'Apr' },
+    { name: 'flowPer', value: 'May' },
+    { name: 'flowPer', value: 'Jun' },
+    { name: 'flowPer', value: 'Jul' },
+    { name: 'flowPer', value: 'Aug' },
+    { name: 'flowPer', value: 'Sept' },
+    { name: 'flowPer', value: 'Oct' },
+    { name: 'flowPer', value: 'Nov' },
+    { name: 'flowPer', value: 'Dec' },
 ]
 
 

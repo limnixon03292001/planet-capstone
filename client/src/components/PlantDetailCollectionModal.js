@@ -48,7 +48,7 @@ const PlantDetailCollectionModal = ({ isOpen, closeModal, p }) => {
                                     </span>
                                 </div>
                                 <div className='overflow-auto h-28 mt-1'>
-                                    <p className='text-gray-500 text-sm'>{p?.description}the world, its centre of diversity is in Tropical Asia. Ixora also grows commonly in subtropical climates in the United States, such as Florida where it is commonly known as West Indian jasmine.</p>
+                                    <p className='text-gray-500 text-sm'>{p?.description}</p>
                                 </div>
                             </div>
                         </div>
@@ -66,7 +66,7 @@ const PlantDetailCollectionModal = ({ isOpen, closeModal, p }) => {
                             <div className='flex-1 text-sm border-l border-gray-200 '>
                                 <p className='text-lg font-bold mb-2 text-center'>Growing Information</p>
                                 <div className='px-4'>
-                                    {/* <p className='text-gray-500 mb-1'>Category: <span className='text-gray-900'>{p?.category}</span> </p> */}
+                                    <p className='text-gray-500 mb-1'>Date Planted: <span className='text-gray-900'>{p?.date_planted}</span> </p>
                                     <p className='text-gray-500 mb-1'>Average Height: <span className='text-gray-900'>{p?.avg_h}</span> </p>
                                     <p className='text-gray-500 mb-1'>Average Width: <span className='text-gray-900'>{p?.avg_w}</span> </p>
                                     <p className='text-gray-500 mb-1'>Foliage Color: <span className='text-gray-900'>{p?.foliage_color}</span></p>

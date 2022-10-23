@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { useMutation, useQuery } from 'react-query';
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { checkOnline } from '../utils/checkOnline';
 import { MyContext } from '../context/ContextProvider';
 import { getSelectedRoom, getMessagesRoom, sendMessage } from '../api/userApi';
@@ -13,6 +13,7 @@ const MainMessages = ({ refetchAllChats }) => {
 
     const { id: authId } = decode(localStorage?.token);
     const { id } = useParams();
+    const navigate = useNavigate();
     const { onlineUsers, socket, messages, setMessages } = MyContext();
     const [msgContent, setMsgContent] = useState('');
     const [selectedRoom, setSelectedRoom] = useState({});
@@ -31,13 +32,19 @@ const MainMessages = ({ refetchAllChats }) => {
     //here we are fetching the participants/member of the selected room
     const { isLoading } = useQuery(['selected-room',id], getSelectedRoom,
     {
+        retry: false,
         onSuccess: ({ data }) => {
-            // console.log("room", data?.chatroom[0]);
+            console.log("room", data?.chatroom[0]);
             setSelectedRoom(data?.chatroom[0]);
         },
         onError: (err) => {
-            const errObject = err.response.data.error;
-            console.log(errObject)
+            
+            const errCode = err.response.data.errorCode;
+            console.log('error:', err.response.data.message)
+            if(errCode === 401) {
+                navigate('/messages')
+            }
+           
         }
     });
 

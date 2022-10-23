@@ -14,7 +14,7 @@ const Messages = () => {
     const { isLoading, refetch: refetchAllChats } = useQuery('all-chats', getAllChats,
     {
         onSuccess: ({ data }) => {
-            console.log("all-chats", data?.allChats);
+            // console.log("all-chats", data?.allChats);
             setChats(data?.allChats);
         },
         onError: (err) => {

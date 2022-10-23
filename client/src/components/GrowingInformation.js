@@ -1,53 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import FilterButton from './FilterButton'
+import { Listbox, Transition } from '@headlessui/react'
+import { Foliage, FoliageYesOrNo, Measurement, FloweringPeriod } from '../data'
 
-const Measurement = [
-    { name: 'None' },
-    { name: 'Inches' },
-    { name: 'Meter' },
-    { name: 'Feet' },
-]
 
-const Foliage = [
-    { name: 'None' },
-    { name: 'Linear' },
-    { name: 'Ovate' },
-    { name: 'Elliptical' },
-    { name: 'Oblong' },
-    { name: 'Cordate' },
-    { name: 'Lanceolate' },
-    { name: 'Acicular' },
-    { name: 'Reniform' },
-    { name: 'Orbicular' },
-    { name: 'Sagittate' },
-    { name: 'Hastate' },
-    { name: 'Lyrate' },
-    { name: 'Spatulate' },
-    { name: 'Rhomboid' },
-    { name: 'Oblique' },
-    { name: 'Cuneate' },
-]
 
-const FoliageYesOrNo = [
-    { name: 'None' },
-    { name: 'Yes' },
-    { name: 'No' },
-]
-
-const FloweringPeriod = [
-    { name: 'flowPer', value: 'Jan' },
-    { name: 'flowPer', value: 'Feb' },
-    { name: 'flowPer', value: 'Mar' },
-    { name: 'flowPer', value: 'Apr' },
-    { name: 'flowPer', value: 'May' },
-    { name: 'flowPer', value: 'Jun' },
-    { name: 'flowPer', value: 'Jul' },
-    { name: 'flowPer', value: 'Aug' },
-    { name: 'flowPer', value: 'Sept' },
-    { name: 'flowPer', value: 'Oct' },
-    { name: 'flowPer', value: 'Nov' },
-    { name: 'flowPer', value: 'Dec' },
-]
 
 
 const GrowingInformation = ({
@@ -131,7 +88,7 @@ const GrowingInformation = ({
                 </div>
                 <div className='mr-3'>
                     <label htmlFor="name" className="block text-[#536471] mb-3">Foliage Type</label>
-                    <FilterButton data={Foliage} setData={setFoliageType}/>
+                    <FilterFoliageType data={Foliage} setData={setFoliageType}/>
                 </div>
                 <div>
                     <label htmlFor="name" className="block text-[#536471] mb-3">Foliage Scent</label>
@@ -195,3 +152,77 @@ const GrowingInformation = ({
 }
 
 export default GrowingInformation
+
+
+const FilterFoliageType = ({data, setData}) => {
+    const [selected, setSelected] = useState(data[0])
+
+
+    useEffect(() => {
+      
+      setData(selected?.name);
+   
+    }, [selected])
+    return (
+        <Listbox value={selected} onChange={setSelected}>
+        <div className="relative w-[180px]">
+          <Listbox.Button className="relative w-full cursor-pointer rounded-lg bg-white py-3 pl-3 pr-10 text-left 
+            border border-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-300
+             focus-visible:ring-opacity-75 text-sm">
+            <span className="block truncate">{selected?.name}</span>
+            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
+
+            </span>
+          </Listbox.Button>
+          <Transition
+            as={Fragment}
+            leave="transition ease-in duration-100"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <Listbox.Options className="absolute mt-1 z-10 w-full rounded-md bg-white py-1 
+            text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            <div className="relative">
+            <div className="overflow-y-auto overflow-hidden w-full max-h-60 ">
+                {data.map((d, dataIdx) => (
+                    <Listbox.Option key={dataIdx} className={({ active }) => 
+                    `group relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-green-100 text-green-900' : 'text-gray-900'}`} value={d}>
+                    {({ selected }) => (
+                        <>
+                        <div className="">
+                            <span className={`block truncate ${
+                                selected ? 'font-medium' : 'font-normal'
+                            }`}
+                            >
+                            {d.name}
+                            </span>
+                            {selected ? (
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-green-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" 
+                                className="w-5 h-5">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                            </span>
+                            ) : null}
+
+                              <img src={d?.img} className="opacity-0 group-hover:opacity-100 
+                              transition-opacity absolute top-2 right-0 object-cover object-center rotate-45 w-[50px]"/>
+                        </div>
+                       
+                         </>
+                    )}
+                    
+                    </Listbox.Option>
+                   
+                ))}
+            </div>
+            </div>
+            </Listbox.Options>
+          </Transition>
+        </div>
+      </Listbox>
+    )
+}

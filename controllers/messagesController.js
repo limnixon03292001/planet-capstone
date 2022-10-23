@@ -91,9 +91,24 @@ exports.getAllChats = async (req, res) => {
 }
 
 exports.getSelectedRoom = async(req,res) => {
-    const { chatroom_id } = req.query;  
-   
+    const { chatroom_id } = req.query;
+    const userId  = req.user.id;
+    
+    
     try {   
+
+        // first check if the user belongs into the chatroom
+
+        const check = await pool.query(`
+            SELECT * FROM user_chatroom 
+            WHERE user_chatroom.chatroom_id = $1 AND
+            (user_chatroom.user_id = $2 OR user_chatroom.friend_id = $2)
+        `,[chatroom_id, userId ]);
+
+        if(check.rows.length === 0){
+            return res.status(401).json({errorCode:401, message: "User does not belong into this room"});
+        }
+
         const chats = await pool.query(`
             SELECT user_chatroom.chatroom_id, 
             user_chatroom.user_id, user_chatroom.friend_id, 
@@ -113,7 +128,7 @@ exports.getSelectedRoom = async(req,res) => {
 
         `, [chatroom_id]);
     
-        res.status(200).json({chatroom: chats?.rows});
+        return res.status(200).json({chatroom: chats?.rows});
       
     } catch (error) {
         console.log(error?.message);

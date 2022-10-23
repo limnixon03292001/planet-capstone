@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import FilterButton from "../components/FilterButton"
 import GrowingInformation from "../components/GrowingInformation"
 import GrowingPreferences from "../components/GrowingPreferences"
@@ -21,6 +21,9 @@ const AddPlantCollections = () => {
   const [plantCat, setPlantCat] = useState('');
   const [pictureUrl, setPictureUrl] = useState(null);
 
+  useEffect(() => {
+    console.log(desc);
+  },[desc])
 
   //growing preferences
   const [gp, setGp] = useState(growingPrefInitialState);
