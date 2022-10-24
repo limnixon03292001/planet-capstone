@@ -47,34 +47,82 @@ exports.createRoom = async (req, res) => {
     }
 }
 
+// exports.getAllChats = async (req, res) => {
+//     const authUserId = req.user.id;
+//     // console.log("all chats", authUserId);
+//     try {
+//         const chats = await pool.query(`
+//             SELECT DISTINCT ON (user_chatroom.chatroom_id) user_chatroom.chatroom_id, 
+//             user_chatroom.user_id, user_chatroom.friend_id, 
+//             ua.firstname userFN, ua.lastname userLN,
+//             ua.profile userP, ua.email userE, ua.phonenumber userPN, 
+            
+//             ub.firstname fFN, ub.lastname fLN,
+//             ub.profile fP, ub.email fE,  ub.phonenumber fPN,
+            
+//             messages.msg_id, messages.msg_content, messages.created_at,
+//             sentBy.firstname sentByFn, sentBy.lastname sentByLn
+
+//             FROM user_chatroom
+            
+//             LEFT JOIN messages ON user_chatroom.chatroom_id = messages.chatroom_id
+//             LEFT JOIN user_acc sentBy ON messages.sent_by = sentBy.user_id
+
+//             INNER JOIN user_acc ua ON user_chatroom.user_id = ua.user_id
+//             INNER JOIN user_acc ub ON user_chatroom.friend_id = ub.user_id
+            
+
+//             WHERE user_chatroom.user_id = $1 OR user_chatroom.friend_id = $1
+
+//             ORDER BY user_chatroom.chatroom_id, messages.created_at DESC
+//         `, [authUserId]);
+
+//         // console.log(chats?.rows)
+//         //  chats.rows.sort((a, b) => b.id - a.id)
+        
+//         res.status(200).json({allChats: chats?.rows});
+      
+//     } catch (error) {
+//         console.log(error?.message);
+//         return res.status(500).json({
+//             error: error?.message
+//         })
+//     }
+// }
+
 exports.getAllChats = async (req, res) => {
     const authUserId = req.user.id;
     // console.log("all chats", authUserId);
     try {
         const chats = await pool.query(`
-            SELECT DISTINCT ON (user_chatroom.chatroom_id) user_chatroom.chatroom_id, 
-            user_chatroom.user_id, user_chatroom.friend_id, 
+            SELECT uc.chatroom_id,
+            uc.user_id, uc.friend_id, uc.created_at,
             ua.firstname userFN, ua.lastname userLN,
             ua.profile userP, ua.email userE, ua.phonenumber userPN, 
             
             ub.firstname fFN, ub.lastname fLN,
-            ub.profile fP, ub.email fE,  ub.phonenumber fPN,
+            ub.profile fP, ub.email fE, ub.phonenumber fPN,
             
-            messages.msg_id, messages.msg_content, messages.created_at,
+            messages.msg_id, messages.msg_content, messages.created_at msgContent_created, messages.sent_by sentBy_id,
             sentBy.firstname sentByFn, sentBy.lastname sentByLn
 
-            FROM user_chatroom
+            FROM user_chatroom uc
+               
+            LEFT JOIN (
+                SELECT DISTINCT ON (messages.chatroom_id) messages.chatroom_id, 
+                messages.msg_id, messages.msg_content, messages.created_at, messages.sent_by
+                FROM messages
+                ORDER BY messages.chatroom_id, messages.created_at DESC
+            ) messages ON uc.chatroom_id = messages.chatroom_id
             
-            LEFT JOIN messages ON user_chatroom.chatroom_id = messages.chatroom_id
             LEFT JOIN user_acc sentBy ON messages.sent_by = sentBy.user_id
 
-            INNER JOIN user_acc ua ON user_chatroom.user_id = ua.user_id
-            INNER JOIN user_acc ub ON user_chatroom.friend_id = ub.user_id
+            INNER JOIN user_acc ua ON uc.user_id = ua.user_id
+            INNER JOIN user_acc ub ON uc.friend_id = ub.user_id
             
+            WHERE uc.user_id = $1 OR uc.friend_id = $1
 
-            WHERE user_chatroom.user_id = $1 OR user_chatroom.friend_id = $1
-
-            ORDER BY user_chatroom.chatroom_id, messages.created_at DESC
+            ORDER BY messages.created_at DESC 
         `, [authUserId]);
 
         // console.log(chats?.rows)

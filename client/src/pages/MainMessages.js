@@ -20,7 +20,6 @@ const MainMessages = ({ refetchAllChats }) => {
 
     const scrollRef = useRef();     
     
-
     //when a new message arrived auto scroll down
     //listener for upcoming messages sent by other user
     useEffect(() => {
@@ -34,7 +33,7 @@ const MainMessages = ({ refetchAllChats }) => {
     {
         retry: false,
         onSuccess: ({ data }) => {
-            console.log("room", data?.chatroom[0]);
+            // console.log("room", data?.chatroom[0]);
             setSelectedRoom(data?.chatroom[0]);
         },
         onError: (err) => {

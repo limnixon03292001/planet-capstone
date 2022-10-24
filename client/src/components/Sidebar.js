@@ -83,7 +83,7 @@ const Sidebar = () => {
     },[]);
 
 
-    const { isLoading} = useQuery('auth-user', getAuthUser,
+    const { isLoading } = useQuery('auth-user', getAuthUser,
     {
       onSuccess: ({ data }) => {
         setAuthUser(data?.data);
