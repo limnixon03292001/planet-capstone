@@ -78,6 +78,7 @@ CREATE TABLE messages(
     chatroom_id INT NOT NULL,
     sent_by INT NOT NULL,
     msg_content TEXT,
+    read BOOLEAN,
     created_at timestamp NOT NULL DEFAULT NOW(),
     FOREIGN KEY (chatroom_id) REFERENCES user_chatroom(chatroom_id) ON DELETE CASCADE,
     FOREIGN KEY (sent_by) REFERENCES user_acc(user_id) ON DELETE CASCADE

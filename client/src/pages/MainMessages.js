@@ -5,7 +5,6 @@ import { checkOnline } from '../utils/checkOnline';
 import { MyContext } from '../context/ContextProvider';
 import { getSelectedRoom, getMessagesRoom, sendMessage } from '../api/userApi';
 import decode from 'jwt-decode';
-import toast from 'react-hot-toast';
 import ScrollMainMessages from '../components/ScrollMainMessages';
 import SendMessage from '../components/SendMessage';
 
@@ -26,7 +25,6 @@ const MainMessages = ({ refetchAllChats }) => {
         scrollRef?.current?.scrollIntoView({ behavior: 'smooth'});
         // console.log("all msg", messages);
     },[messages]);
-
 
     //here we are fetching the participants/member of the selected room
     const { isLoading } = useQuery(['selected-room',id], getSelectedRoom,
@@ -124,6 +122,25 @@ const MainMessages = ({ refetchAllChats }) => {
                 </div>)
         }
     }
+
+    const check2 = (selectedRoom) => {
+        if(authId === selectedRoom?.user_id) {
+          return {
+            profile: selectedRoom?.fp, 
+            firstname: selectedRoom?.ffn, 
+            lastname: selectedRoom?.fln
+        }
+        
+        }
+        if(authId === selectedRoom?.friend_id) {
+            
+            return {
+                profile: selectedRoom?.userp, 
+                firstname: selectedRoom?.userfn, 
+                lastname: selectedRoom?.userln
+            }
+        }
+    }
    
   return (
     <div className='mt-4 w-full h-full'>
@@ -134,7 +151,7 @@ const MainMessages = ({ refetchAllChats }) => {
         </div>
 
         {/* main messages of  two users */}
-        <ScrollMainMessages scrollRef={scrollRef} authId={authId} refetchAllChats={refetchAllChats}/>
+        <ScrollMainMessages scrollRef={scrollRef} authId={authId} refetchAllChats={refetchAllChats} sender={check2(selectedRoom)}/>
         {/* end of main messages of  two users */}
 
         {/* input and button for sending the message */}

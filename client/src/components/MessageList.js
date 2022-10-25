@@ -9,9 +9,10 @@ const MessageList = () => {
     const { id } = decode(localStorage?.token);
     const authId = id;
     const { onlineUsers, chats } = MyContext();
-
+    
     //here we are checking the user that we are sending a message
     const check = (chat) => {
+ 
         if(authId === chat?.user_id) {
         return( <div className='px-4 flex items-center justify-start py-4 cursor-pointer hover:bg-emerald-500/20 transition-all'>
                     <div className='flex-shrink-0 w-[43px] h-[44px] relative mr-1'>
@@ -24,32 +25,27 @@ const MessageList = () => {
                             border-white'/>
                         }
                     </div>
-                    <div className='ml-2 flex-1'>
-                        <h1 className='text-lg font-bold'>{chat?.ffn} {chat?.fln}</h1>
-                        {/* <p className='text-gray-500 font-light text-xs'>Status: 
-                            {checkOnline(onlineUsers, chat?.friend_id) ?
-                                <span>Online</span>
-                            : 
-                                <span>Offline</span>
-                            }   
-                        
-                        </p> */}
+                    <div className={`ml-2 flex-1 
+                    ${Boolean(chat?.read) === false && authId !== chat?.sentby_id ? 'text-gray-900 font-bold': 'text-gray-500'}
+                    `}>
+                        <h1 className='text-lg font-bold text-gray-900'>{chat?.ffn} {chat?.fln}</h1>
+    
                         {!chat?.msg_content ?
-                            <p className='text-gray-500 font-light text-xs'>Start a conversation with {chat?.ffn}</p>
+                            <p className='text-xs'>Start a conversation with {chat?.ffn}</p>
                         :
 
                         chat?.sentby_id === authId ? 
-                            <p className='text-gray-500 font-extralight text-xs'>
+                            <p className='text-xs'>
                                 You: {chat?.msg_content}
                             </p>
                         : 
-                            <p className='text-gray-500 font-extralight text-xs'>
+                            <p className='text-xs'>
                                 {chat?.sentbyfn} {chat?.sentbyln}: {chat?.msg_content}
                             </p>
                         }
                     </div>
-                    <div className='self-end'>
-                        <span className='font-extralight text-[10px] break-words text-[#536471] inline-block ml-auto'>
+                    <div className='self-end text-[#536471]'>
+                        <span className='text-[10px] break-words inline-block ml-auto'>
                             <span className='mr-1'>•</span>{moment(chat?.msgcontent_created).fromNow()}
                         </span>
                     </div>
@@ -69,36 +65,28 @@ const MessageList = () => {
                         border-white'/>
                     }
                 </div>
-                <div className='ml-2 flex-1'>
-                    <h1 className='text-lg font-bold'>{chat?.userfn} {chat?.userln}</h1>
-                        {/* {checkOnline(onlineUsers, chat?.user_id) ?
-                        <div className='flex items-center text-gray-500 text-xs'>      
-                            <div className='bg-green-500 p-[5px] h-2 w-2 rounded-full z-10 inline-block mr-1'/>
-                            <span>Online</span>
-                        </div> 
-                        :                      
-                        <div className='flex items-center text-gray-500 text-xs'>      
-                            <div className='bg-gray-400 p-[5px] h-2 w-2 rounded-full z-10 inline-block mr-1'/>
-                            <p> Offline</p>
-                        </div>  
-                        }    */}
+                <div className={`ml-2 flex-1 
+                ${Boolean(chat?.read) === false && authId !== chat?.sentby_id ? 'text-gray-900 font-bold': 'text-gray-500'}
+                `}>
+                    <h1 className='text-lg font-bold text-gray-900'>{chat?.userfn} {chat?.userln}</h1>
+                    
                     {!chat?.msg_content ?
-                        <p className='text-gray-500 font-light text-xs'>Start a conversation with {chat?.userfn}</p>
+                        <p className='text-xs'>Start a conversation with {chat?.userfn}</p>
                     :   
 
                     chat?.sentby_id === authId ? 
-                        <p className='text-gray-500 font-extralight text-xs'>
+                        <p className='text-xs'>
                             You: {chat?.msg_content}
                         </p>
                     : 
-                        <p className='text-gray-500 font-extralight text-xs'>
+                        <p className='text-xs'>
                             {chat?.sentbyfn} {chat?.sentbyln}: {chat?.msg_content}
                         </p>
                     }
                     
                 </div>
-                <div className='self-end'>
-                    <span className='font-extralight text-[10px] break-words text-[#536471] inline-block ml-auto'>
+                <div className='self-end text-[#536471] '>
+                    <span className='font-extralight text-[10px] break-words inline-block ml-auto'>
                         <span className='mr-1'>•</span>{moment(chat?.msgcontent_created).fromNow()}
                     </span>
                 </div>

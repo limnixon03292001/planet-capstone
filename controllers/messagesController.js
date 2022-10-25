@@ -103,13 +103,13 @@ exports.getAllChats = async (req, res) => {
             ub.firstname fFN, ub.lastname fLN,
             ub.profile fP, ub.email fE, ub.phonenumber fPN,
             
-            messages.msg_id, messages.msg_content, messages.created_at msgContent_created, messages.sent_by sentBy_id,
+            messages.msg_id, messages.read, messages.msg_content, messages.created_at msgContent_created, messages.sent_by sentBy_id,
             sentBy.firstname sentByFn, sentBy.lastname sentByLn
 
             FROM user_chatroom uc
                
             LEFT JOIN (
-                SELECT DISTINCT ON (messages.chatroom_id) messages.chatroom_id, 
+                SELECT DISTINCT ON (messages.chatroom_id) messages.chatroom_id, messages.read,
                 messages.msg_id, messages.msg_content, messages.created_at, messages.sent_by
                 FROM messages
                 ORDER BY messages.chatroom_id, messages.created_at DESC
@@ -157,6 +157,13 @@ exports.getSelectedRoom = async(req,res) => {
             return res.status(401).json({errorCode:401, message: "User does not belong into this room"});
         }
 
+        //updating the read value to true meaning the user saw the message
+       const r = await pool.query(`  
+        UPDATE messages
+        SET read = $1
+        WHERE chatroom_id = $2 AND  read = $3
+        RETURNING *`,[true, chatroom_id, false]);
+       
         const chats = await pool.query(`
             SELECT user_chatroom.chatroom_id, 
             user_chatroom.user_id, user_chatroom.friend_id, 
@@ -221,12 +228,12 @@ exports.sendMessage = async (req, res) => {
         
        const newMessage = await pool.query(`
         WITH new_message as (
-            INSERT INTO messages (chatroom_id, sent_by, msg_content) VALUES ($1, $2, $3) RETURNING *
+            INSERT INTO messages (chatroom_id, sent_by, msg_content, read) VALUES ($1, $2, $3, $4) RETURNING *
         ) SELECT new_message.*, user_acc.firstname, user_acc.lastname, user_acc.profile 
         FROM new_message
         LEFT JOIN user_acc ON new_message.sent_by = user_acc.user_id
 
-      `, [chatroom_id, authId, msg_content]);
+      `, [chatroom_id, authId, msg_content, false]);
 
 
     //   console.log("new", newMessage?.rows);
