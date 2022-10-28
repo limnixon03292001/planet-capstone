@@ -17,7 +17,7 @@ body{
 }
 
 .msgOuterContainer {
-    height: calc(100vh - 230px);
+    height: calc(100vh - 234px);
 }
 
 /* overide css of leaflet */

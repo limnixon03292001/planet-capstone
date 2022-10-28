@@ -1,5 +1,5 @@
 const pool  = require('../utils/dbConnection');
-
+const cloudinary = require("../utils/cloudinary");
 
 exports.createRoom = async (req, res) => {
     const { userId } = req.body; //another userId
@@ -222,23 +222,51 @@ exports.getAllMessages = async (req, res) => {
 
 exports.sendMessage = async (req, res) => {
 
-    const { chatroom_id, msg_content } = req.body; // id of the chatroom and the content of the msg
+    const { chatroom_id, msg_content, pictureUrl } = req.body; // id of the chatroom and the content of the msg
     const authId = req.user.id; //id of authenticated id sender
+
     try {   
+
+         //upload image to cloudinary
+         if(pictureUrl) {
+            console.log("uploading...")
+            const { secure_url } = await cloudinary.uploader.upload(pictureUrl, 
+                {
+                    upload_preset: 'capstone',
+                    allowed_formats : ['png', 'jpg', 'jpeg',],
+                }, 
+                function(error, result) {
+                    if(error){
+                        console.log(error);
+                    }
+                }
+            );
+            console.log("uploading done")
+            // if theres an image
+            const newMessage = await pool.query(`
+            WITH new_message as (
+                INSERT INTO messages (chatroom_id, sent_by, msg_content, read) VALUES ($1, $2, $3, $4) RETURNING *
+            ) SELECT new_message.*, user_acc.firstname, user_acc.lastname, user_acc.profile 
+            FROM new_message
+            LEFT JOIN user_acc ON new_message.sent_by = user_acc.user_id
+            `, [chatroom_id, authId, secure_url, false]);
+
+            return res.status(201).json({ newMessage: newMessage?.rows[0]});
+
+        } else {
+            //if theres no image
+            console.log("text")
+            const newMessage = await pool.query(`
+            WITH new_message as (
+                INSERT INTO messages (chatroom_id, sent_by, msg_content, read) VALUES ($1, $2, $3, $4) RETURNING *
+            ) SELECT new_message.*, user_acc.firstname, user_acc.lastname, user_acc.profile 
+            FROM new_message
+            LEFT JOIN user_acc ON new_message.sent_by = user_acc.user_id
+            `, [chatroom_id, authId, msg_content, false]);
+
+            return res.status(201).json({ newMessage: newMessage?.rows[0]});
+        }
         
-       const newMessage = await pool.query(`
-        WITH new_message as (
-            INSERT INTO messages (chatroom_id, sent_by, msg_content, read) VALUES ($1, $2, $3, $4) RETURNING *
-        ) SELECT new_message.*, user_acc.firstname, user_acc.lastname, user_acc.profile 
-        FROM new_message
-        LEFT JOIN user_acc ON new_message.sent_by = user_acc.user_id
-
-      `, [chatroom_id, authId, msg_content, false]);
-
-
-    //   console.log("new", newMessage?.rows);
-
-      res.status(201).json({ newMessage: newMessage?.rows[0]})
 
     } catch (error) {
         console.log(error?.message);

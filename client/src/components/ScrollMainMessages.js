@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import { MyContext } from '../context/ContextProvider';
 
 const ScrollMainMessages = ({  scrollRef, authId, sender }) => {
 
     const { socket, messages, setMessages } = MyContext();
+    const [open, setOpen] = useState(false);
+    const [imgLink, setImgLink] = useState("");
 
     useEffect(() => {
         socket?.on("messageReceived", (newMsgReceived) => {
@@ -14,13 +16,12 @@ const ScrollMainMessages = ({  scrollRef, authId, sender }) => {
             if(Number(window.location.pathname.split("/")[3]) !== newMsgReceived?.msgContent?.chatroom_id){
                 return ;
             } else {
-                console.log("truee", newMsgReceived?.msgContent)
+                // console.log("truee", newMsgReceived?.msgContent)
                 setMessages([...messages, newMsgReceived?.msgContent]);  
+                console.log("x",newMsgReceived?.msgContent)
             }
         });
     }, [messages]);
-
-    console.log(sender)
 
   return (
     <div className='overflow-auto w-full h-full msgOuterContainer px-4 mt-4'>
@@ -43,29 +44,85 @@ const ScrollMainMessages = ({  scrollRef, authId, sender }) => {
                 if(m?.sent_by === authId) {
                     return <div ref={scrollRef} key={id} className="flex flex-row-reverse items-center justify-start my-3">
                         <img src={m?.profile} alt='profile'  
-                        className='flex-shrink-0 self-start rounded-full h-10 w-10 object-center object-cover'/>
+                        className='flex-shrink-0 self-end rounded-full h-10 w-10 object-center object-cover'/>
 
                         <div className='mr-2'>
-                            <p className='break-all text-sm text-justify bg-emerald-400 text-white p-2 rounded-md'>
-                                {m?.msg_content}
-                            </p>
+                              {/* checking if the msg_content is img or not */}
+                              {
+                                m?.msg_content.split("/")[2] === "res.cloudinary.com" &&
+                                m?.msg_content.split("/")[4] === "image" &&
+                                m?.msg_content.split("/")[5] === "upload" 
+                                ?
+                                <>
+                                    <img src={m?.msg_content} alt="pic" 
+                                    className='object-center object-cover w-full lg:h-80 h-48 bg-emerald-300 rounded-md cursor-pointer'
+                                    onClick={() => {
+                                        setImgLink(m?.msg_content);
+                                        setOpen(prev => !prev);
+                                    }}/>
+
+                                </>
+                                :
+                                <p className='break-all text-sm text-justify bg-emerald-400 text-white p-2 rounded-md'>
+                                    {m?.msg_content}
+                                </p>
+                              }
                         </div>
                     </div>
                 } else {
                     return <div ref={scrollRef} key={id} className="flex items-center justify-start my-3">
                         <img src={m?.profile} alt='profile' 
-                        className='rounded-full self-start h-10 w-10 object-center object-cover'/>
+                        className='rounded-full self-end h-10 w-10 object-center object-cover'/>
 
                         <div className='ml-2'>
-                            <p className='break-all text-sm text-justify bg-emerald-200 text-emerald-900 p-2 rounded-md'>
-                                {m?.msg_content}
-                            </p>
+                            {/* checking if the msg_content is img or not */}
+                            {
+                                m?.msg_content.split("/")[2] === "res.cloudinary.com" &&
+                                m?.msg_content.split("/")[4] === "image" &&
+                                m?.msg_content.split("/")[5] === "upload" 
+                                ?
+                                
+                                <img  src={m?.msg_content} alt="pic" 
+                                className='object-center object-cover w-full lg:h-80 h-48 bg-emerald-300 rounded-md cursor-pointer'
+                                onClick={() => {
+                                    setImgLink(m?.msg_content);
+                                    setOpen(prev => !prev);
+                                }}/>
+    
+                                :
+
+                                <p className='break-all text-sm text-justify bg-emerald-200 text-emerald-900 p-2 rounded-md'>
+                                    {m?.msg_content}
+                                </p>
+                            }
+                         
                         </div>
                     </div>
                     }
             })
         }
+
+        
+        {open &&
+            <div className='absolute z-30 inset-0 bg-gray-900/60 backdrop-blur w-full h-full' onClick={() => setOpen(false)}>
+                <div className='relative w-full h-full'>
+                    <button className='absolute left-0 top-0 m-2 text-white' onClick={() => setOpen(false)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
+                        strokeWidth={1.5} stroke="currentColor" className="w-9 h-9">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    <div className='flex items-center justify-center w-full h-full'>
+                        <img src={imgLink} alt="pic" 
+                        className='object-center object-scale-down w-3/4 h-screen block relative z-50 rounded-lg'/>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
+
+
+
   )
 }
 
