@@ -46,7 +46,7 @@ const Marketplace = () => {
 
   const { data, isLoading } = useQuery(['plants-marketplace'], getPlantsMarketplace, {
     onSuccess: ({ data }) => {
-      console.log("marketplace plants", data?.data);
+      // console.log("marketplace plants", data?.data);
       setmarketPlacePlants(data?.data);
     },
     onError: (err) => {

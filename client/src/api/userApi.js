@@ -143,3 +143,9 @@ export const getPlantMarketplace = ({ queryKey }) => {
     const id = queryKey[1]; 
     return request({url: `/api/marketplace/getPlant?id=${id}`, method: 'GET'});
 }
+
+export const getRelatedPlants = ({ queryKey }) => { 
+    const category = queryKey[1]; 
+    const plantId = queryKey[2]; 
+    return request({url: `/api/marketplace/getRelatedPlants?category=${category}&plantId=${plantId}`, method: 'GET'});
+}
