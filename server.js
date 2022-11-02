@@ -5,6 +5,7 @@ const path = require('path');
 const userRoutes = require('./routes/userRoutes');
 const messagesRoutes = require('./routes/messagesRoutes');
 const mapRoutes = require('./routes/mapRoutes');
+const marketplaceRoutes = require('./routes/marketplaceRoutes');
 
 const PORT = process.env.PORT || 5000; //dotenv config? check...
 
@@ -16,8 +17,9 @@ app.use(express.json({limit: '30mb'}));
 app.use('/api/users', userRoutes);
 app.use('/api/chats', messagesRoutes);
 app.use('/api/map', mapRoutes);
+app.use('/api/marketplace', marketplaceRoutes);
 
-//fixed when refresh canot get the route
+//fixed when refresh cannot get the route
 // if(process.env.NODE_ENV === "production") {
 //     app.use(express.static(path.join(__dirname, "client/build")));
 // }

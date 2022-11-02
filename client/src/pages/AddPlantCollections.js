@@ -21,10 +21,6 @@ const AddPlantCollections = () => {
   const [plantCat, setPlantCat] = useState('');
   const [pictureUrl, setPictureUrl] = useState(null);
 
-  useEffect(() => {
-    console.log(desc);
-  },[desc])
-
   //growing preferences
   const [gp, setGp] = useState(growingPrefInitialState);
  
@@ -56,7 +52,7 @@ const AddPlantCollections = () => {
         const errObject = err.response.data.error;
         console.log(errObject);
       }
-    })
+  })
 
   const handleSubmit = () => {
     let data = {
@@ -83,7 +79,6 @@ const AddPlantCollections = () => {
     mutate(data);
   }
 
-
   //handling image onchange
   const handleChangeImage = useCallback((e) => {
       const file = e.target.files[0];
@@ -105,7 +100,7 @@ const AddPlantCollections = () => {
   }, [pictureUrl]);
 
   return (
-    <div className='block border-x border-gray-200 w-full max-w-[860px] min-h-screen pt-6 overflow-hidden pb-5'>
+    <div className='block border-x border-gray-200 w-full max-w-[860px] min-h-screen pt-6 pb-5'>
       <div className="py-3">
         <h1 className='font-extrabold text-xl mt-1 px-4 text-gray-700'>Add Plant to your Collections!</h1>
       </div>

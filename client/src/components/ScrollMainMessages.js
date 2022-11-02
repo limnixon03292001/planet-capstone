@@ -114,7 +114,7 @@ const ScrollMainMessages = ({  scrollRef, authId, sender }) => {
                     </button>
                     <div className='flex items-center justify-center w-full h-full'>
                         <img src={imgLink} alt="pic" 
-                        className='object-center object-scale-down w-3/4 h-screen block relative z-50 rounded-lg'/>
+                        className='object-center object-contain w-3/4 h-screen block relative z-50 rounded-lg'/>
                     </div>
                 </div>
             </div>

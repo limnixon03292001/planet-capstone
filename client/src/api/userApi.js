@@ -128,3 +128,18 @@ export const filterPlantCollections = ({ queryKey }) => {
     const category = queryKey[3];
     return request({url: `/api/users/filterPlantCollections?&userId=${id}&category=${category}&sunPref=${gp?.sunPref}&interLight=${gp?.interLight}&soilPref=${gp?.soilPref}&waterReq=${gp?.waterReq}&nativeHab=${gp?.nativeHab}`, method: 'GET'});
 }
+
+//marketplace
+
+export const addPlantMarketplace = (data) => {
+    return request({url: '/api/marketplace/addPlant', method: 'POST', data: data});
+}
+
+export const getPlantsMarketplace = () => {  
+    return request({url: `/api/marketplace/getPlants`, method: 'GET'});
+}
+
+export const getPlantMarketplace = ({ queryKey }) => { 
+    const id = queryKey[1]; 
+    return request({url: `/api/marketplace/getPlant?id=${id}`, method: 'GET'});
+}

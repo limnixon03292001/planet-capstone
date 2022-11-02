@@ -140,9 +140,58 @@ CREATE TABLE coll_growing_info(
     FOREIGN KEY (plant_detail_id) REFERENCES coll_plant_details(plant_detail_id) ON DELETE CASCADE
 );
 
+-- END TABLES FOR USERS PLANT COLLECTION 
 
+-- TABLES FOR MARTKETPLACE PLANTS
 
+CREATE TABLE mp_plant_details(
+    plant_detail_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    plant_name TEXT NOT NULL,
+    description TEXT,
+    category TEXT NOT NULL,
+    date_planted TEXT,
+    plant_img TEXT,
+    address TEXT,
+    status VARCHAR(20),
+    quantity VARCHAR(20),
+    price VARCHAR(20),
+    lat TEXT,
+    lng TEXT,
+    created_at timestamp NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (user_id) REFERENCES user_acc(user_id) ON DELETE CASCADE
+);
 
+CREATE TABLE mp_growing_pref (
+    growing_pref_id SERIAL PRIMARY KEY,
+    plant_detail_id INT NOT NULL,
+    sun_pref TEXT,
+    inter_light TEXT,
+    soil_pref TEXT,
+    water_req TEXT,
+    native_habitat TEXT,
+    created_at timestamp NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (plant_detail_id) REFERENCES mp_plant_details(plant_detail_id) ON DELETE CASCADE
+);
+
+CREATE TABLE mp_growing_info(
+    growing_info_id SERIAL PRIMARY KEY,
+    plant_detail_id INT NOT NULL,
+    avg_h TEXT,
+    avg_w TEXT,
+    foliage_color TEXT,
+    foliage_type TEXT,
+    foliage_scent TEXT,
+    flower_color TEXT,
+    fragrant TEXT,
+    nocturnal_flowering TEXT,
+    repeat_blooming TEXT,
+    flowering_period TEXT,
+    created_at timestamp NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (plant_detail_id) REFERENCES mp_plant_details(plant_detail_id) ON DELETE CASCADE
+);
+
+-- END TABLES FOR MARTKETPLACE PLANTS
 
 
 

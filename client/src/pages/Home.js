@@ -11,6 +11,8 @@ import { MyContext } from '../context/ContextProvider';
 import toast from 'react-hot-toast';
 import AddPlantCollections from '../pages/AddPlantCollections';
 import MyPlantCollections from './MyPlantCollections';
+import SellPlant from './SellPlant';
+import MarketplacePlant from './MarketplacePlant';
 
 
 const Home = () => {
@@ -69,11 +71,14 @@ const Home = () => {
                     <Route path= "/" element={<PostFeeds/>}/>
                     <Route path="/profile/:id" element={<Profile/>}/>
                     <Route path="/messages/*" element={<Messages/>}/>
+                    <Route path="/sell-plants" element={<SellPlant/>}/>
                     <Route path="/marketplace" element={<Marketplace/>}/>
+                    <Route path="/marketplace/item/:id" element={<MarketplacePlant/>}/>
                     <Route path="/map/*" element={<MyMap/>}/>
                     <Route path="/add-plantCollections" element={<AddPlantCollections/>}/>
                     <Route path="/my-plants" element={<MyPlantCollections/>}/>
                     
+
                     {/* 404 PAGE  */}
 
                     <Route path="*" element={<NotFound/>}/>

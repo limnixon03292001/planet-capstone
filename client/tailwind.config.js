@@ -6,6 +6,9 @@ module.exports = {
       fontFamily: {
         interFont: ['Poppins', 'sans-serif'],
       },
+      gridTemplateColumns: {
+        'myGrid': 'repeat(auto-fill, minmax(240px,1fr))',
+      }
     },
   },
   plugins: [

@@ -4,9 +4,6 @@ import { Listbox, Transition } from '@headlessui/react'
 import { Foliage, FoliageYesOrNo, Measurement, FloweringPeriod } from '../data'
 
 
-
-
-
 const GrowingInformation = ({
     avg, setAvg,
     measH, setMeasH,
