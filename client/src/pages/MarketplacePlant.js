@@ -2,20 +2,23 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react'
 import EllipsisText from 'react-ellipsis-text/lib/components/EllipsisText';
 import { useQuery } from 'react-query';
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { getPlantMarketplace, getRelatedPlants } from '../api/userApi';
-import ItemCard from '../components/ItemCard';
+import { MapContainer, TileLayer, Marker, Popup, LayersControl } from 'react-leaflet';
+import { Icon } from "leaflet";
+import fire from '../assets/PLANeTlogo.png';
 import { MyContext } from '../context/ContextProvider';
 import { checkOnline } from '../utils/checkOnline';
 
 const MarketplacePlant = () => {
 
   const { id } = useParams();
+  const location = useLocation();
   const { onlineUsers, authUser } = MyContext();
   const [plant, setPlant] = useState({});
   const [relatedPlant, setRelatedPlant] = useState([]);
 
-  const { isLoading } = useQuery(['plant-item', id], getPlantMarketplace,
+  const { data, isLoading } = useQuery(['plant-item', id], getPlantMarketplace,
   {
     onSuccess: ({ data }) => {
       setPlant(data?.data[0]);
@@ -38,20 +41,21 @@ const MarketplacePlant = () => {
   });
 
   useEffect(() => {
-    console.log(relatedPlant);
-  }, [relatedPlant])
+    setPlant(data?.data[0])
+  }, [location])
 
   return (
-    <div className='block border border-gray-200 w-full min-h-screen pt-6 overflow-hidden'>
+    <div className='block border-x border-gray-200 w-full min-h-screen pt-6 overflow-hidden'>
       <div>
-        <h1 className='font-extrabold text-lg mt-1 px-4'>Marketplace</h1>
+        <div className='sticky top-0'>
+          <h1 className='font-extrabold text-lg px-4 h-8 z-10 bg-white/60 backdrop-blur '>Marketplace</h1>
+        </div>
 
+        <div className='px-4 mt-8 md:grid grid-cols-2 h-full w-full'>
 
-        <div className='px-4 mt-8 md:flex items-start'>
-
-          <div className='w-full md:max-w-[420px] md:pr-7'>
+          <div className='w-full md:max-w-[520px] lg:pr-5 xl:pr-0'>
             <div className='flex items-center justify-between mb-4'>
-              <p className='font-bold'>Seller Information</p>
+              <p className='font-bold'>Seller Information</p>         
               <Link to={`/profile/${plant?.user_id}`} className='text-xs underline text-cyan-500'>See sellers profile</Link>
             </div>
 
@@ -64,10 +68,13 @@ const MarketplacePlant = () => {
                   <div className='bg-gray-500 p-[5px] h-3 w-3 absolute -bottom-1 -right-2 border-[3px] border-white rounded-full z-10 inline-block mr-2'/>
                   }
                 </div>
-              <div className='ml-2'>
-                <p className='font-bold'>{plant?.firstname} {plant?.lastname}</p>
-                <p className='text-xs text-gray-500'>{plant?.email}</p>
-              </div>
+                <div className='flex-1 flex items-start justify-between'>
+                  <div className='ml-2'>
+                    <p className='font-bold'>{plant?.firstname} {plant?.lastname}</p>
+                    <p className='text-xs text-gray-500'>{plant?.email}</p>
+                  </div>
+                  <p className='self-end text-emerald-500 text-[10px]'>Added {moment(plant?.created_at).fromNow()}</p>
+                </div>
             </div>
 
             {/* button */}
@@ -100,68 +107,78 @@ const MarketplacePlant = () => {
               <h1 className='text-2xl font-semibold mb-2'>{plant?.plant_name}</h1>
               <p className='text-green-400 text-lg font-medium'>{plant?.status}</p>
               <p className='font-bold text-2xl my-2'>{plant?.price} · <span className='text-sm font-normal align-middle'>{plant?.quantity} pieces available</span></p>
-              {/* <p className='text-sm flex items-center mb-2 font-semibold'>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" 
-                className="w-5 h-5 mr-1">
-                  <path fillRule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clipRule="evenodd" />
-                </svg>
-                <span>{plant?.address}</span>
-              </p> */}
               <div>
                 <p className='font-semibold'>Description</p>
                 <p className='text-[13px] text-gray-500 mt-2 text-justify'>{plant?.description}</p>
               </div>
-
             </div>
+
+              
+            {/* main description / specification / location */}
+            
+            <div className='py-2 w-full'>
+              <div className=''>
+                <div className='border-b  border-200 py-4'>
+                  <h1 className='font-semibold text-lg text-emerald-400'>Growing Preference</h1>
+                </div>
+                <div className='mt-4 space-y-3 text-sm'>
+                  <p className='font-semibold'>Sun Preference: <span className='font-normal'>{plant?.sun_pref}</span></p>
+                  <p className='font-semibold'>Soil Preference: <span className='font-normal'>{plant?.soil_pref}</span></p>
+                  <p className='font-semibold'>Interior Light: <span className='font-normal'>{plant?.inter_light}</span></p>
+                  <p className='font-semibold'>Water Requirement: <span className='font-normal'>{plant?.water_req}</span></p>
+                  <p className='font-semibold'>Native Habitat: <span className='font-normal'>{plant?.native_habitat}</span></p>
+                </div>
+              </div>
+              <div className='mt-5 md:mt-4 '>
+                <div className=' border-b  border-200 py-4'>
+                  <h1 className='font-semibold text-lg text-emerald-400'>Growing Information</h1>
+                </div>
+                <div className='mt-4 space-y-3 text-sm'>
+                  <p className='font-semibold'>Date Planted: <span className='font-normal'>{plant?.date_planted}</span></p>
+                  <p className='font-semibold'>Average Height: <span className='font-normal'>{plant?.avg_h}</span></p>
+                  <p className='font-semibold'>Average Width: <span className='font-normal'>{plant?.avg_w}</span></p>
+                  <p className='font-semibold'>Foliage Color: <span className='font-normal'>{plant?.foliage_color}</span></p>
+                  <p className='font-semibold'>Foliage Type: <span className='font-normal'>{plant?.foliage_type}</span></p>
+                  <p className='font-semibold'>Foliage Scent: <span className='font-normal'>{plant?.foliage_scent}</span></p>
+                  <p className='font-semibold'>Flower Color: <span className='font-normal'>{plant?.flower_color}</span></p>
+                  <p className='font-semibold'>Fragrant: <span className='font-normal'>{plant?.fragrant}</span></p>
+                  <p className='font-semibold'>Nocturnal Flowering: <span className='font-normal'>{plant?.nocturnal_flowering}</span></p>
+                  <p className='font-semibold'>Repeat Blooming: <span className='font-normal'>{plant?.repeat_blooming}</span></p>
+                  <p className='font-semibold'>Flowering Period: <span className='font-normal'>{plant?.flowering_period}</span></p>
+                </div>
+              </div>
+            </div>
+
+
+
+
           </div>
 
           {/* pic */}
-          <div className='mt-4 md:mt-0 flex-1 relative'>
-            <div className='bg-emerald-500 blur-sm absolute inset-0'/>
-              <img src={plant?.plant_img} alt="plant_img" className='object-contain object-center w-full h-96 rounded-lg relative z-20'/>
+         
+          <div className='w-full h-full mt-4 md:mt-0 transition-all block'>
+            <div className=''>
+              {/* <div className=' blur-sm absolute inset-0 h-full w-max rounded-lg overflow-hidden'/> */}
+                <img src={plant?.plant_img} alt="plant_img" className='object-cover object-center w-full h-96 rounded-lg relative z-20'/>
+            </div>
+              
+            <div className='h-full w-full mt-5'>
+              <p className='text-sm text-gray-700 flex items-center justify-end mt-2 mb-2 font-semibold'>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" 
+                className="w-[17px] h-[17px] mr-1">
+                  <path fillRule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clipRule="evenodd" />
+                </svg>
+                <span>{plant?.address}</span>
+              </p>
+              {plant?.lng && plant?.lat && <MiniMap lng={plant?.lng} lat={plant?.lat}/> }
            
-          </div>
+            </div>
 
+          </div>
+           
         </div>
 
-
-        {/* main description / specification / location */}
-        
-        <div className='px-4 mt-6 py-2 border-b border-gray-200  md:flex flex-row-reverse items-start md:text-center'>
-          <div className='flex-1'>
-            <div className='border-y  border-200 py-4'>
-              <h1 className='font-semibold text-lg text-emerald-400'>Growing Preference</h1>
-            </div>
-            <div className='mt-4 space-y-3 text-sm'>
-              <p className='font-semibold'>Sun Preference: <span className='font-normal'>{plant?.sun_pref}</span></p>
-              <p className='font-semibold'>Soil Preference: <span className='font-normal'>{plant?.soil_pref}</span></p>
-              <p className='font-semibold'>Interior Light: <span className='font-normal'>{plant?.inter_light}</span></p>
-              <p className='font-semibold'>Water Requirement: <span className='font-normal'>{plant?.water_req}</span></p>
-              <p className='font-semibold'>Native Habitat: <span className='font-normal'>{plant?.native_habitat}</span></p>
-            </div>
-          </div>
-          <div className='mt-5 md:mt-0 flex-1'>
-            <div className=' border-y  border-200 py-4'>
-              <h1 className='font-semibold text-lg text-emerald-400'>Growing Information</h1>
-            </div>
-            <div className='mt-4 space-y-3 text-sm'>
-              <p className='font-semibold'>Date Planted: <span className='font-normal'>{plant?.date_planted}</span></p>
-              <p className='font-semibold'>Average Height: <span className='font-normal'>{plant?.avg_h}</span></p>
-              <p className='font-semibold'>Average Width: <span className='font-normal'>{plant?.avg_w}</span></p>
-              <p className='font-semibold'>Foliage Color: <span className='font-normal'>{plant?.foliage_color}</span></p>
-              <p className='font-semibold'>Foliage Type: <span className='font-normal'>{plant?.foliage_type}</span></p>
-              <p className='font-semibold'>Foliage Scent: <span className='font-normal'>{plant?.foliage_scent}</span></p>
-              <p className='font-semibold'>Flower Color: <span className='font-normal'>{plant?.flower_color}</span></p>
-              <p className='font-semibold'>Fragrant: <span className='font-normal'>{plant?.fragrant}</span></p>
-              <p className='font-semibold'>Nocturnal Flowering: <span className='font-normal'>{plant?.nocturnal_flowering}</span></p>
-              <p className='font-semibold'>Repeat Blooming: <span className='font-normal'>{plant?.repeat_blooming}</span></p>
-              <p className='font-semibold'>Flowering Period: <span className='font-normal'>{plant?.flowering_period}</span></p>
-            </div>
-          </div>
-        </div>
-        
-        
-
+      
         {/* related plant */}
         <div className='px-4 mt-6 mb-10'>
           <h1 className='font-semibold text-lg'>Related Plants</h1>
@@ -262,3 +279,41 @@ const MarketplacePlant = () => {
 }
 
 export default MarketplacePlant
+
+
+export const icon = new Icon({
+  iconUrl: fire,
+  iconSize: [30, 30]
+});
+
+const MiniMap = ({lng, lat}) => { 
+  const [position, setPosition] = useState({lat, lng});
+
+  // useEffect(() => {
+  //   setPosition({lat, lng});
+  // },[position, location])
+
+  return (
+    <div className='mt-2 overflow-hidden rounded-lg'>
+      <MapContainer center={position} zoom={17} style={{width: '100%'}}>
+        <LayersControl>
+            <LayersControl.Overlay name="Street view">
+                <TileLayer
+                    url='http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
+                    maxZoom= {20}
+                    subdomains={['mt0','mt1','mt2','mt3']}
+                />
+            </LayersControl.Overlay>
+            <LayersControl.Overlay checked name="Satellite view">
+                <TileLayer
+                url='http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}'
+                maxZoom= {20}
+                subdomains={['mt0','mt1','mt2','mt3']}
+                />
+            </LayersControl.Overlay>
+          </LayersControl>
+          <Marker position={position} icon={icon}/>
+      </MapContainer>
+    </div>
+  )
+}
