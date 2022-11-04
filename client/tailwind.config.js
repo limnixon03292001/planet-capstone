@@ -7,7 +7,7 @@ module.exports = {
         interFont: ['Poppins', 'sans-serif'],
       },
       gridTemplateColumns: {
-        'myGrid': 'repeat(auto-fill, minmax(240px,1fr))',
+        'myGrid': 'repeat(auto-fill, minmax(280px,1fr))',
       }
     },
   },

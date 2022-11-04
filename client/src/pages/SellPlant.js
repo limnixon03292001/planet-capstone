@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from 'react-query';
 import { addPlantMarketplace } from '../api/userApi';
 import logo from '../assets/PLANeTlogo.png';
@@ -119,14 +119,14 @@ const SellPlant = () => {
                 <p className='text-emerald-500 px-4 text-xs'>Marketplace</p>
                 <h1 className='font-extrabold text-xl mt-1 px-4 text-gray-700'>Sell a plant</h1>
             </div>
-            <button className='bg-green-200 text-green-800 rounded-full focus:outline-none focus:ring-4 
+            <Link to='/pick-plantsCollection' className='bg-green-200 text-green-800 rounded-full focus:outline-none focus:ring-4 
             focus:ring-green-300 flex items-center justify-center px-3 py-2 ml-auto mr-2'>
                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" 
                     className="w-5 h-5 mr-1">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
                 <span className='text-sm block mt-[1px]'>Pick plant in my collections</span>
-            </button>
+            </Link>
         </div>
         {/* nav */}
 

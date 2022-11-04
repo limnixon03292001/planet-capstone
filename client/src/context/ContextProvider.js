@@ -14,6 +14,7 @@ const ContextProvider = ({ children }) => {
     const [messages, setMessages] = useState([]);
     const [x, setX] = useState(0);
     const [pageNumber, setPageNumber] = useState(1);
+    const [selectedPlant, setSelectedPlant] = useState({}); //state for selected plant from collection and will use it to add to marketplace
     
     return (
         <MainContext.Provider value={{
@@ -25,7 +26,8 @@ const ContextProvider = ({ children }) => {
             chats, setChats,
             messages, setMessages,
             pageNumber, setPageNumber,
-            x, setX
+            x, setX,
+            selectedPlant, setSelectedPlant,
         }}>
             {children}
         </MainContext.Provider>

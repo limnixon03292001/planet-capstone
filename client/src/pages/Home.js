@@ -13,6 +13,8 @@ import AddPlantCollections from '../pages/AddPlantCollections';
 import MyPlantCollections from './MyPlantCollections';
 import SellPlant from './SellPlant';
 import MarketplacePlant from './MarketplacePlant';
+import PickPlant from './PickPlant';
+import AddMoreDetail from '../components/AddMoreDetail';
 
 
 const Home = () => {
@@ -74,10 +76,12 @@ const Home = () => {
                     <Route path="/sell-plants" element={<SellPlant/>}/>
                     <Route path="/marketplace" element={<Marketplace/>}/>
                     <Route path="/marketplace/item/:id" element={<MarketplacePlant/>}/>
+                    <Route path="/pick-plantsCollection" element={<PickPlant/>}/>
                     <Route path="/map/*" element={<MyMap/>}/>
                     <Route path="/add-plantCollections" element={<AddPlantCollections/>}/>
                     <Route path="/my-plants" element={<MyPlantCollections/>}/>
-                    
+
+                    <Route path="/selectedPlant-addMore" element={<AddMoreDetail/>}/>
 
                     {/* 404 PAGE  */}
 
