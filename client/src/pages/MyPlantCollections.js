@@ -25,7 +25,7 @@ const growingPrefInitialState = {sunPref: [], interLight: [], soilPref: [], wate
 const MyPlantCollections = () => {
 
     const { authUser } = MyContext();
-    const [plantColl, setPlantColl] = useState([]);
+    const [plantColl, setPlantColl] = useState({});
     let [isOpen, setIsOpen] = useState(false);
     const [selectedPlant, setSelectedPlant] = useState({});
 
@@ -48,7 +48,7 @@ const MyPlantCollections = () => {
     const { isLoading: loadingFilter, refetch } = useQuery(['filteredPlant-collections', authUser?.user_id, gp, selectedCategory], filterPlantCollections,
     {
         onSuccess: ({ data }) => {
-            setPlantColl(data?.data);
+            setPlantColl(data);
         },
         onError: (err) => {
             const errObject = err.response.data.error;
@@ -85,6 +85,10 @@ const MyPlantCollections = () => {
         setSelectedPlant(p);
     }
 
+    useEffect(() => {
+      console.log("x", plantColl)
+    },[plantColl])
+
   return (
     <div className='block border border-gray-200 w-full min-h-screen pt-6 overflow-hidden'>
         <div className='w-full flex items-center px-4'>
@@ -106,6 +110,12 @@ const MyPlantCollections = () => {
         <div className='transition-all z-10 block sticky top-0 w-full h-max px-4 py-4 mt-4 border-y border-gray-200 shadow'>
             <div className='flex items-center'>
 
+              <h1 className='text-xl font-bold text-gray-700 mr-auto'>
+                <span className='text-gray-500 text-xs font-light block'>Total plants</span>
+                {plantColl?.total?.count} plants
+              </h1>
+
+              <div className='ml-auto flex items-center'>
                 <FilterPlantCollection gp={gp} setGp={setGp} resetState={growingPrefInitialState} 
                 handleChange={handleChange} setSelectedCategory={setSelectedCategory} selectedCategory={selectedCategory}
                 />
@@ -113,7 +123,7 @@ const MyPlantCollections = () => {
                 <FilterPlantCategories setSelectedCategory={setSelectedCategory} selectedCategory={selectedCategory}
                 />
 
-                <div className='ml-auto '>
+                <div className='ml-3'>
                     {/* <p className='text-gray-500 text-sm mb-2'>Search</p> */}
                     <DebounceInput
                     minLength={2}
@@ -123,6 +133,8 @@ const MyPlantCollections = () => {
                     // onChange={e => setSearchData(e.target.value)} 
                     />
                 </div>
+              </div>
+
             </div>
         </div>
         {/* button end*/}
@@ -130,11 +142,11 @@ const MyPlantCollections = () => {
 
 
         <div className='h-full w-full'>
-            <main className='px-4 mt-4 grid grid-cols-myGrid gap-2 items-center justify-start'>
-                {plantColl?.map((p, id) => (
+            <main className='px-4 mt-4 grid grid-cols-myGrid gap-5'>
+                {plantColl?.data?.map((p, id) => (
                     <Fragment key={id}>
                         <div className="relative flex flex-row group
-                        rounded-xl overflow-hidden mx-3 my-4 w-full max-w-[350px] h-[170px] shadow-md self-start">
+                        rounded-xl overflow-hidden w-full h-[160px] shadow-md self-start">
                           <div className='w-full max-w-[120px] relative inset-0'>
                             <img src={p?.plant_img} alt="plant_img" 
                             className='w-full h-full object-cover object-center bg-emerald-300 text-white'/>
@@ -158,7 +170,7 @@ const MyPlantCollections = () => {
                                   {/* sun_pref */}
                                     <div className='text-[9px] mt-4'>
                                     {p?.sun_pref.split(",").splice(0,4).map((sp, i) => (
-                                      <span key={i} className='bg-green-400/30 text-white mr-1 p-1 rounded-full'>{sp}</span>
+                                      <span key={i} className='bg-yellow-400/30 text-white mr-1 p-1 rounded-full'>{sp}</span>
                                     ))}
                                     </div>
                                   {/* sun_pref */}

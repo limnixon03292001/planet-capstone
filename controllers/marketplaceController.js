@@ -183,3 +183,40 @@ exports.getRelatedPlants = async (req, res) => {
         })
     }
 }
+
+exports.getPlantsUser = async (req, res) => {
+
+    const { userId } = req.query;
+    console.log(userId)
+    try {
+        
+        const query = ` 
+        SELECT mpd.*, mgp.*, mgi.*, ua.user_id, ua.firstname, ua.lastname, ua.email, ua.profile, ua.cover, ua.description userdesc,
+        uf.followersCount as followersCount, ufv2.followingCount as followingcount
+        
+        FROM mp_plant_details mpd
+
+        LEFT JOIN user_acc ua ON mpd.user_id = ua.user_id
+        LEFT JOIN mp_growing_pref mgp ON mpd.plant_detail_id = mgp.plant_detail_id
+        LEFT JOIN mp_growing_info mgi ON mpd.plant_detail_id = mgi.plant_detail_id
+        LEFT JOIN (SELECT user_id, COUNT(*) followersCount FROM user_followers GROUP BY user_followers.user_id ) uf
+        ON mpd.user_id = uf.user_id
+        LEFT JOIN (SELECT followers_user_id, COUNT(*) followingCount FROM user_followers GROUP BY user_followers.followers_user_id) ufv2
+        ON mpd.user_id = ufv2.followers_user_id
+
+        WHERE mpd.user_id = $1
+        ORDER BY mpd.created_at DESC
+        `;
+        const result = await pool.query(query ,[Number(userId)]);
+
+        return res.status(200).json({data: result.rows});
+       
+
+    } catch (error) {
+        console.log("error",error?.message);
+        return res.status(500).json({
+            error: error?.message
+        })
+    }
+}
+

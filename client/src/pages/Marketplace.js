@@ -107,18 +107,15 @@ const Marketplace = () => {
         {/* button end*/}
 
         {/* items start */}
-        <main className='px-4 mt-4 grid grid-cols-myGrid'>
+        <main className='px-4 mt-6 grid grid-cols-gridMarketPlace gap-5'>
           {marketPlacePlants?.map((p, id) => (
-            
-           
-              <div className="mx-auto my-3 relative w-max" key={id}>
-              <Link to={`/marketplace/item/${p?.plant_detail_id}`} >
-                <div className='group'>
+              <div className="relative w-full" key={id}>
+              <Link to={`/marketplace/item/${p?.plant_detail_id}`} className="w-full" >
+                <div className='group w-full'>
                   <img src={p?.profile} alt="profile_img" 
                   className='aspect-square absolute -top-3 -left-2 rounded-full w-10 h-10 object-cover object-center
                   bg-emerald-300 border-[4px] border-white text-white z-20 block cursor-pointer'/>
 
-                  
                   <div className='group-hover:opacity-100 opacity-0 group-hover:visible invisible absolute z-10 bg-white 
                   translate-x-5 translate-y-4 rounded-lg overflow-hidden transition-opacity w-full max-w-[280px] shadow-xl'>
                     <Link to={`/profile/${p?.user_id}`}>
@@ -159,7 +156,7 @@ const Marketplace = () => {
                   </div>
                 </div>
 
-                <div className="relative overflow-hidden rounded-lg w-full max-w-[240px] shadow-md self-start">
+                <div className="relative overflow-hidden rounded-lg w-full shadow-md">
                     <img src={p?.plant_img} alt="plant_img" 
                     className='w-full h-[280px] aspect-square object-cover object-center bg-emerald-300 text-white'/>
                     <div className='px-3 py-2 w-full h-full bg-gradient-to-t from-black 
@@ -193,7 +190,6 @@ const Marketplace = () => {
                   </div>
               </Link>
               </div>
-          
           ))}
         </main>
         {/* items end */}

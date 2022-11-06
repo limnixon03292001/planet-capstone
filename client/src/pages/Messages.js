@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useQuery } from 'react-query'
+import { useQuery, } from 'react-query'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { getAllChats } from '../api/userApi'
 import MessageList from '../components/MessageList'
@@ -8,13 +8,15 @@ import MainMessages from './MainMessages'
 
 const Messages = () => {
 
-  const { setChats, socket } = MyContext();
   const location = useLocation();
-  //fetching all chats of a user
-  const { isLoading, refetch: refetchAllChats } = useQuery('all-chats', getAllChats,
+  const { setChats } = MyContext();
+
+
+  //fix the duplication of code. location : 'SideBar Component'
+
+  const { refetch: refetchAllChats } = useQuery('all-chats', getAllChats,
   {
       onSuccess: ({ data }) => {
-          console.log("all-chats", data?.allChats);
           setChats(data?.allChats);
       },
       onError: (err) => {
@@ -23,16 +25,9 @@ const Messages = () => {
       }
   });
 
-  useEffect(() => {
-    socket?.on("messageReceived", (newMsgReceived) => {
-        //checking the current url if the user is in the right room, if the user is in the right room don't make a toast!
-       refetchAllChats();
-    });
-  },[socket]);
-
-  useEffect(() => {
+  useEffect(() =>{
     refetchAllChats();
-  },[location]);
+  },[location])
     
   return (
 

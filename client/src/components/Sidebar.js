@@ -8,17 +8,16 @@ import { MyContext } from '../context/ContextProvider';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
-import { getAuthUser } from '../api/userApi';
+import { getAllChats, getAuthUser } from '../api/userApi';
 
 // https://planet-capstone-production.up.railway.app/
 const ENDPOINT = "http://localhost:5000";
 var socket;
 
 const Sidebar = () => {
-  
 
     const { id: authUserId } = decode(localStorage?.token); //id of currently logged in user
-    const {setSocket, setOnlineUsers, onlineUsers, setAuthUser, authUser } = MyContext();
+    const { setSocket, setOnlineUsers, onlineUsers, setAuthUser, authUser, setChats, chats } = MyContext();
     
     useEffect(() => {
         socket = io(ENDPOINT);
@@ -92,9 +91,32 @@ const Sidebar = () => {
         const errObject = err.response.data.error;
         console.log(errObject)
       }
-    })
+    });
 
-    // console.log(onlineUsers)
+
+    //fetching all chats of a user
+    const { refetch: refetchAllChats } = useQuery('all-chats', getAllChats,
+    {
+        onSuccess: ({ data }) => {
+            setChats(data?.allChats);
+        },
+        onError: (err) => {
+            const errObject = err.response.data.error;
+            console.log(errObject)
+        }
+    });
+
+    useEffect(() => {
+      socket?.on("messageReceived", (newMsgReceived) => {
+          //checking the current url if the user is in the right room, if the user is in the right room don't make a toast!
+         refetchAllChats();
+      });
+    },[]);
+
+  
+    useEffect(() => {
+      console.log("x", chats?.filter((c) => c?.read === false && c));
+    },[chats])
 
   return (
     <div className='h-full w-full max-w-max lg:max-w-[282px] xl:max-w-[370px] transition-all block sticky top-0'>
@@ -109,7 +131,33 @@ const Sidebar = () => {
             {/* links */}
             <div>
                 <p className='text-[#536471] text-md mt-6 hidden lg:block'>Links</p>
-                {linkNavigationBar.map((data, id) => (
+                {linkNavigationBar?.slice(0,2)?.map((data, id) => (
+                    <Link to={data?.link} key={id} className="flex items-start my-6
+                    justify-center lg:justify-start">
+                        {data?.icon}
+                        <span className='text-xl  self-end ml-3 font-[100]
+                        hidden lg:block'>{data.title}</span>
+                    </Link>
+                ))}
+                {/* Message Link */}
+                {linkNavigationBar?.slice(2,3)?.map((data, id) => (
+                    <Link to={data?.link} key={id} className="flex items-start my-6 
+                    justify-center lg:justify-start">
+                        <div className='relative'>
+                          {data?.icon}
+                          {chats?.filter((c) => c?.read === false && c?.sentby_id !== authUser?.user_id && c)?.length !== 0 ? 
+                          <span className='bg-red-500 py-[2px] px-[6px] text-[11px] border-2 border-white rounded-full text-white absolute
+                          -top-2 -right-2'>{chats?.filter((c) => c?.read === false && c?.sentby_id !== authUser?.user_id && c)?.length}</span>
+                          : null
+                          }
+                        </div>
+                        <span className='text-xl  self-end ml-3 font-[100]
+                        hidden lg:block'>{data.title}</span>
+                    </Link>
+                ))}
+                {/* End Message Link */}
+
+                {linkNavigationBar?.slice(3,5)?.map((data, id) => (
                     <Link to={data?.link} key={id} className="flex items-start my-6
                     justify-center lg:justify-start">
                         {data?.icon}

@@ -142,7 +142,6 @@ exports.getSelectedRoom = async(req,res) => {
     const { chatroom_id } = req.query;
     const userId  = req.user.id;
     
-    
     try {   
 
         // first check if the user belongs into the chatroom
@@ -158,11 +157,10 @@ exports.getSelectedRoom = async(req,res) => {
         }
 
         //updating the read value to true meaning the user saw the message
-       const r = await pool.query(`  
+       await pool.query(`  
         UPDATE messages
         SET read = $1
-        WHERE chatroom_id = $2 AND  read = $3
-        RETURNING *`,[true, chatroom_id, false]);
+        WHERE chatroom_id = $2 AND read = $3 AND NOT sent_by = $4`,[true, chatroom_id, false, userId]);
        
         const chats = await pool.query(`
             SELECT user_chatroom.chatroom_id, 

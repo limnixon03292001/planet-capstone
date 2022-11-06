@@ -3,6 +3,7 @@ import { Tab } from '@headlessui/react'
 import FetchUserPost from './FetchUserPost'
 import ItemCard from '../components/ItemCard'
 import PlantCollectionsTab from './PlantCollectionsTab'
+import OnSaleTab from './OnSaleTab'
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -11,7 +12,7 @@ function classNames(...classes) {
 const ProfileTabs = () => {
 
     let [categories] = useState([
-        'Posts', 'On Sale', 'Plant Collections',
+        'On Sale', 'Plant Collections', 'Posts'
     ]);
     // const { setPosts} = MyContext();
     // const location = useLocation();
@@ -47,19 +48,19 @@ const ProfileTabs = () => {
         </Tab.List>
         <Tab.Panels className="mt-2">
             <Tab.Panel>
-              {/* user posts */}
-              <FetchUserPost/>
-            </Tab.Panel>
-            <Tab.Panel className={classNames('p-3')}>
-              <div className='grid grid-cols-2'>
-                <ItemCard/>
-                <ItemCard/>
-                <ItemCard/>
-                <ItemCard/>
-              </div>
+              {/* Plants selling by the user */}
+              <OnSaleTab/>
+               {/* Plants selling by the user */}
             </Tab.Panel>
             <Tab.Panel>
+              {/* Plant collection of the user */}
               <PlantCollectionsTab/>
+              {/* Plant collection of the user */}
+            </Tab.Panel>
+                <Tab.Panel>
+              {/* user posts */}
+              <FetchUserPost/>
+              {/* user posts */}
             </Tab.Panel>
         </Tab.Panels>
       </Tab.Group>

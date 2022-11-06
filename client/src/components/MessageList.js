@@ -3,6 +3,7 @@ import { MyContext } from '../context/ContextProvider';
 import decode from 'jwt-decode'
 import { checkOnline } from '../utils/checkOnline';
 import moment from 'moment';
+import { useEffect } from 'react';
 
 const MessageList = () => {
 
@@ -95,6 +96,10 @@ const MessageList = () => {
         }
     }
 
+    useEffect(() =>{ 
+        console.log("all Chats!", chats)
+    },[chats])
+
   return (
     <div>
         <h1 className='font-extrabold text-2xl px-4 py-4 my-5 border-b border-gray-200'>My Chats</h1>
@@ -103,7 +108,6 @@ const MessageList = () => {
             {check(chat)}
         </Link>  
         ))}
-             
     </div>
   )
 }

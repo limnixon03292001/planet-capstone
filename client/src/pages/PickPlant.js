@@ -12,7 +12,7 @@ const PickPlant = () => {
 
     const { authUser } = MyContext();
     let [isOpen, setIsOpen] = useState(false);
-    const [plantColl, setPlantColl] = useState([]);
+    const [plantColl, setPlantColl] = useState({});
     const [selectedPlant, setSelectedPlant] = useState({});
     const [gp, setGp] = useState(growingPrefInitialState);
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -20,7 +20,8 @@ const PickPlant = () => {
     const { isLoading: loadingFilter, refetch } = useQuery(['filteredPlant-collections', authUser?.user_id, gp, selectedCategory], filterPlantCollections,
     {
         onSuccess: ({ data }) => {
-            setPlantColl(data?.data);
+            console.log("pick", data)
+            setPlantColl(data);
         },
         onError: (err) => {
             const errObject = err.response.data.error;
@@ -70,6 +71,11 @@ const PickPlant = () => {
         </div>
         <div className='transition-all z-10 block sticky top-0 w-full h-max px-4 py-4 mt-4 border-y border-gray-200 shadow'>
             <div className='flex items-center'>
+                <h1 className='text-xl font-bold text-gray-700 mr-auto'>
+                    <span className='text-gray-500 text-xs font-light block'>Total plants</span>
+                    {plantColl?.total?.count} plants
+                </h1>
+
                 <FilterPlantCollection gp={gp} setGp={setGp} resetState={growingPrefInitialState} 
                 handleChange={handleChange} setSelectedCategory={setSelectedCategory} selectedCategory={selectedCategory}
                 />
@@ -80,11 +86,11 @@ const PickPlant = () => {
         </div>
 
         <div className='h-full w-full'>
-            <main className='px-4 mt-4 grid grid-cols-myGrid items-center justify-start'>
-                {plantColl?.map((p, id) => (
+            <main className='px-4 mt-4 grid grid-cols-myGrid gap-5'>
+                {plantColl?.data?.map((p, id) => (
                     <Fragment key={id}>
                         <div className="relative flex flex-row group
-                        rounded-xl overflow-hidden mx-auto my-4 w-full max-w-[350px] h-[170px] shadow-md self-start">
+                        rounded-xl overflow-hidden w-full h-[160px] shadow-md self-start">
                         <div className='w-full max-w-[120px] relative inset-0'>
                             <img src={p?.plant_img} alt="plant_img" 
                             className='w-full h-full object-cover object-center bg-emerald-300 text-white'/>
@@ -108,7 +114,7 @@ const PickPlant = () => {
                                 {/* sun_pref */}
                                     <div className='text-[9px] mt-4'>
                                     {p?.sun_pref.split(",").splice(0,4).map((sp, i) => (
-                                    <span key={i} className='bg-green-400/30 text-white mr-1 p-1 rounded-full'>{sp}</span>
+                                    <span key={i} className='bg-yellow-400/30 text-white mr-1 p-1 rounded-full'>{sp}</span>
                                     ))}
                                     </div>
                                 {/* sun_pref */}
