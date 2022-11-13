@@ -1,20 +1,23 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react'
 import EllipsisText from 'react-ellipsis-text/lib/components/EllipsisText';
-import { useQuery } from 'react-query';
-import { Link, useLocation, useParams } from 'react-router-dom'
-import { getPlantMarketplace, getRelatedPlants } from '../api/userApi';
+import { useMutation, useQuery } from 'react-query';
+import { Link, useLocation, useParams , useNavigate} from 'react-router-dom'
+import { createRoom, getPlantMarketplace, getRelatedPlants } from '../api/userApi';
 import { MapContainer, TileLayer, Marker, Popup, LayersControl } from 'react-leaflet';
 import { Icon } from "leaflet";
 import fire from '../assets/PLANeTlogo.png';
 import { MyContext } from '../context/ContextProvider';
 import { checkOnline } from '../utils/checkOnline';
+import TradeModal from '../components/TradeModal';
 
 const MarketplacePlant = () => {
 
   const { id } = useParams();
+  const navigate = useNavigate();
   const location = useLocation();
   const { onlineUsers, authUser } = MyContext();
+  let [isOpen, setIsOpen] = useState(false);
   const [plant, setPlant] = useState({});
   const [relatedPlant, setRelatedPlant] = useState([]);
 
@@ -40,9 +43,36 @@ const MarketplacePlant = () => {
     }
   });
 
+  const { mutate, isLoading: gettingRoomLoading } = useMutation(createRoom,
+  {
+        onSuccess: ({ data }) => {
+            const chatroom = data?.chatroom;
+            const newRoom = data?.newRoom;
+            console.log(chatroom, newRoom);
+
+            if(chatroom){
+               return navigate(`/messages/chatroom/${chatroom?.chatroom_id}`);
+            } else if (newRoom){
+               return navigate(`/messages`);
+            }
+        },
+        onError: (err) => {
+            const errObject = err.response.data.error;
+            console.log(errObject)
+        }
+  });
+
+  function closeModal() {
+    setIsOpen(false);
+}
+
+  function openModal(p) {
+      setIsOpen(true);
+  }
+
   useEffect(() => {
     setPlant(data?.data[0])
-  }, [location])
+  }, [location]);
 
   return (
     <div className='block border-x border-gray-200 w-full min-h-screen pt-6 overflow-hidden'>
@@ -80,8 +110,8 @@ const MarketplacePlant = () => {
             {/* button */}
               {authUser?.user_id !== plant?.user_id &&
                 <div className='mt-5 flex'>
-                  <button type="submit" 
-                  className="bg-[#3DDAB4] text-white w-full py-2 rounded-lg focus:outline-none focus:ring-4
+                  <button type="button" onClick={() => mutate({userId: plant?.user_id})} 
+                  className="bg-[#3DDAB4] shadow-lg shadow-[#3DDAB4]/50 text-white w-full py-2 rounded-lg focus:outline-none focus:ring-4
                     focus:ring-green-100 text-sm font-semibold tracking-wide mr-2 flex items-center justify-center " >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 mr-2">
                       <path d="M4.913 2.658c2.075-.27 4.19-.408 6.337-.408 2.147 0 4.262.139 6.337.408 1.922.25 3.291 1.861 3.405 3.727a4.403 4.403 0 00-1.032-.211 50.89 50.89 0 00-8.42 0c-2.358.196-4.04 2.19-4.04 4.434v4.286a4.47 4.47 0 002.433 3.984L7.28 21.53A.75.75 0 016 21v-4.03a48.527 48.527 0 01-1.087-.128C2.905 16.58 1.5 14.833 1.5 12.862V6.638c0-1.97 1.405-3.718 3.413-3.979z" />
@@ -90,13 +120,12 @@ const MarketplacePlant = () => {
                       <span>Send a message</span>
                   </button>
     
-                  <button type="submit" 
-                  className="bg-[#3DDAB4] text-white w-full py-2 rounded-lg focus:outline-none focus:ring-4
+                  <button type="button" onClick={openModal}
+                  className="bg-[#3DDAB4] shadow-lg shadow-[#3DDAB4]/50 text-white w-full py-2 rounded-lg focus:outline-none focus:ring-4
                     focus:ring-green-100 text-sm font-semibold tracking-wide mr-2 flex items-center justify-center " >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 mr-2">
                       <path fillRule="evenodd" d="M15.97 2.47a.75.75 0 011.06 0l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H7.5a.75.75 0 010-1.5h11.69l-3.22-3.22a.75.75 0 010-1.06zm-7.94 9a.75.75 0 010 1.06l-3.22 3.22H16.5a.75.75 0 010 1.5H4.81l3.22 3.22a.75.75 0 11-1.06 1.06l-4.5-4.5a.75.75 0 010-1.06l4.5-4.5a.75.75 0 011.06 0z" clipRule="evenodd" />
                     </svg>
-    
                       <span>Request trade</span>
                   </button>
                 </div>
@@ -149,9 +178,6 @@ const MarketplacePlant = () => {
               </div>
             </div>
 
-
-
-
           </div>
 
           {/* pic */}
@@ -159,7 +185,7 @@ const MarketplacePlant = () => {
           <div className='w-full h-full mt-4 md:mt-0 transition-all block'>
             <div className=''>
               {/* <div className=' blur-sm absolute inset-0 h-full w-max rounded-lg overflow-hidden'/> */}
-                <img src={plant?.plant_img} alt="plant_img" className='object-cover object-center w-full h-96 rounded-lg relative z-20'/>
+                <img src={plant?.plant_img} alt="plant_img" className='object-cover object-center w-full h-96 rounded-lg relative'/>
             </div>
               
             <div className='h-full w-full mt-5'>
@@ -178,7 +204,6 @@ const MarketplacePlant = () => {
            
         </div>
 
-      
         {/* related plant */}
         <div className='px-4 mt-6 mb-10'>
           <h1 className='font-semibold text-lg'>Related Plants</h1>
@@ -273,6 +298,11 @@ const MarketplacePlant = () => {
         </div>
         {/* related plant */}
 
+
+        {/* Modal of trade request */}
+        {isOpen && <TradeModal isOpen={isOpen} closeModal={closeModal} plant={plant}/>}
+        {/* End Modal of trade request */}
+
       </div>
     </div>
   )
@@ -294,7 +324,7 @@ const MiniMap = ({lng, lat}) => {
   // },[position, location])
 
   return (
-    <div className='mt-2 overflow-hidden rounded-lg'>
+    <div className='mt-2 overflow-hidden rounded-lg z-10 map'>
       <MapContainer center={position} zoom={17} style={{width: '100%'}}>
         <LayersControl>
             <LayersControl.Overlay name="Street view">

@@ -119,7 +119,7 @@ const SellPlant = () => {
                 <p className='text-emerald-500 px-4 text-xs'>Marketplace</p>
                 <h1 className='font-extrabold text-xl mt-1 px-4 text-gray-700'>Sell a plant</h1>
             </div>
-            <Link to='/pick-plantsCollection' className='bg-green-200 text-green-800 rounded-full focus:outline-none focus:ring-4 
+            <Link to='/marketplace/pick-plantsCollection' className='bg-green-200 text-green-800 rounded-full focus:outline-none focus:ring-4 
             focus:ring-green-300 flex items-center justify-center px-3 py-2 ml-auto mr-2'>
                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" 
                     className="w-5 h-5 mr-1">

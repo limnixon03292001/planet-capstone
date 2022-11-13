@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import EllipsisText from 'react-ellipsis-text/lib/components/EllipsisText';
 import { useQuery } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 import { filterPlantCollections } from '../api/userApi';
 import FilterPlantCollection from '../components/FilterPlantCollection';
 import PlantDetailCollectionModal from '../components/PlantDetailCollectionModal';
@@ -10,7 +11,8 @@ import { FilterPlantCategories } from './MyPlantCollections';
 const growingPrefInitialState = {sunPref: [], interLight: [], soilPref: [], waterReq: [], nativeHab: []};
 const PickPlant = () => {
 
-    const { authUser } = MyContext();
+    const navigate = useNavigate();
+    const { authUser, setSelectedPlant: setSelectedPlantContext } = MyContext();
     let [isOpen, setIsOpen] = useState(false);
     const [plantColl, setPlantColl] = useState({});
     const [selectedPlant, setSelectedPlant] = useState({});
@@ -59,9 +61,9 @@ const PickPlant = () => {
     }
 
 
-    useEffect(() => {
-     console.log("x", selectedPlant);   
-    },[selectedPlant])
+    // useEffect(() => {
+    //  console.log("hey", selectedPlant);   
+    // },[selectedPlant])
 
   return (
     <div className='block border-x border-gray-200 w-full max-w-[860px] min-h-screen pt-6 pb-5'>
@@ -88,7 +90,20 @@ const PickPlant = () => {
         <div className='h-full w-full'>
             <main className='px-4 mt-4 grid grid-cols-myGrid gap-5'>
                 {plantColl?.data?.map((p, id) => (
-                    <Fragment key={id}>
+                    <div key={id} className="relative">
+
+                        <button onClick={() => {
+                            setSelectedPlantContext(p);
+                            navigate('/marketplace/selectedPlant-addMore');
+                        }}
+                        className="p-1 h-max w-max bg-emerald-400/90 text-white absolute -top-2 -left-2 border-[4px]
+                        border-white rounded-full z-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
+                            strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                            </svg>
+                        </button>
+                        
                         <div className="relative flex flex-row group
                         rounded-xl overflow-hidden w-full h-[160px] shadow-md self-start">
                         <div className='w-full max-w-[120px] relative inset-0'>
@@ -143,7 +158,7 @@ const PickPlant = () => {
                             </div>
                             
                         </div>
-                    </Fragment>
+                    </div>
                 ))}
             </main>
         </div>

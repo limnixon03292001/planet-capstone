@@ -1,16 +1,11 @@
 import React, { Fragment, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react';
-import { Link } from 'react-router-dom';
 import { MyContext } from '../context/ContextProvider';
 
 const PlantDetailCollectionModal = ({ isOpen, closeModal, p }) => {
 
     const { setSelectedPlant } = MyContext();
 
-    useEffect(() => {
-        setSelectedPlant(p);
-    },[])
-    
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={closeModal}>
@@ -43,7 +38,7 @@ const PlantDetailCollectionModal = ({ isOpen, closeModal, p }) => {
                         as="h3"
                         className="text-xl font-medium leading-6 border-b border-gray-200 pb-3 mb-5"
                     >   
-                    <Link to={`/selectedPlant-addMore`}><p>{p?.plant_name}</p></Link>
+                        <p>{p?.plant_name}</p>
                     </Dialog.Title>
                         <div> 
                             <div className='flex items-start justify-start'>

@@ -94,6 +94,7 @@ const Sidebar = () => {
     });
 
 
+      //fix the duplication of code. location : 'Messages Component'
     //fetching all chats of a user
     const { refetch: refetchAllChats } = useQuery('all-chats', getAllChats,
     {

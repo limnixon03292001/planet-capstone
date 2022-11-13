@@ -3,6 +3,9 @@ import { NumericFormat } from 'react-number-format';
 import DraggableMarker from "../components/DraggableMarker";
 import { LayersControl, MapContainer, TileLayer } from "react-leaflet";
 import { MyContext } from '../context/ContextProvider';
+import { useMutation } from 'react-query';
+import { addPlantMarketplaceFromCollection } from '../api/userApi';
+import { useNavigate } from 'react-router-dom';
 
 const center = {
     lat: 14.6576953,
@@ -11,18 +14,35 @@ const center = {
 
 const AddMoreDetail = () => {
 
+    const navigate = useNavigate();
     const { selectedPlant } = MyContext();
     const [position, setPosition] = useState(center);
     const [address, setAddress] = useState('');
     const [quantity, setQuantity] = useState('');
     const [price, setPrice] = useState('');
 
-    useEffect(() => {
-        console.log("selected", selectedPlant);
-    },[ selectedPlant]);
+    const { isLoading, mutate } = useMutation(addPlantMarketplaceFromCollection, 
+    {
+        onSuccess: ({ data }) => {
+            console.log("plant added to marketpalce!",data?.message);
+            navigate("/marketplace");
+        },
+        onError: (err) => {
+            const errObject = err.response.data.error;
+            console.log(errObject);
+        }
+    });
+
 
     const handleSubmit = () => {
-        
+        mutate({
+            selectedPlant,
+            status: 'Available',
+            position,
+            address,
+            quantity,
+            price
+        });
     }
 
   return (

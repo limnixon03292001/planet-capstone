@@ -71,7 +71,65 @@ exports.addPlant = async (req,res) => {
 
         await client.query('COMMIT');
 
-        return res.status(201).json({message: "Added plant successfully into your collections! "});
+        return res.status(201).json({message: "Added plant successfully into marketplace! "});
+        
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.log("adding plant into your collection failed",error?.message);
+        return res.status(500).json({
+            error: error?.message
+        })
+    } finally {
+        client.release();
+    }
+}
+
+exports.addPlantFromCollection = async (req,res) => {
+    const authUserId = req.user.id;
+    const data = req.body;
+
+    const client = await pool.connect();
+
+    try {
+  
+        await client.query('BEGIN');
+        const queryPlantDetails = ` 
+            INSERT INTO mp_plant_details 
+            (user_id, plant_name, description, category, date_planted, plant_img, address, status, quantity, price, lat, lng) 
+            VALUES ($1, $2 ,$3 , $4, $5, $6, $7, $8, $9, $10, $11, $12)
+            RETURNING plant_detail_id
+        `;
+        const resPlantDetails = await client.query(queryPlantDetails, [ authUserId, data?.selectedPlant?.plant_name, 
+            data?.selectedPlant?.description, data?.selectedPlant?.category, 
+            data?.selectedPlant?.date_planted, data?.selectedPlant?.plant_img, data?.address, data?.status,
+            data?.quantity, data?.price, data?.position?.lat, data?.position?.lng ]);
+        
+        const idPlantDetail = resPlantDetails.rows[0]?.plant_detail_id;
+        
+        const queryGrowingPref = `
+            INSERT INTO mp_growing_pref
+            (plant_detail_id, sun_pref, inter_light, soil_pref, water_req, native_habitat)
+            VALUES ($1, $2 ,$3, $4, $5, $6)
+        `;
+        await client.query(queryGrowingPref, [ idPlantDetail, data?.selectedPlant?.sun_pref, 
+            data?.selectedPlant?.inter_light, data?.selectedPlant?.soli_pref, data?.selectedPlant?.water_req, 
+            data?.selectedPlant?.native_habitat]);
+        
+        const queryGrowingInformation = `
+            INSERT INTO mp_growing_info
+            (plant_detail_id, avg_h, avg_w, foliage_color, foliage_type,
+            foliage_scent, flower_color, fragrant, nocturnal_flowering,
+            repeat_blooming, flowering_period)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        `;
+        await client.query(queryGrowingInformation, [ idPlantDetail,
+            data?.selectedPlant?.avg_h, data?.selectedPlant?.avg_w, data?.selectedPlant?.foliage_color, data?.selectedPlant?.foliage_type,
+            data?.selectedPlant?.foliage_scent, data?.selectedPlant?.flower_color, data?.selectedPlant?.fragrant, data?.selectedPlant?.nocturnal_flowering,
+            data?.selectedPlant?.repeat_blooming, data?.selectedPlant?.flowering_period ]);
+
+        await client.query('COMMIT');
+
+        return res.status(201).json({message: "Added plant successfully into marketplace! "});
         
     } catch (error) {
         await client.query('ROLLBACK');

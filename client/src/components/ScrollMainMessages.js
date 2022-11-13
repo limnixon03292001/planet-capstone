@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import { MyContext } from '../context/ContextProvider';
@@ -18,7 +19,7 @@ const ScrollMainMessages = ({  scrollRef, authId, sender }) => {
             } else {
                 // console.log("truee", newMsgReceived?.msgContent)
                 setMessages([...messages, newMsgReceived?.msgContent]);  
-                console.log("x",newMsgReceived?.msgContent)
+                // console.log("x",newMsgReceived?.msgContent)
             }
         });
     }, [messages]);
@@ -42,11 +43,11 @@ const ScrollMainMessages = ({  scrollRef, authId, sender }) => {
         :
             messages?.map((m, id) => {
                 if(m?.sent_by === authId) {
-                    return <div ref={scrollRef} key={id} className="flex flex-row-reverse items-center justify-start my-3">
+                    return <div ref={scrollRef} key={id} className="flex flex-row-reverse items-center justify-start my-3 mt-6">
                         <img src={m?.profile} alt='profile'  
                         className='flex-shrink-0 self-end rounded-full h-10 w-10 object-center object-cover'/>
 
-                        <div className='mr-2'>
+                        <div className='mr-2 relative'>
                               {/* checking if the msg_content is img or not */}
                               {
                                 m?.msg_content.split("/")[2] === "res.cloudinary.com" &&
@@ -67,14 +68,15 @@ const ScrollMainMessages = ({  scrollRef, authId, sender }) => {
                                     {m?.msg_content}
                                 </p>
                               }
+                              <span className='text-gray-500 text-[10px] absolute right-0'> {moment(m?.created_at).format('LT')}</span>
                         </div>
                     </div>
                 } else {
-                    return <div ref={scrollRef} key={id} className="flex items-center justify-start my-3">
+                    return <div ref={scrollRef} key={id} className="flex items-center justify-start my-3 mt-6">
                         <img src={m?.profile} alt='profile' 
-                        className='rounded-full self-end h-10 w-10 object-center object-cover'/>
+                        className='rounded-full self-end h-9 w-9 object-center object-cover'/>
 
-                        <div className='ml-2'>
+                        <div className='ml-2 relative'>
                             {/* checking if the msg_content is img or not */}
                             {
                                 m?.msg_content.split("/")[2] === "res.cloudinary.com" &&
@@ -88,17 +90,18 @@ const ScrollMainMessages = ({  scrollRef, authId, sender }) => {
                                     setImgLink(m?.msg_content);
                                     setOpen(prev => !prev);
                                 }}/>
-    
-                                :
 
-                                <p className='break-all text-sm text-justify bg-emerald-200 text-emerald-900 p-2 rounded-md'>
+                                :
+                                
+                                <p className='break-all text-sm text-justify bg-emerald-200 msg-item text-emerald-900 p-2 rounded-md'>
                                     {m?.msg_content}
                                 </p>
                             }
-                         
+                            <span className='text-gray-500 text-[10px] absolute right-0'> {moment(m?.created_at).format('LT')}</span>
                         </div>
+                        
                     </div>
-                    }
+                }
             })
         }
 

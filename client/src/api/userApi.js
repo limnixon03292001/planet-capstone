@@ -135,6 +135,10 @@ export const addPlantMarketplace = (data) => {
     return request({url: '/api/marketplace/addPlant', method: 'POST', data: data});
 }
 
+export const addPlantMarketplaceFromCollection = (data) => {
+    return request({url: '/api/marketplace/addPlantFromCollection', method: 'POST', data: data});
+}
+
 export const getPlantsMarketplace = () => {  
     return request({url: `/api/marketplace/getPlants`, method: 'GET'});
 }

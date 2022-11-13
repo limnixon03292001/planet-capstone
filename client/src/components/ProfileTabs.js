@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Tab } from '@headlessui/react'
 import FetchUserPost from './FetchUserPost'
-import ItemCard from '../components/ItemCard'
 import PlantCollectionsTab from './PlantCollectionsTab'
 import OnSaleTab from './OnSaleTab'
 
