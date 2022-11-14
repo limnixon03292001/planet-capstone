@@ -32,7 +32,7 @@ const SendMessage = ({setMsgContent, mutate, msgContent, chatroomId, pictureUrl,
 
   return (
     <>
-    <form className='relative block z-20 my-1' onSubmit={(e) => handleSendMsg(e)}>
+    <form className='relative block z-10 my-1' onSubmit={(e) => handleSendMsg(e)}>
       <div className='flex items-center justify-start'>
           <label className='inline-block cursor-pointer flex-shrink-0' htmlFor='picture'>
             <input hidden accept="image/png, image/jpg, image/jpeg" type="file" name="picture" id="picture" onChange={handleChangeImage} />

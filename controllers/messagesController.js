@@ -5,8 +5,6 @@ exports.createRoom = async (req, res) => {
     const { userId } = req.body; //another userId
     const authUserId = req.user.id; //authenticated user who initiate the creation of room
 
-    console.log("create", authUserId, userId);
-
     try {
         
         //first before creating a room, we need to check first if there is already existing room for these two users
@@ -17,7 +15,13 @@ exports.createRoom = async (req, res) => {
 
         console.log(existRoom?.rows[0]);
         //if there's already existing room from the two user return that chatroom
+
         if(existRoom.rows.length !== 0){
+            await pool.query(`
+            UPDATE user_chatroom 
+            SET visible_to = NULL 
+            WHERE chatroom_id = $1`, [existRoom?.rows[0]?.chatroom_id]);
+
             return res.status(200).json({chatroom: existRoom?.rows[0]});
         }
         
@@ -120,12 +124,12 @@ exports.getAllChats = async (req, res) => {
             INNER JOIN user_acc ua ON uc.user_id = ua.user_id
             INNER JOIN user_acc ub ON uc.friend_id = ub.user_id
             
-            WHERE uc.user_id = $1 OR uc.friend_id = $1
+            WHERE (uc.user_id = $1 OR uc.friend_id = $1) AND (uc.visible_to = $1 OR uc.visible_to IS NULL) AND (messages.msg_id IS NOT NULL)
 
             ORDER BY messages.created_at DESC 
         `, [authUserId]);
 
-        // console.log(chats?.rows)
+        // console.log(chats?.rows) 
         //  chats.rows.sort((a, b) => b.id - a.id)
         
         res.status(200).json({allChats: chats?.rows});
@@ -149,11 +153,11 @@ exports.getSelectedRoom = async(req,res) => {
         const check = await pool.query(`
             SELECT * FROM user_chatroom 
             WHERE user_chatroom.chatroom_id = $1 AND
-            (user_chatroom.user_id = $2 OR user_chatroom.friend_id = $2)
-        `,[chatroom_id, userId ]);
+            (user_chatroom.user_id = $2 OR user_chatroom.friend_id = $2) AND (user_chatroom.visible_to = $2 OR user_chatroom.visible_to IS NULL)
+        `,[chatroom_id, userId]);
 
         if(check.rows.length === 0){
-            return res.status(401).json({errorCode:401, message: "User does not belong into this room"});
+            return res.status(401).json({errorCode: 401, message: "Oops! looks like this page does not exist."});
         }
 
         //updating the read value to true meaning the user saw the message
@@ -164,13 +168,13 @@ exports.getSelectedRoom = async(req,res) => {
        
         const chats = await pool.query(`
             SELECT user_chatroom.chatroom_id, 
-            user_chatroom.user_id, user_chatroom.friend_id, 
+            user_chatroom.user_id, user_chatroom.friend_id, user_chatroom.visible_to,
 
             ua.firstname userFN, ua.lastname userLN,
             ua.profile userP, ua.email userE, ua.phonenumber userPN, 
 
             ub.firstname fFN, ub.lastname fLN,
-            ub.profile fP, ub.email fE,  ub.phonenumber fPN
+            ub.profile fP, ub.email fE, ub.phonenumber fPN
             
             FROM user_chatroom
             
@@ -184,7 +188,7 @@ exports.getSelectedRoom = async(req,res) => {
         return res.status(200).json({chatroom: chats?.rows});
       
     } catch (error) {
-        console.log(error?.message);
+        console.log("x",error?.message);
         return res.status(500).json({
             error: error?.message
         })
@@ -195,17 +199,17 @@ exports.getSelectedRoom = async(req,res) => {
 exports.getAllMessages = async (req, res) => {
 
     const { chatroom_id } = req.query;
-    console.log("all",chatroom_id)
+    const authUserId = req.user.id;
+
     try {   
         
         const messages = await pool.query(`
             SELECT messages.*, user_acc.firstname, user_acc.lastname, user_acc.profile 
-
             FROM messages 
             LEFT JOIN user_acc ON messages.sent_by = user_acc.user_id
-            WHERE messages.chatroom_id = $1
+            WHERE (messages.chatroom_id = $1) AND (messages.visible_to = $2 OR messages.visible_to IS NULL) 
             ORDER BY messages.created_at ASC
-        `, [Number(chatroom_id)])
+        `, [Number(chatroom_id), authUserId]);
 
         // console.log(messages?.rows);
         res.status(200).json({messages: messages.rows});
@@ -262,10 +266,114 @@ exports.sendMessage = async (req, res) => {
             LEFT JOIN user_acc ON new_message.sent_by = user_acc.user_id
             `, [chatroom_id, authId, msg_content, false]);
 
+            const checkV = await pool.query(`
+                SELECT * FROM user_chatroom 
+                WHERE user_chatroom.chatroom_id = $1 AND
+                (user_chatroom.visible_to = $2 OR user_chatroom.visible_to = $3);
+            `,[chatroom_id, authId, -1]);
+
+            if(checkV.rows[0]?.visible_to === authId){
+                await pool.query(`
+                UPDATE user_chatroom 
+                SET visible_to = NULL 
+                WHERE chatroom_id = $1`, [chatroom_id]);
+            }
+
+            console.log("h", checkV.rows[0])
+
             return res.status(201).json({ newMessage: newMessage?.rows[0]});
         }
         
 
+    } catch (error) {
+        console.log(error?.message);
+        return res.status(500).json({
+            error: error?.message
+        })
+    }
+}
+
+exports.deleteConversation = async (req, res) => {
+    const { chatroom_id, visible_to, user1, user2 } = req.body;
+    const authId = req.user.id; //id of authenticated id sender
+
+    let visibleTo = '';
+    let visibleMsg= '';
+
+    try {
+
+        // if(authId === user1){
+        //     if(authId === visible_to) {
+        //         await pool.query(`
+        //         UPDATE user_chatroom 
+        //         SET visible_to = $1 
+        //         WHERE chatroom_id = $2`, [-1, chatroom_id]);
+        //         return res.status(200).json({message: "Conversation deleted successfully!"});
+        //     }
+        //     await pool.query(`
+        //     UPDATE user_chatroom 
+        //     SET visible_to = $1 
+        //     WHERE chatroom_id = $2`, [user2, chatroom_id]);
+        //     return res.status(200).json({message: "Conversation deleted successfully!"});
+        // }else if (authId === user2){
+        //     if(authId === visible_to) {
+        //         await pool.query(`
+        //         UPDATE user_chatroom 
+        //         SET visible_to = $1 
+        //         WHERE chatroom_id = $2`, [-1, chatroom_id]);
+        //         return res.status(200).json({message: "Conversation deleted successfully!"});
+        //     }
+        //     await pool.query(`
+        //     UPDATE user_chatroom 
+        //     SET visible_to = $1 
+        //     WHERE chatroom_id = $2`, [user1, chatroom_id]);
+        //     return res.status(200).json({message: "Conversation deleted successfully!"});
+        // }
+
+        if(authId === user1){
+            if(authId === visible_to) {
+                visibleTo = -1
+            } else {
+                visibleTo = user2
+            }
+            
+        }else if (authId === user2){
+            if(authId === visible_to) {
+                visibleTo = -1
+            } else {
+                visibleTo = user1
+            }
+        }
+
+        // console.log("x",visibleTo);
+
+        //updating the visibility of the chatroom
+        //we are not actually deleting the chatroom once the user delete their conversation
+        await pool.query(`
+        UPDATE user_chatroom 
+        SET visible_to = $1 
+        WHERE chatroom_id = $2`, [Number(visibleTo), chatroom_id]);
+
+        //here updating each messages, hiding them once the user delete conversation
+        //bug here
+        await pool.query(`
+        UPDATE messages
+        SET visible_to = $1 
+        WHERE chatroom_id = $2 AND (visible_to = $3 OR visible_to = $4)`, [Number(-1), chatroom_id, user1, user2]);
+
+        if(authId === user1) {
+            visibleMsg = user2;
+        } else if (authId === user2){
+            visibleMsg = user1;
+        }
+
+        await pool.query(`
+        UPDATE messages
+        SET visible_to = $1 
+        WHERE chatroom_id = $2 AND visible_to IS NULL`, [Number(visibleMsg), chatroom_id]);
+
+        return res.status(200).json({message: "Conversation deleted successfully!"});
+        
     } catch (error) {
         console.log(error?.message);
         return res.status(500).json({

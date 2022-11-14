@@ -99,6 +99,10 @@ export const createRoom = (data) => {
     return request({url: '/api/chats/create-room', method: 'POST', data :data});
 }
 
+export const deleteConvo = (data) => {
+    return request({url: '/api/chats/delete-convo', method: 'DELETE', data: data});
+}
+
 
 //map data api's
 

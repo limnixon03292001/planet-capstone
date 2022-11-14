@@ -15,7 +15,8 @@ const ButtonMessage = ({ id }) => {
             if(chatroom){
                return navigate(`/messages/chatroom/${chatroom?.chatroom_id}`);
             } else if (newRoom){
-               return navigate(`/messages`);
+                //return navigate(`/messages`);
+                return navigate(`/messages/chatroom/${newRoom?.chatroom_id}`);
             }
             
         },
