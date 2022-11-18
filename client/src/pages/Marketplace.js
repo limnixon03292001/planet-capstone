@@ -160,9 +160,9 @@ const Marketplace = () => {
                   </div>
                 </div>
 
-                <div className="relative overflow-hidden rounded-lg w-full shadow-md">
+                <div className="relative overflow-hidden rounded-lg w-full shadow-md group">
                     <img src={p?.plant_img} alt="plant_img" 
-                    className='w-full h-[280px] aspect-square object-cover object-center bg-emerald-300 text-white'/>
+                    className='w-full h-[280px] group-hover:scale-110 transition-transform aspect-square object-cover object-center bg-emerald-300 text-white'/>
                     <div className='px-3 py-2 w-full h-full bg-gradient-to-t from-black 
                   text-white absolute left-0 right-0 bottom-0 flex flex-col justify-end'>
                         <div className='h-32'>

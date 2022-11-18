@@ -162,3 +162,17 @@ export const getPlantsUser = ({ queryKey }) => {
     const id = queryKey[1]; 
     return request({url: `/api/marketplace/getPlantsUser?userId=${id}`, method: 'GET'});
 }
+
+// plant trade 
+
+export const tradeRequest = (data) => {
+    return request({url: '/api/marketplace/requestTrade', method: 'POST', data: data});
+}
+
+export const getRequest = () => {
+    return request({url: '/api/marketplace/getUserRequestTrade', method: 'GET' }); //users request
+}
+
+export const getIncomingRequest = (data) => {
+    return request({url: '/api/marketplace/getIncomingRequests', method: 'GET' }); //list of requests
+}

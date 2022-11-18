@@ -17,7 +17,7 @@ const OnSaleTab = () => {
     const { isLoading } = useQuery(['onSale', id], getPlantsUser,
     {
         onSuccess: ({ data }) => {
-            console.log("on sale", data?.data)
+            // console.log("on sale", data?.data)
             setOnSalePlants(data?.data)
         },
         onError: (err) => {

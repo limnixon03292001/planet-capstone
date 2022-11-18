@@ -359,7 +359,7 @@ exports.deleteConversation = async (req, res) => {
         await pool.query(`
         UPDATE messages
         SET visible_to = $1 
-        WHERE chatroom_id = $2 AND (visible_to = $3 OR visible_to = $4)`, [Number(-1), chatroom_id, user1, user2]);
+        WHERE chatroom_id = $2 AND (visible_to = $3)`, [Number(-1), chatroom_id, authId]);
 
         if(authId === user1) {
             visibleMsg = user2;

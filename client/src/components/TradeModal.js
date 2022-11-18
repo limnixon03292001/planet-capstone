@@ -1,13 +1,51 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import EllipsisText from 'react-ellipsis-text/lib/components/EllipsisText';
 import PlantDetailCollectionModal from './PlantDetailCollectionModal';
 import PickPlantModal from './PickPlantModal';
+import { useMutation } from 'react-query';
+import { tradeRequest } from '../api/userApi';
 
 const TradeModal = ({ isOpen: open, closeModal, plant }) => {
 
     const [toTrade, setToTrade] = useState(null); //to trade plant state
+    const [note, setNote] = useState('');
     let [isOpen, setIsOpen] = useState(false);
+
+
+    const { mutate, isLoading } = useMutation(tradeRequest, 
+    {
+        onSuccess: ({ data }) => {
+            console.log("request sent", data)
+        },
+        onError: (err) => {
+            const errObject = err.response.data.error;
+            console.log(errObject);
+        }
+    })
+    
+    const handleSendRequest = () => {
+
+        mutate({
+            seller_id: plant?.user_id,
+            seller_plant_id: plant?.plant_detail_id,
+            requester_id: toTrade?.user_id,
+            requester_plant_id: toTrade?.plant_detail_id,
+            note: note,
+        })
+
+     
+    }
+
+    // useEffect(() => {
+    //     console.log("xxx",{
+    //         seller_id: plant?.user_id,
+    //         seller_plant_id: plant?.plant_detail_id,
+    //         requester_id: toTrade?.user_id,
+    //         requester_plant_id: toTrade?.plant_detail_id,
+    //         note: note,
+    //     })
+    // },[toTrade])
 
     function closeModal1() {
         setIsOpen(false);
@@ -78,7 +116,8 @@ const TradeModal = ({ isOpen: open, closeModal, plant }) => {
                         </div>
 
                         {toTrade && 
-                          <button className='bg-green-200 text-green-800 rounded-lg focus:outline-none focus:ring-4 
+                          <button onClick={handleSendRequest}
+                          className='bg-green-200 text-green-800 rounded-lg focus:outline-none focus:ring-4 
                           focus:ring-green-300 flex items-center justify-center mt-4 px-3 py-2 ml-auto'>
                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.2} stroke="currentColor"
                               className="w-6 h-6 mr-2">

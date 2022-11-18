@@ -5,12 +5,13 @@ import { checkOnline } from '../utils/checkOnline';
 import moment from 'moment';
 import { DebounceInput } from 'react-debounce-input';
 import EllipsisText from 'react-ellipsis-text/lib/components/EllipsisText';
+import { useEffect } from 'react';
 
 const MessageList = () => {
 
     const { id } = decode(localStorage?.token);
     const authId = id;
-    const { onlineUsers, chats } = MyContext();
+    const { onlineUsers, chats, setChats } = MyContext();
     
     //here we are checking the user that we are sending a message
     const check = (chat, id) => {
@@ -113,6 +114,18 @@ const MessageList = () => {
     //     console.log("all Chats!", chats)
     // },[chats])
 
+    const handleClientSearch = (e) => {
+       
+        // const res = chats.filter(obj => {
+        //   console.log(Object.values(obj))
+        //   return Object.values(obj)[9].includes(e.target.value);
+         
+        // });
+        // console.log("res", res);
+        // setChats(res);
+
+    }
+
   return (
     <div>
         <div className='px-4 mt-5 mb-7 flex items-center justify-between'>
@@ -121,7 +134,7 @@ const MessageList = () => {
                 debounceTimeout={300}
                 className= 'bg-white px-4 pr-7 py-2 rounded-full w-full text-sm max-w-[230px] md:text-base md:max-w-[380px] mr-2 h-full outline-none border border-gray-300 focus:ring-2 focus:ring-green-200'
                 placeholder='Search user'
-                // onChange={e => setSearchData(e.target.value)} 
+                onChange={(e) => handleClientSearch(e)} 
               />
             <button 
                 type='button'

@@ -29,7 +29,7 @@ exports.addMapPlant = async (req, res) => {
     const { plantName, description, pictureUrl, position } = req.body;
     const authUserId = req.user.id;
     
-    console.log("pos", position);
+    // console.log("pos", position);
     try {
 
         if(pictureUrl) {

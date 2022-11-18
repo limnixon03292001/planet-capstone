@@ -115,9 +115,9 @@ const Sidebar = () => {
     },[]);
 
   
-    useEffect(() => {
-      console.log("x", chats?.filter((c) => c?.read === false && c));
-    },[chats])
+    // useEffect(() => {
+    //   console.log("x", chats?.filter((c) => c?.read === false && c));
+    // },[chats])
 
   return (
     <div className='h-full w-full max-w-max lg:max-w-[282px] xl:max-w-[370px] transition-all block sticky top-0'>

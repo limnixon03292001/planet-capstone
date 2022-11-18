@@ -245,7 +245,7 @@ exports.getRelatedPlants = async (req, res) => {
 exports.getPlantsUser = async (req, res) => {
 
     const { userId } = req.query;
-    console.log(userId)
+    // console.log(userId)
     try {
         
         const query = ` 
@@ -278,3 +278,119 @@ exports.getPlantsUser = async (req, res) => {
     }
 }
 
+
+// TRADE
+exports.requestTrade = async (req, res) => {
+    const { seller_id, seller_plant_id, requester_id, requester_plant_id, note } = req.body;
+
+    try {
+
+        const trade_id = await pool.query(`INSERT INTO trades (seller_id, requester_id)
+        VALUES($1, $2) RETURNING *`,[seller_id, requester_id]);
+
+        const tradeId = trade_id?.rows[0]?.trade_id;
+
+        await pool.query(`INSERT INTO plant_trade_details (trade_id, seller_plant_id, requester_plant_id, note, status)
+        VALUES($1, $2, $3, $4, $5)`,[tradeId, seller_plant_id, requester_plant_id, note, 'Pending']);
+
+        res.status(201).json({msg: 'Request Sent!', success: true});
+
+    } catch (error) {
+        console.log("error",error?.message);
+        return res.status(500).json({
+            error: error?.message
+        })
+    }
+}
+
+exports.userRequests = async (req, res) => {
+    const authUserId = req.user.id
+
+    try {
+        const seller = await pool.query(`
+            SELECT trades.*, ptd.status trade_status, ptd.note, mpd.*, mgp.*, mgi.*,
+            ua.firstname, ua.lastname, ua.profile, ua.email
+            
+            FROM trades 
+            
+            LEFT JOIN plant_trade_details ptd ON trades.trade_id = ptd.trade_id
+
+            LEFT JOIN mp_plant_details mpd ON ptd.seller_plant_id = mpd.plant_detail_id 
+            LEFT JOIN mp_growing_pref mgp ON mpd.plant_detail_id = mgp.plant_detail_id
+            LEFT JOIN mp_growing_info mgi ON mpd.plant_detail_id = mgi.plant_detail_id
+            LEFT JOIN user_acc ua ON mpd.user_id = ua.user_id
+
+            WHERE requester_id = $1
+
+            ORDER BY trades.created_at DESC
+        `,[authUserId]);
+
+        // const requester = await pool.query(`
+        //     SELECT trades.*, ptd.status trade_status, ptd.note, cpd.*, cgp.*, cgi.*
+            
+        //     FROM trades 
+            
+        //     LEFT JOIN plant_trade_details ptd ON trades.trade_id = ptd.trade_id
+
+        //     LEFT JOIN coll_plant_details cpd ON ptd.requester_plant_id = cpd.plant_detail_id
+        //     LEFT JOIN coll_growing_pref cgp ON cpd.plant_detail_id = cgp.plant_detail_id
+        //     LEFT JOIN coll_growing_info cgi ON cpd.plant_detail_id = cgi.plant_detail_id
+
+        //     WHERE requester_id = $1
+        // `,[authUserId]);
+
+
+        res.status(200).json({
+            seller: seller.rows,
+            // requester: requester.rows
+        });
+
+    } catch (error) {
+        console.log("error",error?.message);
+        return res.status(500).json({
+            error: error?.message
+        })
+    }
+}
+
+exports.tradeRequest = async (req, res) => {
+    const authUserId = req.user.id
+
+    try {
+        const requests = await pool.query(`
+            SELECT trades.*, ptd.status trade_status, ptd.note, 
+            
+            mpd.plant_img s_plant_img, mpd.plant_name s_plant_name,
+            cpd.plant_img r_plant_img, cpd.plant_name r_plant_name,
+
+            ua_s.firstname s_fn, ua_s.lastname s_ln, ua_s.profile s_p, ua_s.email s_e,
+            ua_r.firstname r_fn, ua_r.lastname r_ln, ua_r.profile r_p, ua_r.email r_e
+            
+            FROM trades 
+            
+            LEFT JOIN plant_trade_details ptd ON trades.trade_id = ptd.trade_id
+
+            LEFT JOIN mp_plant_details mpd ON ptd.seller_plant_id = mpd.plant_detail_id
+            LEFT JOIN user_acc ua_s ON mpd.user_id = ua_s.user_id
+
+            LEFT JOIN coll_plant_details cpd ON ptd.requester_plant_id = cpd.plant_detail_id
+            LEFT JOIN user_acc ua_r ON cpd.user_id = ua_r.user_id
+
+            WHERE seller_id = $1
+
+            ORDER BY trades.created_at DESC
+        `,[authUserId]);
+
+        res.status(200).json({
+            tradeRequests: requests.rows,
+            // requester: requester.rows
+        });
+
+    } catch (error) {
+        console.log("error",error?.message);
+        return res.status(500).json({
+            error: error?.message
+        })
+        
+    }
+}

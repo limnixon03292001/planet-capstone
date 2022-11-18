@@ -22,15 +22,15 @@ const Trade = () => {
             <span>Trade</span></h1>   
         <div className="w-full px-2 mt-4 sm:px-0">
       <Tab.Group>
-        <Tab.List className="flex space-x-1 border-b border-gray-200">
+        <Tab.List className="flex py-1 px-4 gap-3 w-max ml-auto">
           {categories.map((category) => (
             <Tab
               key={category}
               className={({ selected }) =>
                 classNames(
-                  'w-full py-2.5 ext-sm font-bold leading-5 text-gray-900, focus:outline-none relative',
+                  ' py-2 w-full max-w-max px-3 text-md font-medium leading-5 text-green-700 bg-green-500/30 rounded-full focus:ring-2 ring-green-500/70 relative',
                   selected
-                    ? 'goBorderBottom'
+                    ? 'override'
                     : ''
                 )
               }
