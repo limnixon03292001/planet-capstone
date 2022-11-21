@@ -176,3 +176,16 @@ export const getRequest = () => {
 export const getIncomingRequest = (data) => {
     return request({url: '/api/marketplace/getIncomingRequests', method: 'GET' }); //list of requests
 }
+
+export const getTradeDetails = ({ queryKey }) => {
+    const id = queryKey[1];
+    return request({url: `/api/marketplace/getTradeDetails?tradeId=${id}`, method: 'GET'});
+}
+
+export const approveTrade = (data) => {
+    return request({url: `/api/marketplace/approveTrade`, method: 'POST', data: data});
+}
+
+export const rejectTrade = (data) => {
+    return request({url: `/api/marketplace/rejectTrade`, method: 'POST', data: data});
+}

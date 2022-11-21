@@ -176,7 +176,7 @@ const MainMessages = ({ refetchAllChats }) => {
    
   return (
     <div className='mt-4 w-full h-full'>
-        <div className='border-y border-gray-200 px-4 flex items-center justify-between'>
+        <div className='border-b border-gray-200 px-4 flex items-center justify-between z-10'>
             <div className='py-4'>
                 {check(selectedRoom)}
             </div>

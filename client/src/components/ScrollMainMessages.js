@@ -25,7 +25,7 @@ const ScrollMainMessages = ({  scrollRef, authId, sender }) => {
     }, [messages]);
 
   return (
-    <div className='overflow-auto w-full h-full msgOuterContainer px-4 mt-4'>
+    <div className='overflow-auto w-full h-full msgOuterContainer px-4 pt-4 bg-white'>
         {messages.length === 0 ? 
         <div className='text-gray-500 mt-4 flex flex-col items-center justify-center'>
             <div>

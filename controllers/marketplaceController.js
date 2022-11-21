@@ -394,3 +394,110 @@ exports.tradeRequest = async (req, res) => {
         
     }
 }
+
+exports.getTradeDetails = async (req, res) => {
+
+    const { tradeId } = req.query;
+    const authUserId = req.user.id;
+
+    console.log(tradeId);
+
+    try {
+
+
+        const check = await pool.query(`
+            SELECT * FROM trades WHERE seller_id = $1
+        `,[authUserId]);
+
+
+        if(check?.rows.length === 0) {
+            return res.status(404).json({message: "Not found", errorCode: 404});
+        }
+
+        const seller = await pool.query(`
+            SELECT trades.*, ptd.status trade_status, ptd.note, mpd.*, mgp.*, mgi.*,
+            ua.firstname s_fn, ua.lastname s_ln, ua.profile s_p, ua.email s_e
+            
+            FROM trades 
+            
+            LEFT JOIN plant_trade_details ptd ON trades.trade_id = ptd.trade_id
+
+            LEFT JOIN mp_plant_details mpd ON ptd.seller_plant_id = mpd.plant_detail_id 
+            LEFT JOIN mp_growing_pref mgp ON mpd.plant_detail_id = mgp.plant_detail_id
+            LEFT JOIN mp_growing_info mgi ON mpd.plant_detail_id = mgi.plant_detail_id
+            LEFT JOIN user_acc ua ON mpd.user_id = ua.user_id
+
+            WHERE ptd.trade_id = $1
+        `,[tradeId]);
+
+        const requester = await pool.query(`
+            SELECT trades.*, cpd.*, cgp.*, cgi.*,
+            ua.firstname r_fn, ua.lastname r_ln, ua.profile r_p, ua.email r_e,
+            ptd.created_at trade_creation
+            
+            FROM trades 
+            
+            LEFT JOIN plant_trade_details ptd ON trades.trade_id = ptd.trade_id
+
+            LEFT JOIN coll_plant_details cpd ON ptd.requester_plant_id = cpd.plant_detail_id
+            LEFT JOIN coll_growing_pref cgp ON cpd.plant_detail_id = cgp.plant_detail_id
+            LEFT JOIN coll_growing_info cgi ON cpd.plant_detail_id = cgi.plant_detail_id
+            LEFT JOIN user_acc ua ON cpd.user_id = ua.user_id
+
+            WHERE ptd.trade_id = $1
+        `,[tradeId]);
+
+        res.status(200).json({
+            seller: seller.rows[0],
+            requester: requester.rows[0]
+        });
+            
+    } catch (error) {
+        console.log("error",error?.message);
+        return res.status(500).json({
+            error: error?.message
+        });
+    }
+}
+
+exports.approveTrade = async (req, res) => {
+    const { tradeId }  = req.body;
+    
+    try {
+        const result = await pool.query(`
+            UPDATE plant_trade_details 
+            SET status = $1
+            WHERE trade_id = $2
+            RETURNING *
+        `,['Approved', tradeId]);   
+
+        res.status(200).json(result?.rows[0]);
+
+    } catch (error) {
+        console.log("error",error?.message);
+        return res.status(500).json({
+            error: error?.message
+        });
+    }
+}
+
+exports.rejectTrade = async (req, res) => {
+    const { tradeId } = req.body;
+
+    console.log(tradeId)
+    try {
+        const result = await pool.query(`
+            UPDATE plant_trade_details 
+            SET status = $1
+            WHERE trade_id = $2
+            RETURNING *
+        `,['Rejected', tradeId]);
+
+        res.status(200).json(result?.rows[0]);
+    } catch (error) {
+        console.log("error",error?.message);
+        return res.status(500).json({
+            error: error?.message
+        });
+    }
+}
