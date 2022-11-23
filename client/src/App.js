@@ -8,6 +8,8 @@ import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import ProtectedRoutes from './pages/ProtectedRoutes';
 import MyMap from './pages/MyMap';
+import Verify from './pages/Verify';
+import Confirmation from './pages/Confirmation';
 
 // primary text  - black
 // secondary - #536471
@@ -23,7 +25,10 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login/>} />
           <Route path="/register" element={<Register/>} />
+          <Route path="/verification" element={<Verify/>}/>
+          <Route path="/confirmation/:token" element={<Confirmation/>}/>
           <Route path="/map-sample" element={<MyMap/>}/>
+          
           {/* PROTECTED ROUTES */}
           <Route element={<ProtectedRoutes path="/login"/>}>
             <Route path="/*" element={<Home/>}/>

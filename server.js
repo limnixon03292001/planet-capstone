@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const dotenv = require('dotenv');
+const jwt = require('jsonwebtoken');
 
 const userRoutes = require('./routes/userRoutes');
 const messagesRoutes = require('./routes/messagesRoutes');
@@ -11,8 +13,10 @@ const PORT = process.env.PORT || 5000; //dotenv config? check...
 
 const app = express();
 
+dotenv.config();
 app.use(cors());
-app.use(express.json({limit: '30mb'}));
+app.use(express.json({ limit: '30mb'}));
+
 
 app.use('/api/users', userRoutes);
 app.use('/api/chats', messagesRoutes);

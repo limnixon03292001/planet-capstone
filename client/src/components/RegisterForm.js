@@ -19,8 +19,8 @@ const RegisterForm = () => {
     //request to server after validation
     const { mutate, isLoading } = useMutation(registerUser,{
         onSuccess: ({data}) => {
-            console.log(data);
-            navigate("/login", { replace: true });
+            console.log("hey", data);
+            navigate(`/verification/?userId=${data.userId}&email=${data?.email}`, { replace: true });
         },
         onError: (err) => {
             // const error = JSON.parse(err?.response)
@@ -38,7 +38,6 @@ const RegisterForm = () => {
         initialValues: initialState,
         validationSchema: validationSchemaRegistration,
         onSubmit: (formData) => {
-            console.log("fire!!")
             mutate(formData);
         },
     });

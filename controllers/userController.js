@@ -4,11 +4,41 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const cloudinary = require("../utils/cloudinary");
 const format = require("pg-format");
+const transporter = require('../utils/transporter');
 
 dotenv.config();
 
+exports.confirmationController = async (req, res) => {
+
+    const { token }  = req.query;
+
+    try {
+        const user = jwt.verify(token, process.env.EMAIL_SECRET);
+
+        await pool.query(`
+            UPDATE user_acc
+            SET isverified = $1
+            WHERE user_id = $2
+        `, [true, Number(user?.user)]);
+
+        res.status(200).json({message: "Your email confirmation has been successfully verified!"});
+
+    } catch (error) {
+
+        console.log(error?.message);
+
+        if(error?.message === "jwt expired"){
+            return res.status(400).json({error: "expired"});
+        }
+
+        return res.status(500).json({
+            error: error?.message
+        })
+    }
+};
+
 exports.registerController = async (req,res) => {
-   
+    
     const {
         firstName,
         lastName,
@@ -33,10 +63,11 @@ exports.registerController = async (req,res) => {
         const salt = await bcrypt.genSalt(10);
         const encryptedPassword = await bcrypt.hash(password, salt);
 
-        await pool.query("INSERT INTO user_acc (firstname, lastname, email, password, phonenumber, baranggay, city, birthday, age) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+        const newUser = await pool.query(`INSERT INTO user_acc (firstname, lastname, email, password, phonenumber, baranggay, city, birthday, age) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
         [firstName, lastName, email, encryptedPassword, phoneNumber, baranggay, city, birthday, age,]);
 
-        res.status(201).json({message: "User account has been created successfuly!"});
+        return res.status(201).json({ userId: newUser?.rows[0]?.user_id, email: newUser?.rows[0]?.email, });
 
     } catch (error) {
         console.log(error?.message);
@@ -44,6 +75,56 @@ exports.registerController = async (req,res) => {
             error: error?.message
         })
     }   
+}
+
+exports.emailVerification = async (req, res) => {
+    const { userId, email } = req.body;
+
+    if(email){
+        const user = await pool.query("SELECT * FROM user_acc WHERE email = $1", [ email ]);
+        
+        //checking if the email is already verified
+        if(user.rows[0]?.isverified === true ) {
+            return res.status(401).json({error:{ email: `Email alredy verified!` }});
+        }
+    
+        // creating emailtoken link for account verification, 
+        // this verification link will sent to user's email provided in registration
+        jwt.sign({ user: userId }, process.env.EMAIL_SECRET, { expiresIn: '30mins' },  (err, emailToken) => {
+    
+            if(err) {
+                console.log("error signing email to token", err);
+                res.status(500).json({err: err?.message, errMsg: "error signing email to token"});
+            }
+    
+            const url = `${process.env.URL_DOMAIN}/confirmation/${emailToken}`;
+    
+            transporter.sendMail({
+                to: email,
+                subject: 'Email Verification',
+                html: `
+                <p>Hi there,</p>
+          
+                <p>Thank you for signing up for PLANeT. Click on the link below to verify your account.</p>
+       
+                Please click this link to confirm your email: <a href="${url}">${url}</a>
+        
+                <p>This link will expire in 30 mins. If you did not sign up for a PLANeT account,<br>
+                you can safely ignore this email.</p>
+         
+                <p>Best,</p>
+    
+                <p>The PLANeT Team</p>`,
+            });
+    
+            return res.status(200).json({message: "Confirmation link successfully sent!", success: true});
+        
+        });
+    } else {
+        return res.status(500).json({message: "Email required!"});
+    }
+
+   
 }
 
 exports.loginController = async (req, res) => {

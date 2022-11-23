@@ -2,8 +2,18 @@ import { request } from '../utils/axios-utils';
 import axios from 'axios';
 
 //authentication
+export const confirmation = ({ queryKey }) => {
+    const token = queryKey[0]
+
+    return axios.get(`/api/users/confirmation/?token=${token}`);
+}
+
 export const registerUser = (data) => {
     return axios.post('/api/users/register', data);
+}
+
+export const verifyEmail = (data) => {
+    return axios.post('/api/users/verify-email', data);
 }
 
 export const loginUser = (data) => {

@@ -14,13 +14,17 @@ const { registerController, loginController, addPostController,
         getFollowers,
         addPlantCollection,
         getPlantCollection,
-        filterPlantCollections, 
+        filterPlantCollections,
+        emailVerification,
+        confirmationController, 
 } = require('../controllers/userController'); 
 
 const router = express.Router();
 
 // route for authentication
+router.get("/confirmation", confirmationController);
 router.post("/register", registerController);
+router.post("/verify-email", emailVerification);
 router.post("/login", loginController); 
 // end of route for authentication
 

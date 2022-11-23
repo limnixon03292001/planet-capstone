@@ -7,17 +7,20 @@ import moment from 'moment';
 import { checkOnline } from '../utils/checkOnline';
 import { MyContext } from '../context/ContextProvider';
 import useScrollPosition from '../utils/hooks/useScrollPosition';
-import { checkStatusPill } from '../utils/reusableFunctions';
+import { checkStatusPill, openModal, closeModal } from '../utils/reusableFunctions';
+import AcceptRejectModal from '../components/AcceptRejectModal';
 
 const TradeDetails = () => {
 
+    let [isOpen, setIsOpen] = useState(false);  
     const { id } = useParams();
     const navigate = useNavigate();
-    const { onlineUsers } = MyContext();
+    const { onlineUsers, authUser } = MyContext();
     const [details, setDetails] = useState({});
     const scrollPosition = useScrollPosition();
+    const [typeId, setTypeId] = useState({type: "", tradeId: null});
 
-    const { isLoading } = useQuery(['trade-details', id], getTradeDetails,
+    const { isLoading, refetch } = useQuery(['trade-details', id], getTradeDetails,
     {
         onSuccess: ({ data }) => {
            setDetails(data);
@@ -78,14 +81,26 @@ const TradeDetails = () => {
                 </svg>
                 <span>Trade Details</span>
             </h1>   
-            <div className='w-max'>
-                <button className='w-max text-green-700 bg-green-500/30 py-1 px-2 rounded-md mr-2'>
-                    Accept
-                </button>
-                <button className='w-max text-red-700 bg-red-500/30 py-1 px-2 rounded-md '>
-                    Reject
-                </button>
-            </div>
+            {details?.seller?.user_id === authUser?.user_id ? 
+                <div className='w-max'>
+                    <button onClick={() => {
+                        setTypeId({type: "accept", tradeId: details?.seller?.trade_id});
+                        openModal(setIsOpen);
+                    }}
+                    className='w-max text-green-700 bg-green-500/30 py-1 px-2 rounded-md mr-2'>
+                        Accept
+                    </button>
+                    <button onClick={() => {
+                        setTypeId({type: "reject", tradeId: details?.seller?.trade_id});
+                        openModal(setIsOpen);
+                    }}
+                    className='w-max text-red-700 bg-red-500/30 py-1 px-2 rounded-md '>
+                        Reject
+                    </button>
+                </div>
+            :
+                null
+            }
         </div>
 
         <main className='w-full h-full'>
@@ -261,6 +276,8 @@ const TradeDetails = () => {
        
 
         </main>
+
+        <AcceptRejectModal isOpen={isOpen} closeModal={closeModal} setIsOpen={setIsOpen} typeId={typeId} refetch={refetch}/>
     </div>
   )
 }

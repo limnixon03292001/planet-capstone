@@ -20,6 +20,9 @@ CREATE TABLE user_acc(
     created_at DATE DEFAULT CURRENT_DATE
 );
 
+ALTER TABLE user_acc
+ADD COLUMN isVerified BOOLEAN;
+
 --CREATE TABLE FOR USERS'S FOLLOWERS/FOLLOWING to test
 CREATE TABLE user_followers (
     followers_id SERIAL PRIMARY KEY,
