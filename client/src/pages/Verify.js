@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useMutation } from 'react-query';
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { verifyEmail } from '../api/userApi';
 import EmailIllustration from '../assets/email_send_illustration.svg';
 import EmailSentIllustration from '../assets/email_sent_illustration.svg';
 import planetLogo from '../assets/PLANeTlogo.png';
 
 const Verify = () => {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [sent, setSent] = useState(false);
   const [credentials, setCredentials] = useState({userId: '', email: ''});
@@ -33,6 +34,9 @@ const Verify = () => {
   }
 
   useEffect(() =>  {
+    if(searchParams?.get('userId') === null && searchParams?.get('email') === null) {
+      return navigate('/login', {replace: true});
+    }
     setCredentials({
       userId: searchParams?.get('userId'),
       email:searchParams.get('email'),
@@ -41,26 +45,25 @@ const Verify = () => {
 
   return (
     <>
-    {sent ? 
+    {!sent ? 
         <div className='p-2 w-full h-screen flex flex-col items-center justify-between'>
-        <div className='w-full my-auto text-left md:text-center'>
-          <img src={EmailSentIllustration} alt="illustration_undraw_email" className='w-56 h-56 object-center md:mx-auto'/>
-          <div>
-            <h1 className='font-bold text-xl mt-2 text-gray-800'>Confirmation Link</h1>
-            <p className='text-sm text-gray-600 mt-2'>You're almost there! Please check your email and click the confirmation link attached, to verify your account.</p>
-            <p className='text-sm text-[#00BFA6] mt-2'>Note! If you can't find the email in your inbox, try checking your spam folder.</p>
+          <div className='w-full my-auto text-left md:text-center'>
+            <img src={EmailSentIllustration} alt="illustration_undraw_email" className='w-56 h-56 object-center md:mx-auto'/>
+            <div>
+              <h1 className='font-bold text-xl mt-2 text-gray-800'>Confirmation Link</h1>
+              <p className='text-sm text-gray-600 mt-2'>You're almost there! Please check your email and click the confirmation link attached, to verify your account.</p>
+              <p className='text-sm text-[#00BFA6] mt-2'>Note! If you can't find the email in your inbox, try checking your spam folder.</p>
+            </div>
+          </div>
+    
+          <div className='flex flex-nowrap items-center mt-2 mb-3'>
+            <img src={planetLogo} className="w-[33px] h-[38px] mr-2"/>
+              <div className="font-bold text-lg flex flex-col leading-tight">
+                  <span>PLANeT</span>
+                  <p className='text-[8px] font-light text-gray-600'>The perfect place for Malabonian plant enthusiasts.</p>
+              </div>
           </div>
         </div>
-  
-        <div className='flex flex-nowrap items-center mt-2 mb-3'>
-          <img src={planetLogo} className="w-[33px] h-[38px] mr-2"/>
-            <div className="font-bold text-lg flex flex-col leading-tight">
-                <span>PLANeT</span>
-                <p className='text-[8px] font-light text-gray-600'>The perfect place for Malabonian plant enthusiasts.</p>
-            </div>
-        </div>
-  
-      </div>
     :
       <div className='p-2 w-full h-screen flex flex-col items-center justify-between'>
         <div className='w-full my-auto text-left md:text-center'>

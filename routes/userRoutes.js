@@ -16,10 +16,19 @@ const { registerController, loginController, addPostController,
         getPlantCollection,
         filterPlantCollections,
         emailVerification,
-        confirmationController, 
+        confirmationController,
+        sendRecoveryLink,
+        resetPassword,
+        checkResetPasswordLinkExpiration, 
 } = require('../controllers/userController'); 
 
 const router = express.Router();
+
+//account recovery
+router.post("/account-recovery", sendRecoveryLink);
+router.get("/reset-expiration", checkResetPasswordLinkExpiration);
+router.post("/reset-password", resetPassword);
+//account recovery
 
 // route for authentication
 router.get("/confirmation", confirmationController);

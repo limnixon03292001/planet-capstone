@@ -10,6 +10,8 @@ import ProtectedRoutes from './pages/ProtectedRoutes';
 import MyMap from './pages/MyMap';
 import Verify from './pages/Verify';
 import Confirmation from './pages/Confirmation';
+import AccountRecover from './pages/AccountRecover';
+import ResetPassword from './pages/ResetPassword';
 
 // primary text  - black
 // secondary - #536471
@@ -26,6 +28,8 @@ function App() {
           <Route path="/login" element={<Login/>} />
           <Route path="/register" element={<Register/>} />
           <Route path="/verification" element={<Verify/>}/>
+          <Route path="/account-recovery" element={<AccountRecover/>}/>
+          <Route path="/reset-password/:token" element={<ResetPassword/>}/>
           <Route path="/confirmation/:token" element={<Confirmation/>}/>
           <Route path="/map-sample" element={<MyMap/>}/>
           

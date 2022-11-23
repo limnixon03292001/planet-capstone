@@ -8,6 +8,114 @@ const transporter = require('../utils/transporter');
 
 dotenv.config();
 
+
+//Account recovery or reseting account's password
+exports.sendRecoveryLink = async (req, res) =>{
+    const { email } = req.body;
+
+    try {
+        const user = await pool.query("SELECT * FROM user_acc WHERE email = $1", [ email ]);
+
+        if(user.rows.length === 0) {
+            return res.status(401).json({error: {email: `Email doesn't exist`}});
+        }
+
+        // creating emailtoken link for account verification, 
+        // this verification link will sent to user's email provided in registration
+        jwt.sign({ email: user?.rows[0]?.email }, process.env.EMAIL_SECRET, { expiresIn: '30mins' },  (err, emailToken) => {
+    
+            if(err) {
+                console.log("error signing email to token", err);
+                res.status(500).json({err: err?.message, errMsg: "error signing email to token"});
+            }
+    
+            const url = `${process.env.URL_DOMAIN}/reset-password/${emailToken}`;
+    
+            transporter.sendMail({
+                to: email,
+                subject: 'Reset Password',
+                html: `
+                <p>Hi there,</p>
+            
+                <p>You can now reset your account's password.</p>
+        
+                Please click this link to reset your accounts password: <a href="${url}">${url}</a>
+        
+                <p>This link will expire in 30 mins. If you did not sign up for a PLANeT account,<br>
+                you can safely ignore this email.</p>
+            
+                <p>Best,</p>
+    
+                <p>The PLANeT Team</p>`,
+            });
+    
+            return res.status(200).json({message: "Account recovery link, successfully sent!", success: true});
+        });
+
+    } catch (error) {
+        console.log(error?.message);
+        return res.status(500).json({
+            error: error?.message
+        });
+    }
+};
+
+exports.checkResetPasswordLinkExpiration = async (req, res) => {
+    const { token }  = req.query;
+    console.log("check")
+    try {
+        jwt.verify(token, process.env.EMAIL_SECRET);
+
+
+        return res.status(200).json({message: "The token is valid."});
+
+    } catch (error) {
+        console.log(error?.message);
+
+        if(error?.message === "jwt expired"){
+            return res.status(400).json({error: "expired"});
+        }
+
+        return res.status(500).json({
+            error: error?.message
+        })
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+
+    const { token, password }  = req.body;
+
+    try {
+        const user = jwt.verify(token, process.env.EMAIL_SECRET);
+
+        //encrypt password
+        const salt = await bcrypt.genSalt(10);
+        const encryptedPassword = await bcrypt.hash(password, salt);
+        console.log(user?.email);
+        await pool.query(`
+            UPDATE user_acc
+            SET password = $1
+            WHERE email = $2
+        `, [encryptedPassword, user?.email]);
+
+        return res.status(204).json({message: "Reset password successfully!"});
+
+    } catch (error) {
+        console.log(error?.message);
+
+        if(error?.message === "jwt expired"){
+            return res.status(400).json({error: "expired"});
+        }
+
+        return res.status(500).json({
+            error: error?.message
+        })
+    }
+}
+//Account recovery or reseting account's password
+
+//Account confirmation during creation or registration of accounts.
 exports.confirmationController = async (req, res) => {
 
     const { token }  = req.query;
@@ -24,7 +132,6 @@ exports.confirmationController = async (req, res) => {
         res.status(200).json({message: "Your email confirmation has been successfully verified!"});
 
     } catch (error) {
-
         console.log(error?.message);
 
         if(error?.message === "jwt expired"){
@@ -38,7 +145,6 @@ exports.confirmationController = async (req, res) => {
 };
 
 exports.registerController = async (req,res) => {
-    
     const {
         firstName,
         lastName,
@@ -80,52 +186,59 @@ exports.registerController = async (req,res) => {
 exports.emailVerification = async (req, res) => {
     const { userId, email } = req.body;
 
-    if(email){
-        const user = await pool.query("SELECT * FROM user_acc WHERE email = $1", [ email ]);
-        
-        //checking if the email is already verified
-        if(user.rows[0]?.isverified === true ) {
-            return res.status(401).json({error:{ email: `Email alredy verified!` }});
-        }
-    
-        // creating emailtoken link for account verification, 
-        // this verification link will sent to user's email provided in registration
-        jwt.sign({ user: userId }, process.env.EMAIL_SECRET, { expiresIn: '30mins' },  (err, emailToken) => {
-    
-            if(err) {
-                console.log("error signing email to token", err);
-                res.status(500).json({err: err?.message, errMsg: "error signing email to token"});
+    try {
+        if(email){
+            const user = await pool.query("SELECT * FROM user_acc WHERE email = $1", [ email ]);
+            
+            //checking if the email is already verified
+            if(user.rows[0]?.isverified === true ) {
+                return res.status(401).json({error:{ email: `Email alredy verified!` }});
             }
-    
-            const url = `${process.env.URL_DOMAIN}/confirmation/${emailToken}`;
-    
-            transporter.sendMail({
-                to: email,
-                subject: 'Email Verification',
-                html: `
-                <p>Hi there,</p>
-          
-                <p>Thank you for signing up for PLANeT. Click on the link below to verify your account.</p>
-       
-                Please click this link to confirm your email: <a href="${url}">${url}</a>
         
-                <p>This link will expire in 30 mins. If you did not sign up for a PLANeT account,<br>
-                you can safely ignore this email.</p>
-         
-                <p>Best,</p>
-    
-                <p>The PLANeT Team</p>`,
+            // creating emailtoken link for account verification, 
+            // this verification link will sent to user's email provided in registration
+            jwt.sign({ user: userId }, process.env.EMAIL_SECRET, { expiresIn: '30mins' },  (err, emailToken) => {
+        
+                if(err) {
+                    console.log("error signing email to token", err);
+                    res.status(500).json({err: err?.message, errMsg: "error signing email to token"});
+                }
+        
+                const url = `${process.env.URL_DOMAIN}/confirmation/${emailToken}`;
+        
+                transporter.sendMail({
+                    to: email,
+                    subject: 'Email Verification',
+                    html: `
+                    <p>Hi there,</p>
+              
+                    <p>Thank you for signing up for PLANeT. Click on the link below to verify your account.</p>
+           
+                    Please click this link to confirm your email: <a href="${url}">${url}</a>
+            
+                    <p>This link will expire in 30 mins. If you did not sign up for a PLANeT account,<br>
+                    you can safely ignore this email.</p>
+             
+                    <p>Best,</p>
+        
+                    <p>The PLANeT Team</p>`,
+                });
+        
+                return res.status(200).json({message: "Confirmation link successfully sent!", success: true});
             });
-    
-            return res.status(200).json({message: "Confirmation link successfully sent!", success: true});
-        
-        });
-    } else {
-        return res.status(500).json({message: "Email required!"});
-    }
 
-   
-}
+        } else {
+            return res.status(500).json({message: "Email required!"});
+        }    
+    } catch (error) {
+        console.log(error?.message);
+        return res.status(500).json({
+            error: error?.message
+        });
+    }
+    
+} 
+// End of Account confirmation during creation or registration of accounts.
 
 exports.loginController = async (req, res) => {
     const { email, password } = req.body;

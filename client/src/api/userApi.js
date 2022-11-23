@@ -1,10 +1,23 @@
 import { request } from '../utils/axios-utils';
 import axios from 'axios';
 
+//recovery
+export const sendRecoveryLink = (data) => {
+    return axios.post(`/api/users/account-recovery`, data);
+}
+export const checkLinkExpiration = ({ queryKey }) => {
+    const token = queryKey[0];
+    return axios.get(`/api/users/reset-expiration/?token=${token}`);
+}
+
+export const resetPassword = (data) => {
+    return axios.post(`/api/users/reset-password`, data);
+}
+//recovery
+
 //authentication
 export const confirmation = ({ queryKey }) => {
-    const token = queryKey[0]
-
+    const token = queryKey[0];
     return axios.get(`/api/users/confirmation/?token=${token}`);
 }
 
@@ -19,6 +32,7 @@ export const verifyEmail = (data) => {
 export const loginUser = (data) => {
     return axios.post('/api/users/login', data);
 }
+//authentication
 
 export const getAuthUser = () => {
     return request({url: '/api/users/auth-user', method: 'GET'});

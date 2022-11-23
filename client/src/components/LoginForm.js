@@ -73,9 +73,12 @@ const LoginForm = () => {
                 <button type="submit" className="bg-[#3DDAB4] text-white px-5 py-3 w-full rounded-full
                 focus:outline-none focus:ring-4 focus:ring-green-100">Login</button>
             }
-        
             <Link to="/register" className="mt-3 text-xs font-light text-center block w-full underline text-blue-500">
                 Don’t have an account? Click here to Sign up!
+            </Link>
+            
+            <Link to="/account-recovery" className="mt-3 text-xs font-light text-center block w-full underline text-blue-500">
+                Forgot Password?
             </Link>
         </form>
     :
