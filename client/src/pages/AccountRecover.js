@@ -66,7 +66,7 @@ const AccountRecover = () => {
                     required type="text" placeholder="email address" id="email" name="email"
                     className="rounded-md border border-[#8a9299] w-full max-w-[300px] p-2 px-4 mt-4"/>
 
-                    {!true ? 
+                    {isLoading ? 
                         <ButtonLoader 
                             loadingText="Processing..."
                             style="bg-[#00BFA6] text-white py-2 px-3 rounded-lg mt-3 focus:ring-2 focus:ring-emerald-300 ml-2"

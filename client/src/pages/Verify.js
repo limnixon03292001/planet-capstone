@@ -5,6 +5,7 @@ import { verifyEmail } from '../api/userApi';
 import EmailIllustration from '../assets/email_send_illustration.svg';
 import EmailSentIllustration from '../assets/email_sent_illustration.svg';
 import planetLogo from '../assets/PLANeTlogo.png';
+import ButtonLoader from '../components/ButtonLoader';
 
 const Verify = () => {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ const Verify = () => {
 
   return (
     <>
-    {!sent ? 
+    {sent ? 
         <div className='p-2 w-full h-screen flex flex-col items-center justify-between'>
           <div className='w-full my-auto text-left md:text-center'>
             <img src={EmailSentIllustration} alt="illustration_undraw_email" className='w-56 h-56 object-center md:mx-auto'/>
@@ -79,11 +80,20 @@ const Verify = () => {
             {/* <div>
               <input type="text" placeholder='Email address' className="mt-4 rounded-md border border-[#536471] w-full max-w-[320px] p-4"/>
             </div> */}
+
+            {isLoading ? 
+              <ButtonLoader 
+                loadingText="Sending link..."
+                style="bg-[#00BFA6] text-white py-2 px-3 rounded-lg mt-3 focus:ring-2 focus:ring-emerald-300"
+              />         
+              :
+              <button onClick={handleVerify}
+                type="button" className='bg-[#00BFA6] text-white py-2 px-3 rounded-lg mt-3 focus:ring-2 focus:ring-emerald-300'>
+                Verify my email.
+              </button>
+            }
             
-            <button onClick={handleVerify}
-            type="button" className='bg-[#00BFA6] text-white py-2 px-3 rounded-lg mt-3 focus:ring-2 focus:ring-emerald-300'>
-              Verify my email.
-            </button>
+      
 
           </div>
         </div>

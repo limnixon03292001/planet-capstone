@@ -62,7 +62,7 @@ exports.sendRecoveryLink = async (req, res) =>{
 
 exports.checkResetPasswordLinkExpiration = async (req, res) => {
     const { token }  = req.query;
-    console.log("check")
+    // console.log("check")
     try {
         jwt.verify(token, process.env.EMAIL_SECRET);
 

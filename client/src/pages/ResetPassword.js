@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import ButtonLoader from '../components/ButtonLoader'
+import toast from 'react-hot-toast';
 import Reset from '../assets/reset.svg';
 import Expired from '../assets/expired.svg';
 import planetLogo from '../assets/PLANeTlogo.png';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from 'react-query';
 import { checkLinkExpiration, resetPassword } from '../api/userApi';
 
 const ResetPassword = () => {
 
     const { token } = useParams();
+    const navigate = useNavigate();
     const [isExpired, setIsExpired] = useState(false);
     const [reset, setReset] = useState({password: '', confirmPassword: ''});
     
@@ -30,10 +32,11 @@ const ResetPassword = () => {
         }
     });
 
-    const { mutate} = useMutation(resetPassword,
+    const { mutate, isLoading: resetPasswordLoading } = useMutation(resetPassword,
     {
         onSuccess: ({data}) => {
-            console.log("reset password successfully!", data?.message);
+            toast.success(`Reset password successfully!`);
+            navigate('/login', { replace: true });
         },
         onError: (err) => {
             const errObject = err.response.data.error;
@@ -53,10 +56,6 @@ const ResetPassword = () => {
             password: reset?.password,
         })
     }
-
-    useEffect(() =>{
-        console.log("r", reset, checkExpirationLinkLoading)
-    },[reset])
 
   return (
 
@@ -106,7 +105,7 @@ const ResetPassword = () => {
                             type="password" placeholder="confirm password" id="confirmPassword" name="confirmPassword"
                             className="rounded-md border border-[#8a9299] w-full max-w-[300px] p-2 px-4 mt-4"/>
 
-                            {!true ? 
+                            {resetPasswordLoading ? 
                                 <ButtonLoader 
                                     loadingText="Resetting your password..."
                                     style="bg-[#00BFA6] text-white py-2 px-3 w-full max-w-[300px] block md:mx-auto rounded-lg mt-3 focus:ring-2 focus:ring-emerald-300"
