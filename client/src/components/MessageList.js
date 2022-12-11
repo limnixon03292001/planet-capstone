@@ -19,7 +19,7 @@ const MessageList = () => {
         if(authId === chat?.user_id) {
         return( <div className={`px-4 flex items-center justify-start py-4 cursor-pointer hover:bg-emerald-500/5 
                 transition-all relative`}>
-                    <div className='flex-shrink-0 w-[43px] h-[44px] relative mr-1'>
+                    <div className='flex-shrink-0 w-[37px] h-[37px] md:w-[43px] md:h-[44px] relative mr-1'>
                         <img src={chat?.fp} alt="profile" className="w-full h-full rounded-full object-cover object-center "/>
                         {checkOnline(onlineUsers, chat?.friend_id) ?
                             <div className='bg-green-500 p-[5px] h-2 w-2 rounded-full z-10 inline-block mr-1 absolute -bottom-1 -right-1 border-[3px]
@@ -32,7 +32,7 @@ const MessageList = () => {
                     <div className={`ml-2 flex-1 
                         ${Boolean(chat?.read) === false && authId !== chat?.sentby_id ? 'text-emerald-500 font-medium': 'text-gray-500'}
                         `}>
-                        <h1 className='text-lg font-bold text-gray-900'>{chat?.ffn} {chat?.fln}</h1>
+                        <h1 className='text-md md:text-lg font-bold text-gray-900'>{chat?.ffn} {chat?.fln}</h1>
     
                         {!chat?.msg_content ?
                             <p className='text-xs'>Start a conversation with {chat?.ffn}</p>
@@ -67,7 +67,7 @@ const MessageList = () => {
             return( 
             <div className={`px-4 flex items-center justify-start py-4 cursor-pointer hover:bg-emerald-500/5 transition-all`}>
             
-                <div className='flex-shrink-0 w-[43px] h-[44px] relative mr-1'>
+                <div className='flex-shrink-0 w-[37px] h-[37px] md:w-[43px] md:h-[44px] relative mr-1'>
                     <img src={chat?.userp} alt="profile" className="w-full h-full rounded-full object-cover object-center "/>
                     {checkOnline(onlineUsers, chat?.user_id) ?
                         <div className='bg-green-500 p-[5px] h-2 w-2 rounded-full z-10 inline-block mr-1 absolute -bottom-1 -right-1 border-[3px]
@@ -80,7 +80,7 @@ const MessageList = () => {
                 <div className={`ml-2 flex-1 
                 ${Boolean(chat?.read) === false && authId !== chat?.sentby_id ? 'text-emerald-500 font-medium': 'text-gray-500'}
                 `}>
-                    <h1 className='text-lg font-bold text-gray-900'>{chat?.userfn} {chat?.userln}</h1>
+                    <h1 className='text-md md:text-lg font-bold text-gray-900'>{chat?.userfn} {chat?.userln}</h1>
                     
                     {!chat?.msg_content ?
                         <p className='text-xs'>Start a conversation with {chat?.userfn}</p>

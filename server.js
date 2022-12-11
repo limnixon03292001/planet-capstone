@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');
-const jwt = require('jsonwebtoken');
 
 const userRoutes = require('./routes/userRoutes');
 const messagesRoutes = require('./routes/messagesRoutes');
@@ -40,7 +39,7 @@ const io = require("socket.io")(server, {
     pingTimeout: 60000,
     cors: {
         // https://planet-capstone-production.up.railway.app/
-        origin: ["http://localhost:3000"], 
+        origin: [process.env.URL_DOMAIN], 
     },
 });
 

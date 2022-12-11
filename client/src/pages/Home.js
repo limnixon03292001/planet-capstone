@@ -17,6 +17,7 @@ import PickPlant from './PickPlant';
 import AddMoreDetail from '../components/AddMoreDetail';
 import Trade from './Trade';
 import TradeDetails from './TradeDetails';
+import Navbar from '../components/Navbar';
 
 
 const Home = () => {
@@ -66,6 +67,7 @@ const Home = () => {
         <div className='flex w-full h-full'>
             {/* Sidebar */}
             <Sidebar/>
+            {/* <Navbar/> */}
             {/* Sidebar */}
 
             {/* main-content */}

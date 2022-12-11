@@ -27,7 +27,7 @@ const PostFeeds = () => {
             <FetchPost />
       </div>
 
-      <div className='h-screen w-full max-w-[300px] block sticky top-0 py-6 px-4 overflow-auto'>
+      <div className='hidden md:block w-full max-w-[300px] h-screen sticky top-0 py-6 px-4 overflow-auto'>
       
         <SearchUser/>
 
