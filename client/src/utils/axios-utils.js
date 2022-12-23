@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// https://planet-capstone-production.up.railway.app/
-const instance = axios.create({baseURL: "http://localhost:5000"});
+
+const instance = axios.create({baseURL: "https://planet-capstone-production.up.railway.app/"});
 
 export const request = ({...options}) => {
  
