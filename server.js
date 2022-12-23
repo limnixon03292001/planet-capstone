@@ -29,7 +29,7 @@ if(process.env.NODE_ENV === "production") {
 
 // Function to start the server
 const server = app.listen(PORT, () => {
-    console.log(`The server is running at localhost ${PORT}`)
+    console.log(`The server is running at localhost ${PORT}, 'node=',${process.env.NODE_ENV}`)
 });
 
 
