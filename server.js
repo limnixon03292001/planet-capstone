@@ -23,9 +23,9 @@ app.use('/api/map', mapRoutes);
 app.use('/api/marketplace', marketplaceRoutes);
 
 //fixed when refresh cannot get the route
-// if(process.env.NODE_ENV === "production") {
-//     app.use(express.static(path.join(__dirname, "client/build")));
-// }
+if(process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, "client/build")));
+}
 
 // Function to start the server
 const server = app.listen(PORT, () => {

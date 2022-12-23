@@ -15,8 +15,6 @@ import SellPlant from './SellPlant';
 import MarketplacePlant from './MarketplacePlant';
 import PickPlant from './PickPlant';
 import AddMoreDetail from '../components/AddMoreDetail';
-import Trade from './Trade';
-import TradeDetails from './TradeDetails';
 import Navbar from '../components/Navbar';
 
 
@@ -85,8 +83,6 @@ const Home = () => {
                     <Route path="/map/*" element={<MyMap/>}/>
                     <Route path="/add-plantCollections" element={<AddPlantCollections/>}/>
                     <Route path="/my-plants" element={<MyPlantCollections/>}/>
-                    <Route path="/trade" element={<Trade/>}/>
-                    <Route path="/trade/details/:id" element={<TradeDetails/>} />
 
                     {/* 404 PAGE  */}
 

@@ -9,7 +9,6 @@ import { Icon } from "leaflet";
 import fire from '../assets/PLANeTlogo.png';
 import { MyContext } from '../context/ContextProvider';
 import { checkOnline } from '../utils/checkOnline';
-import TradeModal from '../components/TradeModal';
 
 const MarketplacePlant = () => {
 

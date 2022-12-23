@@ -200,27 +200,27 @@ CREATE TABLE mp_growing_info(
 
 -- PLANT TRADE TABLE (EXPERIMENTAL)
 
-CREATE TABLE trades (
-    trade_id SERIAL PRIMARY KEY,
-    seller_id INT NOT NULL,
-    requester_id INT NOT NULL,
-    created_at timestamp NOT NULL DEFAULT NOW(),
-    FOREIGN KEY (seller_id) REFERENCES user_acc(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (requester_id) REFERENCES user_acc(user_id) ON DELETE CASCADE
-);
+-- CREATE TABLE trades (
+--     trade_id SERIAL PRIMARY KEY,
+--     seller_id INT NOT NULL,
+--     requester_id INT NOT NULL,
+--     created_at timestamp NOT NULL DEFAULT NOW(),
+--     FOREIGN KEY (seller_id) REFERENCES user_acc(user_id) ON DELETE CASCADE,
+--     FOREIGN KEY (requester_id) REFERENCES user_acc(user_id) ON DELETE CASCADE
+-- );
 
-CREATE TABLE plant_trade_details (
-    plant_trade_id SERIAL PRIMARY KEY,
-    trade_id INT NOT NULL,
-    seller_plant_id INT NOT NULL,
-    requester_plant_id INT NOT NULL,
-    note TEXT,
-    status TEXT, 
-    created_at timestamp NOT NULL DEFAULT NOW(),
-    FOREIGN KEY (trade_id) REFERENCES trades(trade_id) ON DELETE CASCADE,
-    FOREIGN KEY (seller_plant_id) REFERENCES mp_plant_details(plant_detail_id),
-    FOREIGN KEY (requester_plant_id) REFERENCES coll_plant_details(plant_detail_id)
-);
+-- CREATE TABLE plant_trade_details (
+--     plant_trade_id SERIAL PRIMARY KEY,
+--     trade_id INT NOT NULL,
+--     seller_plant_id INT NOT NULL,
+--     requester_plant_id INT NOT NULL,
+--     note TEXT,
+--     status TEXT, 
+--     created_at timestamp NOT NULL DEFAULT NOW(),
+--     FOREIGN KEY (trade_id) REFERENCES trades(trade_id) ON DELETE CASCADE,
+--     FOREIGN KEY (seller_plant_id) REFERENCES mp_plant_details(plant_detail_id),
+--     FOREIGN KEY (requester_plant_id) REFERENCES coll_plant_details(plant_detail_id)
+-- );
 
 -- END OF PLANT TRADE TABLE
 
