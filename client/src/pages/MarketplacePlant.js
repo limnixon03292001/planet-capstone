@@ -10,6 +10,7 @@ import fire from '../assets/PLANeTlogo.png';
 import { MyContext } from '../context/ContextProvider';
 import { checkOnline } from '../utils/checkOnline';
 
+
 const MarketplacePlant = () => {
 
   const { id } = useParams();
@@ -299,7 +300,7 @@ const MarketplacePlant = () => {
 
 
         {/* Modal of trade request */}
-        {isOpen && <TradeModal isOpen={isOpen} closeModal={closeModal} plant={plant}/>}
+       
         {/* End Modal of trade request */}
 
       </div>
