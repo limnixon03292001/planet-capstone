@@ -146,7 +146,7 @@ const Post = ({ postData }) => {
         {/* image section */}
 
         {/* react and comment section */}
-        <div className='mt-6 py-3 border-t border-gray-200'>
+        <div className={`${postData?.picture ? `mt-0` : `mt-6`} py-3 border-t border-gray-200`}>
             <div className='flex justify-evenly items-center text-gray-500 font-extralight Grid'>
                 <button className='flex justify-center items-center Likes' onClick={() => likeAndDislikePost(postData.post_id)}>
                     { liked ? 
