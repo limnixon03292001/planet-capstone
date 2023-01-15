@@ -17,7 +17,7 @@ body{
 }
 
 .msgOuterContainer {
-    height: calc(100vh - 234px);
+    height: calc(100vh - 188px);
 }
 
 /* overide css of leaflet */
@@ -89,7 +89,13 @@ body{
 
 .mapWrapper {
     width: 100%;
-    height: calc(100vh - 126px);
+    height: calc(100vh - 56px);
+}
+
+@media (min-width: 640px) {
+    .mapWrapper {
+        height: 100vh;
+    }
 }
 
 .mapboxgl-popup-close-button{

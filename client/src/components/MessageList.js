@@ -128,7 +128,7 @@ const MessageList = () => {
 
   return (
     <div>
-        <div className='px-4 mt-5 mb-7 flex items-center justify-between'>
+        <div className='px-4 mt-4 mb-2 flex items-center justify-between'>
             <DebounceInput
                 minLength={2}
                 debounceTimeout={300}

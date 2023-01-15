@@ -54,7 +54,7 @@ const MakePost = () => {
   return (
     <div className='py-4 w-full h-full border-b border-gray-200'>
         <div className='px-4 w-full h-full flex'>
-            <img src={authUser?.profile} className="w-[48px] flex-shrink-0 h-[50px] rounded-full object-cover object-center mr-2"/>
+            <img src={authUser?.profile} className="w-10 h-10 sm:w-11 sm:h-11 flex-shrink-0 rounded-full object-cover object-center mr-2"/>
             <div className='w-full h-full flex-1'>
                 <textarea placeholder="Flex your plant" name="description"
                 onChange={(e) => setDescription(e.target.value)}

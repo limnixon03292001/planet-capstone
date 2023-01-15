@@ -7,6 +7,7 @@ import { useQuery } from 'react-query';
 import EllipsisText from "react-ellipsis-text";
 import { MyContext } from '../context/ContextProvider';
 import { checkOnline } from '../utils/checkOnline';
+import ProfileSideBar from '../components/ProfileSidebar';
 import moment from 'moment';
 
 
@@ -58,30 +59,28 @@ const Marketplace = () => {
 
   return (
     // max-w-[660px]
-    <div className='block border border-gray-200 w-full min-h-screen pt-6 overflow-hidden'>
+    <div className='block border border-gray-200 w-full min-h-screen pt-4 overflow-hidden'>
       <div className='w-full flex items-center'>
-        <h1 className='font-extrabold text-lg mt-1 px-4 flex items-bottom justify-start'>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mr-2 w-6 h-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
-        </svg>
-         <span>Marketplace</span> </h1>
-        <Link to="/marketplace/sell-plants" className='ml-auto block'>
-          <button className='bg-green-200 text-green-800 rounded-full focus:outline-none focus:ring-4 
-        focus:ring-green-300 flex items-center justify-center px-3 py-2 ml-auto mr-2'>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-1">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-            </svg>
-            <span className='text-md block mt-[1px]'>Sell plant</span>
-          </button>
-        </Link>
+          <h1 className='text-lg mt-1 px-4 flex items-center justify-start'>
+            <ProfileSideBar/>
+            <span className='ml-3 font-extrabold '>Marketplace</span> 
+          </h1>
+          <Link to="/marketplace/sell-plants" className='ml-auto block'>
+            <button className='bg-green-200 text-green-800 rounded-full focus:outline-none focus:ring-4 
+          focus:ring-green-300 flex items-center justify-center px-3 py-2 ml-auto mr-2'>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-4 w-4 sm:w-5 sm:h-5 mr-1">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+              </svg>
+              <span className='text-sm sm:text-md block mt-[1px]'>Sell plant</span>
+            </button>
+          </Link>
       </div>
       <div className='h-full w-full'>
 
         {/* button start */}
-        <div className='transition-all block sticky top-0 w-full h-max px-4 py-4 mt-4 border-y border-gray-200 shadow'>
-          <div className='flex items-center'>
-
-            <div className='mr-2'>
+        <div className='relative transition-all block w-full h-max px-4 py-4 mt-4 border-y border-gray-200 shadow'>
+          <div className='flex items-center relative z-20'>
+            <div className='mr-2 '>
               <p className='text-gray-500 text-sm mb-2'>Date Added</p>
               <FilterButton data={dateAdded} setData={setDateAdd}/>
             </div>

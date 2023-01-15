@@ -81,7 +81,7 @@ const AddPlantMap = () => {
   // }
   
   return (
-    <div className='px-4 mb-4 w-full h-full'>
+    <div className='px-4 pt-4 b-4 w-full h-full'>
 
       <div className='mb-7 flex items-center justify-between'>
         <h1 className='font-bold text-xl inline'>Add New Plant</h1>

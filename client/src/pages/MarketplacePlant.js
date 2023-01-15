@@ -9,6 +9,7 @@ import { Icon } from "leaflet";
 import fire from '../assets/PLANeTlogo.png';
 import { MyContext } from '../context/ContextProvider';
 import { checkOnline } from '../utils/checkOnline';
+import ProfileSidebar from '../components/ProfileSidebar';
 
 
 const MarketplacePlant = () => {
@@ -75,10 +76,11 @@ const MarketplacePlant = () => {
   }, [location]);
 
   return (
-    <div className='block border-x border-gray-200 w-full min-h-screen pt-6 overflow-hidden'>
+    <div className='block border-x border-gray-200 w-full min-h-screen pt-4 overflow-hidden'>
       <div>
-        <div className='sticky top-0'>
-          <h1 className='font-extrabold text-lg px-4 h-8 z-10 bg-white/60 backdrop-blur '>Marketplace</h1>
+        <div className='flex items-center justify-start mt-1 px-4'>
+          <ProfileSidebar/>
+          <h1 className='font-extrabold text-lg ml-3'>Marketplace</h1>
         </div>
 
         <div className='px-4 mt-8 md:grid grid-cols-2 h-full w-full'>

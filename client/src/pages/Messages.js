@@ -3,6 +3,7 @@ import { useQuery, } from 'react-query'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { getAllChats } from '../api/userApi'
 import MessageList from '../components/MessageList'
+import ProfileSidebar from '../components/ProfileSidebar'
 import { MyContext } from '../context/ContextProvider'
 import MainMessages from './MainMessages'
 
@@ -32,8 +33,11 @@ const Messages = () => {
   return (
 
     // max-w-[660px]
-  <div className='block border-x border-gray-200 w-full max-w-[860px] h-full min-h-screen pt-6 overflow-hidden'>
-    <h1 className='font-extrabold text-lg mt-1 px-4'>Messages</h1>
+  <div className='block border-x border-gray-200 w-full max-w-[860px] h-full min-h-screen pt-3 sm:pt-5 overflow-hidden'>
+    <div className='text-lg mt-1 px-4 flex items-center justify-start'>
+      <ProfileSidebar/>
+      <h1 className='font-extrabold ml-3'>Messages</h1>
+    </div>
     <div className='h-full w-full'>
       <Routes>
         <Route path="/" element={<MessageList/>}/>

@@ -26,6 +26,7 @@ const MapBox = () => {
         }
     });
     // mapbox://styles/mapbox/satellite-streets-v12
+
     useEffect(() => {
 
         const map = new mapboxgl.Map({
@@ -34,7 +35,7 @@ const MapBox = () => {
           center: [120.9658, 14.6681],
           zoom: 13,
 
-        });
+    });
     
     
         data?.data?.data.forEach((location) => {
@@ -72,29 +73,21 @@ const MapBox = () => {
     
     
         return () => map.remove();
-      },[data?.data?.data]);
+    },[data?.data?.data]);
 
   return (
-    <div className='mb-4'>
-         <div>
-            <div className=' px-4 w-full flex justify-between'>
-                <h1 className='font-extrabold text-lg mt-1'>My Map</h1>
-                <Link to="/map/add-plant" className='bg-[#3DDAB4] text-white py-2 px-3 rounded-full focus:outline-none focus:ring-4 focus:ring-green-100'>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.9} stroke="currentColor"
+    <div>
+
+        <div className="mapWrapper relative" ref={mapContainerRef} >
+            <Link to="/map/add-plant" className='bg-[#3DDAB4] text-white p-1 rounded-full
+             focus:outline-none focus:ring-4 focus:ring-green-100 flex items-center absolute right-2 top-36 z-20'>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
                 className="w-6 h-6 inline align-top">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
                 </svg>
-                <span>Add new</span>
-                </Link>
-            </div>
-            <div className='px-4 mt-3 mb-4'>
-                {/* <h1 className='font-extrabold text-lg mt-1'>About our map</h1> */}
-                <p className='text-gray-500 text-sm'>Here you can find different plants in different places of malabon, with the help of our malabonian plant enthusiasts! </p>
-            </div>
+                {/* <span className='text-baseline'>Add new</span> */}
+            </Link>
         </div>
-
-        <div className="mapWrapper" ref={mapContainerRef} />
-
     </div>
   )
 }

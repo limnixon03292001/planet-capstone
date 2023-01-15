@@ -103,7 +103,7 @@ const Post = ({ postData }) => {
     <div className='my-5 border-b border-gray-200'>
         <div className="flex justify-start items-center px-4">
 
-            <div className='flex-shrink-0 w-[41px] h-[41px] relative mr-2'>
+            <div className='flex-shrink-0 w-9 h-9 sm:w-11 sm:h-11 relative mr-2'>
                 <img src={postData?.profile} className="w-full h-full rounded-full object-cover object-center "/>
                 {checkOnline(onlineUsers,postData?.user_id) ?
                     <div className='bg-green-500 p-[5px] h-2 w-2 rounded-full inline-block mr-1 absolute -bottom-1 -right-1 border-[3px]

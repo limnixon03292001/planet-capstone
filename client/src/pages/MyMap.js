@@ -1,5 +1,4 @@
-import {Routes, Route} from 'react-router-dom'
-import MainMap from '../components/MainMap'
+import { Routes, Route } from 'react-router-dom'
 import MapBox from '../components/MapBox'
 import AddPlantMap from './AddPlantMap'
 
@@ -8,7 +7,7 @@ const MyMap = () => {
 
   return (
 
-    <div className='block border border-gray-200 w-full max-w-full min-h-screen pt-6 overflow-hidden'>
+    <div className='block border-x border-gray-200 w-full max-w-full min-h-screen overflow-hidden'>
 
       <Routes>
         {/* <Route path="/" element={<MainMap/>} /> */}

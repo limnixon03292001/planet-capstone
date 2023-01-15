@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { getUserProfile } from '../api/userApi';
 import decode from 'jwt-decode';
@@ -11,11 +11,14 @@ import ButtonMessage from './ButtonMessage';
 
 const ProfileTopInfo = () => {
     const { id: authId } = decode(localStorage?.token);
+    const [visible, setVisible]= useState(false);
     const { id } = useParams();
+    const navigate = useNavigate();
     const [user, setUser] = useState({});
     const [userFollowers, setUserFollowers] = useState(0);
     const { onlineUsers } = MyContext();
-  
+
+
     const { isLoading } = useQuery(['user-profile', id], getUserProfile,
     {   
         onSuccess: ({data}) => {
@@ -28,19 +31,32 @@ const ProfileTopInfo = () => {
         }
     });
 
-    const textFormatFollowers = (followersCount) => {
-         return followersCount > 1 ?
-                <span>{followersCount} followers</span>
-            :
-                <span>{followersCount ?? 0} follower</span>
-    }
+    // const textFormatFollowers = (followersCount) => {
+    //      return followersCount > 1 ?
+    //             <span>{followersCount} followers</span>
+    //         :
+    //             <span>{followersCount ?? 0} follower</span>
+    // }
+
+    const toggleVisible = () => {
+        if (window.scrollY > 80){
+          setVisible(true)
+        } 
+        else if (window.scrollY  <= 300){
+          setVisible(false)
+        }
+      };
+    
+      window.addEventListener('scroll', toggleVisible);
 
 
   return (
     <div>
         {/* top nav profile */}
-        <div className='flex items-center justify-start px-3 mb-4'>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+        <h1 className={`${visible ? `fixed top-0 z-50 -translate-y-0` : `-translate-y-0`} w-full transition-all bg-white/80 backdrop-blur`}>
+        <div className='flex items-center justify-start px-3 py-2'>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"
+            onClick={() => navigate(-1)}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
             </svg>
             <div className='ml-5'>
@@ -58,6 +74,7 @@ const ProfileTopInfo = () => {
                 }
             </div>
         </div>
+        </h1>
         {/* top nav profile */} 
 
     <div>
@@ -95,16 +112,6 @@ const ProfileTopInfo = () => {
                             <ButtonFollow id={id} userFollowers={userFollowers} setUserFollowers={setUserFollowers}/>
                         </div>
                     </div>}
-                    
-                    {/* <div className='self-start mr-2 -mt-12 md:-mt-0'>
-                        <div className='flex items-center'>
-                            <button className="text-gray-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div> */}
             
                 </div>
             </div>
@@ -112,8 +119,8 @@ const ProfileTopInfo = () => {
         {/* user info */}
 
         {/* user descrip birthday etc */}
-        <div className='mt-6'>
-            <p className='mx-9 text-gray-600 text-sm break-all'>{user?.description}</p>
+        <div className='mt-4'>
+            <p className='mx-9 text-gray-500 text-sm'>{user?.description}</p>
 
             <div className='mx-8 mt-4 flex flex-wrap items-center justify-start'>
             <div className='text-gray-500 mb-1 mr-3 md:mr-7'>

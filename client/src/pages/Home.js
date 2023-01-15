@@ -15,7 +15,7 @@ import SellPlant from './SellPlant';
 import MarketplacePlant from './MarketplacePlant';
 import PickPlant from './PickPlant';
 import AddMoreDetail from '../components/AddMoreDetail';
-import Navbar from '../components/Navbar';
+import Bottombar from '../components/Bottombar';
 
 
 const Home = () => {
@@ -63,84 +63,41 @@ const Home = () => {
   return (
     <div className='block w-full max-w-[1500px] m-auto min-h-full h-full'>
         <div className='flex w-full h-full'>
-            {/* Sidebar */}
+         
             <Sidebar/>
-            {/* <Navbar/> */}
-            {/* Sidebar */}
 
-            {/* main-content */}
-            <div className='w-full h-full'>
-                <div className='min-h-screen w-full h-full'>
-                  <Routes>
-                    <Route path= "/" element={<PostFeeds/>}/>
-                    <Route path="/profile/:id" element={<Profile/>}/>
-                    <Route path="/messages/*" element={<Messages/>}/>
-                    <Route path="/marketplace" element={<Marketplace/>}/>
-                    <Route path="/marketplace/sell-plants" element={<SellPlant/>}/>
-                    <Route path="/marketplace/item/:id" element={<MarketplacePlant/>}/>
-                    <Route path="/marketplace/pick-plantsCollection" element={<PickPlant/>}/>
-                    <Route path="/marketplace/selectedPlant-addMore" element={<AddMoreDetail/>}/>
-                    <Route path="/map/*" element={<MyMap/>}/>
-                    <Route path="/add-plantCollections" element={<AddPlantCollections/>}/>
-                    <Route path="/my-plants" element={<MyPlantCollections/>}/>
+            
+              <Bottombar/>
+        
+              {/* main-content */}
+              <div className='w-full h-full'>
+                    <div className='min-h-screen w-full h-full'>
+                      <Routes>
+                        <Route path= "/" element={<PostFeeds/>}/>
+                        <Route path="/profile/:id" element={<Profile/>}/>
+                        <Route path="/messages/*" element={<Messages/>}/>
+                        <Route path="/marketplace" element={<Marketplace/>}/>
+                        <Route path="/marketplace/sell-plants" element={<SellPlant/>}/>
+                        <Route path="/marketplace/item/:id" element={<MarketplacePlant/>}/>
+                        <Route path="/marketplace/pick-plantsCollection" element={<PickPlant/>}/>
+                        <Route path="/marketplace/selectedPlant-addMore" element={<AddMoreDetail/>}/>
+                        <Route path="/map/*" element={<MyMap/>}/>
+                        <Route path="/add-plantCollections" element={<AddPlantCollections/>}/>
+                        <Route path="/my-plants" element={<MyPlantCollections/>}/>
 
-                    {/* 404 PAGE  */}
+                        {/* 404 PAGE  */}
 
-                    <Route path="*" element={<NotFound/>}/>
+                        <Route path="*" element={<NotFound/>}/>
 
-                    {/* 404 PAGE  */}
-                  </Routes>
+                        {/* 404 PAGE  */}
+                      </Routes>
+                    </div>
                 </div>
-            </div>
-          {/* main-content */}
-
+              {/* main-content */}
+         
         </div>
     </div>
   )
 }
 
 export default Home
-
-
-
-// {/* <div className=' h-full w-full max-w-max lg:max-w-[230px] xl:max-w-[320px] transition-all sticky top-0 hidden lg:block'>
-// <div className='py-3'>
-//   <h1 className='font-extrabold text-xl mt-2 px-4'>Trending now!</h1>
-
-//   <div className='flex items-center justify-start px-4 mt-4'>
-//     <p className='text-[#536471] text-lg mr-2'>#1</p>
-//     <>
-//     <img src={user} className="w-[30px] h-[30px] flex-shrink-0 rounded-full object-cover object-center mr-2"/>
-//     <div className="block">
-//         <h1 className='text-md block'>Nixon Lim's post</h1>
-//         {/* <p className='font-extralight text-xs break-words text-[#536471]'>13 mins ago.</p> */}
-//     </div>
-//     </>
-//   </div>
-
-//   <div className='flex items-center justify-start px-4 mt-4'>
-//     <p className='text-[#536471] text-lg mr-2'>#2</p>
-//     <>
-//     <img src={user} className="w-[30px] h-[30px] flex-shrink-0 rounded-full object-cover object-center mr-2"/>
-//     <div className="block">
-//         <h1 className='text-md block'>Nixon Lim's post</h1>
-//         {/* <p className='font-extralight text-xs break-words text-[#536471]'>13 mins ago.</p> */}
-//     </div>
-//     </>
-//   </div>
-
-//   <div className='flex items-center justify-start px-4 mt-4'>
-//     <p className='text-[#536471] text-lg mr-2'>#3</p>
-//     <>
-//     <img src={user} className="w-[30px] h-[30px] flex-shrink-0 rounded-full object-cover object-center mr-2"/>
-//     <div className="block">
-//         <h1 className='text-md block'>Nixon Lim's post</h1>
-//         {/* <p className='font-extralight text-xs break-words text-[#536471]'>13 mins ago.</p> */}
-//     </div>
-//     </>
-//   </div>
-
-
-
-// </div>
-// </div> */}
