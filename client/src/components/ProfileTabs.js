@@ -23,7 +23,7 @@ const ProfileTabs = () => {
     // }, [location]);
 
   return (
-    <div className="w-full px-2 mt-4 sm:px-0">
+    <div className="w-full px-2 mt-4 sm:px-0 mb-16 sm:mb-0">
       <Tab.Group>
         <Tab.List className="flex space-x-1 border-b border-gray-200">
           {categories.map((category) => (

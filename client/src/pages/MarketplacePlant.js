@@ -18,7 +18,6 @@ const MarketplacePlant = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { onlineUsers, authUser } = MyContext();
-  let [isOpen, setIsOpen] = useState(false);
   const [plant, setPlant] = useState({});
   const [relatedPlant, setRelatedPlant] = useState([]);
 
@@ -63,13 +62,6 @@ const MarketplacePlant = () => {
         }
   });
 
-  function closeModal() {
-    setIsOpen(false);
-}
-
-  function openModal(p) {
-      setIsOpen(true);
-  }
 
   useEffect(() => {
     setPlant(data?.data[0])
@@ -77,7 +69,7 @@ const MarketplacePlant = () => {
 
   return (
     <div className='block border-x border-gray-200 w-full min-h-screen pt-4 overflow-hidden'>
-      <div>
+      <div className='mb-1'>
         <div className='flex items-center justify-start mt-1 px-4'>
           <ProfileSidebar/>
           <h1 className='font-extrabold text-lg ml-3'>Marketplace</h1>
@@ -199,9 +191,7 @@ const MarketplacePlant = () => {
                 <span>{plant?.address}</span>
               </p>
               {plant?.lng && plant?.lat && <MiniMap lng={plant?.lng} lat={plant?.lat}/> }
-           
             </div>
-
           </div>
            
         </div>
@@ -210,15 +200,16 @@ const MarketplacePlant = () => {
         <div className='px-4 mt-6 mb-10'>
           <h1 className='font-semibold text-lg'>Related Plants</h1>
 
-          <div className='mt-4 grid grid-cols-myGrid'>
+          <div className='mt-4 w-full mb-16'>
+            <div className='w-full overflow-y-auto flex flex-row'>
               {relatedPlant?.length === 0 && !relatedPlantLoading && <p className='text-gray-500'>No related plants found...</p> }
               {relatedPlant?.map((p, id) => (
-                <div className="my-3 relative w-max" key={id}>
-                  <Link to={`/marketplace/item/${p?.plant_detail_id}`} >
+                <div className="mr-4 ml-1 my-4 relative w-full max-w-[220px] inline-block flex-shrink-0" key={id}>
+                  <Link to={`/marketplace/item/${p?.plant_detail_id}`} className="block w-full h-full">
                     <div className='group'>
                       <img src={p?.profile} alt="profile_img" 
                       className='aspect-square absolute -top-3 -left-2 rounded-full w-10 h-10 object-cover object-center
-                      bg-emerald-300 border-[4px] border-white text-white z-20 block cursor-pointer'/>
+                      bg-emerald-300 border-[4px] border-white text-white z-10 block cursor-pointer'/>
 
                       
                       <div className='group-hover:opacity-100 opacity-0 group-hover:visible invisible absolute z-10 bg-white 
@@ -261,7 +252,7 @@ const MarketplacePlant = () => {
                       </div>
                     </div>
 
-                    <div className="relative overflow-hidden rounded-lg w-full max-w-[240px] shadow-md self-start">
+                    <div className="relative overflow-hidden rounded-lg w-full shadow-md self-start">
                         <img src={p?.plant_img} alt="plant_img" 
                         className='w-full h-[280px] aspect-square object-cover object-center bg-emerald-300 text-white'/>
                         <div className='px-3 py-2 w-full h-full bg-gradient-to-t from-black 
@@ -296,6 +287,7 @@ const MarketplacePlant = () => {
                   </Link>
                 </div>
               ))}
+            </div>
           </div>
         </div>
         {/* related plant */}
@@ -327,7 +319,7 @@ const MiniMap = ({lng, lat}) => {
 
   return (
     <div className='mt-2 overflow-hidden rounded-lg z-10 map'>
-      <MapContainer center={position} zoom={17} style={{width: '100%'}}>
+      <MapContainer center={position} zoom={17} style={{width: '100%', height: '160px'}}>
         <LayersControl>
             <LayersControl.Overlay name="Street view">
                 <TileLayer

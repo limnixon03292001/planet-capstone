@@ -53,7 +53,7 @@ const ProfileTopInfo = () => {
   return (
     <div>
         {/* top nav profile */}
-        <h1 className={`${visible ? `fixed top-0 z-50 -translate-y-0` : `-translate-y-0`} w-full transition-all bg-white/80 backdrop-blur`}>
+        <h1 className={`${visible ? `fixed top-0 z-50 -translate-y-0` : `translate-y-0`}  w-full transition-all bg-white/80 backdrop-blur`}>
         <div className='flex items-center justify-start px-3 py-2'>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"
             onClick={() => navigate(-1)}>

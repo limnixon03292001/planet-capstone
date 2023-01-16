@@ -75,7 +75,7 @@ const Marketplace = () => {
             </button>
           </Link>
       </div>
-      <div className='h-full w-full'>
+      <div className='h-full w-full mb-14 sm:mb-0'>
 
         {/* button start */}
         <div className='relative transition-all block w-full h-max px-4 py-4 mt-4 border-y border-gray-200 shadow'>
@@ -117,7 +117,7 @@ const Marketplace = () => {
                 <div className='group w-full'>
                   <img src={p?.profile} alt="profile_img" 
                   className='aspect-square absolute -top-3 -left-2 rounded-full w-10 h-10 object-cover object-center
-                  bg-emerald-300 border-[4px] border-white text-white z-20 block cursor-pointer'/>
+                  bg-emerald-300 border-[4px] border-white text-white z-10 block cursor-pointer'/>
 
                   <div className='group-hover:opacity-100 opacity-0 group-hover:visible invisible absolute z-10 bg-white 
                   translate-x-5 translate-y-4 rounded-lg overflow-hidden transition-opacity w-full max-w-[280px] shadow-xl'>

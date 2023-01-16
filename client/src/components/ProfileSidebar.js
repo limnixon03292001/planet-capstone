@@ -5,12 +5,13 @@ import { linkNavigationBar, shortcutsNavigationBar } from '../data';
 
 const ProfileSidebar = () => {
 
-    const { authUser } = MyContext();
+    const { authUser, socket } = MyContext();
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
     
     const Logout = () => {
         localStorage.clear("token");
+        socket.disconnect();
         navigate("/login")
     }
 
@@ -73,7 +74,7 @@ const Sidebar = ({ isOpen, setIsOpen, authUser, Logout }) => {
             </div>
           
             <div className='mt-auto'>
-                <p className='text-gray-500 text-[10px] px-4'>
+                <p className='text-gray-500 text-[10px] px-4 leading-normal'>
                     PLANeT Eco-trading: Platform for Malabonian Plant Enthusiast with Geospatial Mapping Support.
                     <span className='text-emerald-900'> [Beta Version]</span>
                 </p>

@@ -33,7 +33,7 @@ const PlantCollectionsTab = () => {
     }
 
   return (
-    <div className='border-b border-gray-200'>
+    <div>
         <nav className='px-7 py-2 flex items-center border-b border-gray-200'>
           <h1 className='text-xl font-bold text-gray-700'>
               <span className='text-gray-500 text-xs font-light block'>Total plants</span>
@@ -56,36 +56,10 @@ const PlantCollectionsTab = () => {
         </nav>
 
         <div className='h-full w-full px-7'>
-            {/* <div className='transition-all block sticky top-0 w-full h-max px-4 py-4 mt-4 border-y border-gray-200 shadow'>
-                <div className='flex items-center'>
-
-                    <div className='mr-2'>
-                        <p className='text-gray-500 text-sm mb-2'>Date Added</p>
-                        <FilterButton data={dateAdded} setData={setDateAdd}/>
-                    </div>
-
-                    <div className='mr-2'>
-                        <p className='text-gray-500 text-sm mb-2'>Price</p>
-                        <FilterButton data={lowestHighest} setData={setLowHigh}/>
-                    </div>
-
-                    <div>
-                        <p className='text-gray-500 text-sm mb-2'>Category</p>
-                        <FilterButton data={plantsCategories} setData={setPlantCat}/>
-                    </div>
-
-                    <div className='ml-auto '>
-                        <p className='text-gray-500 text-sm mb-2'>Search</p>
-                        <DebounceInput
-                        minLength={2}
-                        debounceTimeout={300}
-                        className= 'bg-white px-4 pr-7 py-2 rounded-lg w-full max-w-[280px] h-full outline-none border border-gray-300 focus:ring-2 focus:ring-green-200'
-                        placeholder='Search item...'
-                        // onChange={e => setSearchData(e.target.value)} 
-                        />
-                    </div>
-                </div>
-            </div> */}
+          { data?.data?.data.length === 0 ? 
+          <div className='h-28 flex items-center justify-center'>
+            <p>No plants in your collections found.</p>
+          </div>:
             <main className='mt-4 grid grid-cols-myGrid gap-4'>
                 {data?.data?.data.map((p, id) => (
                     <Fragment key={id}>
@@ -146,6 +120,7 @@ const PlantCollectionsTab = () => {
                     </Fragment>
                 ))}
             </main>
+          }
         </div>
 
         {isOpen && 
