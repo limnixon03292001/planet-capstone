@@ -10,6 +10,7 @@ import { useQuery } from 'react-query';
 import { getAllChats, getAuthUser } from '../api/userApi';
 
 // https://planet-capstone-production.up.railway.app/
+// http://localhost:5000/
 const ENDPOINT = "https://planet-capstone-production.up.railway.app/";
 var socket;
 
@@ -111,10 +112,6 @@ const Sidebar = () => {
       });
     },[]);
 
-  
-    // useEffect(() => {
-    //   console.log("x", chats?.filter((c) => c?.read === false && c));
-    // },[chats])
 
   return (
     <div className='h-full w-full max-w-max hidden sm:block lg:max-w-[282px] xl:max-w-[370px] transition-all sticky top-0'>
