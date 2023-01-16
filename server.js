@@ -84,10 +84,11 @@ io.on("connection", (socket) => {
     //     });
     // }
 
-    console.log("User connected", socket.id);
+   
 
     //take userId and socketId from user
      socket.on("addUser", (userId) => {
+        console.log("User connected", socket.id);
         addUser(userId, socket.id);
         io.emit("getUsers", users);
     });
@@ -132,7 +133,7 @@ io.on("connection", (socket) => {
     //when disconnect
     socket.on("disconnect", (reason) => {
         console.log("reason:", reason)
-       
+        
 
         console.log("a user disconnected!");
         removeUser(socket.id);
