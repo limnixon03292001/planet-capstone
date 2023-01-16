@@ -42,6 +42,9 @@ const server = app.listen(PORT, () => {
 
 const io = require("socket.io")(server, {
     cors: {
+        reconnect: true,
+        pingInterval: 500, 
+        pingTimeout: 1000,
         // https://planet-capstone-production.up.railway.app/
         origin: [process.env.URL_DOMAIN], 
     },
