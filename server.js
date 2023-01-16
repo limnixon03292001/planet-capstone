@@ -41,8 +41,7 @@ const server = app.listen(PORT, () => {
 //socket.io logics for realtime data
 
 const io = require("socket.io")(server, {
-     pingInterval: 500, 
-     pingTimeout: 1000,
+     pingTimeout: 9999,
     cors: {
         // https://planet-capstone-production.up.railway.app/
         origin: [process.env.URL_DOMAIN], 
