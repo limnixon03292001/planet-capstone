@@ -42,7 +42,7 @@ const Sidebar = () => {
           setOnlineUsers(users);
         });
 
-    },[io]);
+    },[]);
 
     //this function is listener for incoming messages, and notify the user
     useEffect(() => {
