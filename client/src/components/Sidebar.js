@@ -28,11 +28,13 @@ const Sidebar = () => {
     }
 
     useEffect(() => {
-        socket = io(ENDPOINT);
+        socket = io(ENDPOINT,{
+          reconnection:true
+        });
         setSocket(socket);
         socket.emit("addUser", authUserId)
         socket.on("getUsers", (users) => {
-        setOnlineUsers(users);
+          setOnlineUsers(users);
         });
     },[]);
 
