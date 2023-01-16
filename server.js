@@ -72,6 +72,15 @@ const getUserFollow = (userId) => {
 
 io.on("connection", (socket) => {
 
+    //for testing
+    if(socket.connected) {
+        console.log("sheesh")
+        socket.on("addUser", (userId) => {
+            addUser(userId, socket.id);
+            io.emit("getUsers", users);
+        });
+    }
+
     console.log("User connected", socket.id);
 
     //take userId and socketId from user
@@ -118,10 +127,15 @@ io.on("connection", (socket) => {
 
    
     //when disconnect
-    socket.on("disconnect", () => {
+    socket.on("disconnect", (reason) => {
+        console.log("reason:", reason)
+       
+
         console.log("a user disconnected!");
         removeUser(socket.id);
         io.emit("getUsers", users);
+       
+        
     });
 
 });
