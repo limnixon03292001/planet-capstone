@@ -29,14 +29,20 @@ const Sidebar = () => {
 
     useEffect(() => {
         socket = io(ENDPOINT,{
-          reconnection:true
+          reconnection: true
         });
         setSocket(socket);
+        socket.on("disconnect", () => {
+          console.log("client disconnected, reconnecting..")
+          socket.connect();
+          socket.emit("addUser", authUserId)
+        })
         socket.emit("addUser", authUserId)
         socket.on("getUsers", (users) => {
           setOnlineUsers(users);
         });
-    },[socket]);
+
+    },[io]);
 
     //this function is listener for incoming messages, and notify the user
     useEffect(() => {

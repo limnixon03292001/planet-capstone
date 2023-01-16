@@ -41,7 +41,7 @@ const server = app.listen(PORT, () => {
 //socket.io logics for realtime data
 
 const io = require("socket.io")(server, {
-     pingTimeout: 99999,
+    pingTimeout: 5000,
     cors: {
         // https://planet-capstone-production.up.railway.app/
         origin: [process.env.URL_DOMAIN], 
@@ -73,24 +73,13 @@ const getUserFollow = (userId) => {
 
 io.on("connection", (socket) => {
 
-    //for testing
-    // if(socket.connected) {
-    //     console.log("sheesh")
-    //     socket.on("addUser", (userId) => {
-    //         addUser(userId, socket.id);
-    //         io.emit("getUsers", users);
-    //     });
-    // }
-
-   
 
     //take userId and socketId from user
-     socket.on("addUser", (userId) => {
+    socket.on("addUser", (userId) => {
         console.log("User connected", socket.id);
         addUser(userId, socket.id);
-        io.emit("getUsers", users);
+        return io.emit("getUsers", users);
     });
-
 
      socket.on("sendNotifUser", (newNotif) => {
         // console.log("notif", newNotif);
@@ -131,8 +120,7 @@ io.on("connection", (socket) => {
     //when disconnect
     socket.on("disconnect", (reason) => {
         console.log("reason:", reason)
-        
-
+    
         console.log("a user disconnected!");
         removeUser(socket.id);
         io.emit("getUsers", users);
