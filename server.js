@@ -76,13 +76,13 @@ const getUserFollow = (userId) => {
 io.on("connection", (socket) => {
 
     //for testing
-    if(socket.connected) {
-        console.log("sheesh")
-        socket.on("addUser", (userId) => {
-            addUser(userId, socket.id);
-            io.emit("getUsers", users);
-        });
-    }
+    // if(socket.connected) {
+    //     console.log("sheesh")
+    //     socket.on("addUser", (userId) => {
+    //         addUser(userId, socket.id);
+    //         io.emit("getUsers", users);
+    //     });
+    // }
 
     console.log("User connected", socket.id);
 
