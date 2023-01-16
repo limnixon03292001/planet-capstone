@@ -11,7 +11,7 @@ import { getAllChats, getAuthUser } from '../api/userApi';
 
 // https://planet-capstone-production.up.railway.app/
 // http://localhost:5000/
-const ENDPOINT = "https://planet-capstone-production.up.railway.app/";
+const ENDPOINT = "https://planet-capstone.onrender.com/";
 var socket;
 
 const Sidebar = () => {
