@@ -36,7 +36,7 @@ const Sidebar = () => {
         socket.on("getUsers", (users) => {
           setOnlineUsers(users);
         });
-    },[]);
+    },[socket]);
 
     //this function is listener for incoming messages, and notify the user
     useEffect(() => {
