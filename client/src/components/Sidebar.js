@@ -29,20 +29,38 @@ const Sidebar = () => {
 
     useEffect(() => {
         socket = io(ENDPOINT,{
-          reconnection: true
+          reconnectionAttempts: 5,
+          reconnectionDelay: 1000,
         });
-        setSocket(socket);
-        socket.on("disconnect", () => {
-          console.log("client disconnected, reconnecting..")
-          socket.connect();
-          socket.emit("addUser", authUserId)
-        })
-        socket.emit("addUser", authUserId)
+
+        socket.emit("addUser", authUserId);
+
         socket.on("getUsers", (users) => {
           setOnlineUsers(users);
         });
+  
+        //for the actual websocket having an error attempt to reconnect
+        socket.io.on("error", (error) => {
+          // ...
+          console.log('socket io error on ' + error);
+          socket = io(ENDPOINT, {
+              reconnectionAttempts: 5,
+              reconnectionDelay: 1000,
+          });
+        });
 
+        let socketArray = ['reconnect', 'reconnect_attempt', 'reconnect_error', 'reconnect_failed'];
+
+      for(let i = 0, len = socketArray.length; i < len; i++) {
+        socket.io.on(socketArray[i], (attempt) => {
+            // ...
+            console.log(socketArray[i] + ' socket io on ' + attempt);
+        });
+    }
+      setSocket(socket);
     },[]);
+
+   
 
     //this function is listener for incoming messages, and notify the user
     useEffect(() => {

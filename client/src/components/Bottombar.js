@@ -8,8 +8,6 @@ const Bottombar = () => {
     const { chats, authUser } = MyContext();
     const location = useLocation();
 
-    console.log(location.pathname.split("/")[2] === `chatroom`);
-
   return (
     <div className={`w-full bg-white fixed left-0 right-0 bottom-0 z-20 sm:hidden 
     ${location.pathname.split("/")[2] === `chatroom` && `hidden`}`}>

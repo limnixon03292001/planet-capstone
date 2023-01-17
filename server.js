@@ -41,7 +41,6 @@ const server = app.listen(PORT, () => {
 //socket.io logics for realtime data
 
 const io = require("socket.io")(server, {
-    pingTimeout: 5000,
     cors: {
         // https://planet-capstone-production.up.railway.app/
         origin: [process.env.URL_DOMAIN], 
@@ -78,7 +77,7 @@ io.on("connection", (socket) => {
     socket.on("addUser", (userId) => {
         console.log("User connected", socket.id);
         addUser(userId, socket.id);
-        return io.emit("getUsers", users);
+        io.emit("getUsers", users);
     });
 
      socket.on("sendNotifUser", (newNotif) => {
@@ -120,7 +119,11 @@ io.on("connection", (socket) => {
     //when disconnect
     socket.on("disconnect", (reason) => {
         console.log("reason:", reason)
-    
+        
+        if(reason === 'ping timeout'){
+            console.log("a user disconnected: ping timeout");
+        }
+
         console.log("a user disconnected!");
         removeUser(socket.id);
         io.emit("getUsers", users);

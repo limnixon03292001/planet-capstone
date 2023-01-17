@@ -77,9 +77,7 @@ const MapBox = () => {
 
   return (
     <div>
-
-        <div className="mapWrapper relative" ref={mapContainerRef} >
-            <Link to="/map/add-plant" className='bg-[#3DDAB4] text-white p-1 rounded-full
+    <Link to="/map/add-plant" className='bg-[#3DDAB4] text-white p-1 rounded-full
              focus:outline-none focus:ring-4 focus:ring-green-100 flex items-center absolute right-2 top-36 z-20'>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
                 className="w-6 h-6 inline align-top">
@@ -87,7 +85,9 @@ const MapBox = () => {
                 </svg>
                 {/* <span className='text-baseline'>Add new</span> */}
             </Link>
-        </div>
+        <div className="mapWrapper relative" ref={mapContainerRef} />
+           
+    
     </div>
   )
 }
