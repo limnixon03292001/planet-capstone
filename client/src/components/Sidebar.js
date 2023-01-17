@@ -47,6 +47,7 @@ const Sidebar = () => {
               reconnectionAttempts: 5,
               reconnectionDelay: 1000,
           });
+          socket.emit("addUser", authUserId);
         });
 
         let socketArray = ['reconnect', 'reconnect_attempt', 'reconnect_error', 'reconnect_failed'];
@@ -55,6 +56,7 @@ const Sidebar = () => {
         socket.io.on(socketArray[i], (attempt) => {
             // ...
             console.log(socketArray[i] + ' socket io on ' + attempt);
+            socket.emit("addUser", authUserId);
         });
     }
       setSocket(socket);
