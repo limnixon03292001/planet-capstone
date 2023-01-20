@@ -100,7 +100,7 @@ const Post = ({ postData }) => {
     };
 
   return (
-    <div className='my-5 border-b border-gray-200'>
+    <div className={`my-5 border-b border-gray-200 transition-opacity animate-fadeIn`}>
         <div className="flex justify-start items-center px-4">
 
             <div className='flex-shrink-0 w-9 h-9 sm:w-11 sm:h-11 relative mr-2'>

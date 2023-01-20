@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import FetchPost from '../components/FetchPost';
 import Followers from '../components/Followers';
 import MakePost from '../components/MakePost'
+import ProfileSidebar from '../components/ProfileSidebar';
 import SearchUser from '../components/SearchUser';
 import { MyContext } from '../context/ContextProvider';
 
@@ -22,7 +23,11 @@ const PostFeeds = () => {
     <div className='flex w-full max-w-[1080px]'>
 
       <div className='block border-x border-gray-200 w-full min-h-screen h-full pt-2 py-6 '>
-          <h1 className='font-extrabold text-lg px-4 py-2 sticky z-10 bg-white/60 backdrop-blur top-0'>Home</h1>
+          <h1 className='font-extrabold text-lg px-4 py-2 sticky top-0 z-10 bg-white/60 backdrop-blur border-b border-gray-200 
+         flex items-center justify-start'>
+            {/* <ProfileSidebar/> */}
+            <span className='ml-3 font-extrabold '>Home</span>
+          </h1>
             <MakePost />
             <FetchPost />
       </div>

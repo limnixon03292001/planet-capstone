@@ -11,7 +11,7 @@ import ButtonMessage from './ButtonMessage';
 
 const ProfileTopInfo = () => {
     const { id: authId } = decode(localStorage?.token);
-    const [visible, setVisible]= useState(false);
+    // const [visible, setVisible]= useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
     const [user, setUser] = useState({});
@@ -38,22 +38,23 @@ const ProfileTopInfo = () => {
     //             <span>{followersCount ?? 0} follower</span>
     // }
 
-    const toggleVisible = () => {
-        if (window.scrollY > 80){
-          setVisible(true)
-        } 
-        else if (window.scrollY  <= 300){
-          setVisible(false)
-        }
-      };
+    // const toggleVisible = () => {
+    //     if (window.scrollY > 80){
+    //       setVisible(true)
+    //     } 
+    //     else if (window.scrollY  <= 300){
+    //       setVisible(false)
+    //     }
+    //   };
     
-      window.addEventListener('scroll', toggleVisible);
+    //   window.addEventListener('scroll', toggleVisible);
 
 
   return (
     <div>
         {/* top nav profile */}
-        <h1 className={`${visible ? `fixed top-0 z-50 -translate-y-0` : `translate-y-0`}  w-full transition-all bg-white/80 backdrop-blur`}>
+        {/* <h1 className={`${visible ? `fixed top-0 z-50 -translate-y-0` : `translate-y-0`}  w-full transition-all bg-white/80 backdrop-blur`}> */}
+        <h1 className={`w-full transition-all bg-white/80 backdrop-blur`}>
         <div className='flex items-center justify-start px-3 py-2'>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"
             onClick={() => navigate(-1)}>
@@ -80,7 +81,7 @@ const ProfileTopInfo = () => {
     <div>
         {/* cover */}
         <div>
-            <img src={user?.cover} alt="cover" className="bg-green-400 object-cover object-center w-full h-64"/>
+            <img src={user?.cover} alt="cover" className="bg-green-400 object-cover object-center w-full h-40 md:h-64"/>
         </div>
         {/* cover */}
         

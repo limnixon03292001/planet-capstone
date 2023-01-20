@@ -1,5 +1,5 @@
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMutation } from 'react-query';
 import { Link, Navigate } from 'react-router-dom';
 
@@ -15,6 +15,10 @@ const LoginForm = () => {
 
     const { authId, setAuthId } = MyContext();
     const [errData, setErrData] = useState({email: '', password:''});
+    const [attempt, setAttempt] = useState(0);
+    const [countDown, setCountDown] = useState(30);
+    const id = useRef(null);
+
     const { mutate, isLoading } = useMutation(loginUser,{
         onSuccess: ({data}) => {
             localStorage.setItem('token', data?.token);
@@ -24,25 +28,61 @@ const LoginForm = () => {
         onError: (err) => {
             // const error = JSON.parse(err?.response)
             // toast.error(`Error: ${error.err}`);
+            if(attempt !== 3) {
+                setAttempt(prev => prev + 1);
+            }
             const errObject = err.response.data.error;
-            console.log(errObject)
+            console.log(errObject);
             for (const [key, value] of Object.entries(errObject)) {
                 setErrData({...errData, [key]: value});
             }
         }
-      });
+    });
 
     const formik = useFormik({
         initialValues: initialState,
         validationSchema: validationSchemaLogin,
         onSubmit: (formData) => {
           mutate(formData)
-        }
+        },
     });
+
+
+    //checking for failed attempts
+    const clear = () => {
+        clearInterval(id.current);
+    };
+
+    useEffect(() => {
+        if(attempt === 3) {
+           id.current = setInterval(() => {
+                setCountDown(prev => prev - 1);
+            },1000);
+
+            setTimeout(() => {
+                setAttempt(0);
+                setCountDown(30);
+            },30000);
+        }
+        return () => {
+            clear();
+        }
+    },[attempt]);
+
+    useEffect(() =>{
+        if(countDown === 0) {
+            clear();
+        }
+    },[countDown]);
+    //checking for failed attempts ---end---
 
   return (
     <>
     {!checkToken() ? 
+    <>
+    {
+        //when user failed to login 3 times disable login for 30 seconds.
+        attempt !== 3 ?
         <form onSubmit={formik.handleSubmit}>
             <div className="mb-5">
                 <label htmlFor="email" className="block text-[#536471] mb-3">Email address</label>
@@ -81,6 +121,16 @@ const LoginForm = () => {
                 Forgot Password?
             </Link>
         </form>
+        :
+        <div className='flex items-start justify-start text-red-400'>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.3} stroke="currentColor" className="-mt-1 w-8 h-8">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+
+            <p className='ml-1'>Too many attempts! Login has been disabled for {countDown} seconds.</p>
+        </div>
+    }
+    </>
     :
         <Navigate to="/" replace={true} />
     }

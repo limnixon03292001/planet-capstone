@@ -10,6 +10,7 @@ import fire from '../assets/PLANeTlogo.png';
 import { MyContext } from '../context/ContextProvider';
 import { checkOnline } from '../utils/checkOnline';
 import ProfileSidebar from '../components/ProfileSidebar';
+import ScrollTop from '../components/ScrollTop';
 
 
 const MarketplacePlant = () => {
@@ -69,6 +70,7 @@ const MarketplacePlant = () => {
 
   return (
     <div className='block border-x border-gray-200 w-full min-h-screen pt-4 overflow-hidden'>
+      <ScrollTop/>
       <div className='mb-1'>
         <div className='flex items-center justify-start mt-1 px-4'>
           <ProfileSidebar/>

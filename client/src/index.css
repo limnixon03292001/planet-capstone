@@ -163,3 +163,22 @@ body{
     object-position: center;
     margin-right: 7px;
 }
+
+.animate-fadeIn{
+    animation-name: fadeIn;
+    animation-duration: 1s;
+    transition: ease-in-out;
+    
+}
+
+.posts-outer {
+    overflow: hidden !important;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 100;}
+  }

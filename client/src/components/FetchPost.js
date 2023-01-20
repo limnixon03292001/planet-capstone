@@ -6,6 +6,7 @@ import { request } from '../utils/axios-utils';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useLocation,  } from 'react-router-dom';
 import ScrollTop from './ScrollTop';
+import ButtonLoader from './ButtonLoader';
 
 const FetchPost = () => {
   const location = useLocation();
@@ -51,15 +52,17 @@ const FetchPost = () => {
   }
 
   return (
-    <div>
+    < div>
     <ScrollTop/>
       {!isLoadingPost ? 
         <InfiniteScroll
-       
+        className='posts-outer'
         dataLength={posts.length}
         next={fetchMoreData}
         hasMore={hasMore}
-        loader={<h4>Loading...</h4>}
+        loader={<ButtonLoader 
+          style="block mx-auto mt-4"
+        />}
         endMessage={
           <p className='text-center mt-4'>
           🤪 No more posts to show..
@@ -80,7 +83,7 @@ const FetchPost = () => {
         ))}
       </InfiniteScroll>
     :
-        <p className='text-3xl'>LOADING POST</p>
+      <ButtonLoader style="block mx-auto mt-4"/>
     }
       
     </div>

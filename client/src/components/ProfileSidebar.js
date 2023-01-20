@@ -33,7 +33,7 @@ const Sidebar = ({ isOpen, setIsOpen, authUser, Logout }) => {
 
     return (
         <>
-        <div className={`${isOpen ? `bg-black/20` : `invisible`} transition-all w-full h-full absolute inset-0 z-30`} onClick={() => setIsOpen(false)}/>
+        <div className={`${isOpen ? `bg-black/20` : `invisible`} transition-all w-full h-full fixed overflow-hidden inset-0 z-40`} onClick={() => setIsOpen(false)}/>
         <div className={`${isOpen ? `-translate-x-0` : `-translate-x-full`}
           text-gray-900 fixed h-screen left-0 top-0 bottom-0 w-72 transition-all bg-white z-40 overflow-auto`}>
         <div className='h-full flex flex-col pt-4 pb-2'>
