@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from 'react-query';
 import { addPlantMarketplace } from '../api/userApi';
@@ -7,15 +7,19 @@ import FilterButton from "../components/FilterButton"
 import GrowingInformation from '../components/GrowingInformation';
 import GrowingPreferences from '../components/GrowingPreferences';
 import { plantsCategories } from "../data";
-import DraggableMarker from "../components/DraggableMarker";
-import { LayersControl, MapContainer, TileLayer } from "react-leaflet";
 import { NumericFormat } from 'react-number-format';
+import mapboxgl from '!mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 //default values
 const center = {
     lat: 14.6576953,
     lng: 120.9510181,
-}
+};
+
+mapboxgl.accessToken =
+  "pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA";
+
 const growingPrefInitialState = {sunPref: [], interLight: [], soilPref: [], waterReq: [], nativeHab: []};
 
 const SellPlant = () => {
@@ -32,6 +36,8 @@ const SellPlant = () => {
     const [quantity, setQuantity] = useState('');
     const [price, setPrice] = useState('');
     const [position, setPosition] = useState(center);
+    const mapContainerRef = useRef(null);
+    const coordinates = useRef(null);
     //plant details state data
 
     //growing preferences
@@ -110,6 +116,37 @@ const SellPlant = () => {
             setPictureUrl('');
         }
     }, [pictureUrl]);
+
+    // Render map
+    useEffect(() => {
+
+        const map = new mapboxgl.Map({
+          container: mapContainerRef.current,
+          // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+          style: 'mapbox://styles/mapbox/streets-v12',
+          center: [position?.lng, position?.lat],
+          zoom: 17
+        });
+    
+        const marker = new mapboxgl.Marker({
+          draggable: true
+          })
+          .setLngLat([position?.lng, position?.lat])
+          .addTo(map);
+           
+          function onDragEnd() {
+            const lngLat = marker.getLngLat();
+            coordinates.current.style.display = 'block';
+            coordinates.current.innerHTML = `Longitude: ${lngLat.lng}<br />Latitude: ${lngLat.lat}`;
+            setPosition({lng: lngLat?.lng, lat: lngLat?.lat});
+          }
+           
+          marker.on('dragend', onDragEnd);
+          console.log("fires")
+    
+          //Clean up function
+          return () => map.remove();
+      },[]);
 
   return (
     <div className='block border-x border-gray-200 w-full max-w-[860px] min-h-screen pt-6 pb-5'>
@@ -223,26 +260,10 @@ const SellPlant = () => {
                 <div className='z-10 relative'>
                     <label htmlFor="name" className="block text-[#536471] mb-3 ">Pin Location <span className='text-emerald-500 text-xs'>(You can pin your location where you can be located)</span></label>
 
-                    <div className='mt-2 overflow-hidden rounded-lg'>
-                        <MapContainer center={position} zoom={17} style={{height:'450px'}}>
-                        <LayersControl>
-                            <LayersControl.Overlay name="Street view">
-                                <TileLayer
-                                    url='http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
-                                    maxZoom= {20}
-                                    subdomains={['mt0','mt1','mt2','mt3']}
-                                />
-                            </LayersControl.Overlay>
-                            <LayersControl.Overlay checked name="Satellite view">
-                                <TileLayer
-                                url='http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}'
-                                maxZoom= {20}
-                                subdomains={['mt0','mt1','mt2','mt3']}
-                                />
-                            </LayersControl.Overlay>
-                            </LayersControl>
-                        <DraggableMarker position={position} setPosition={setPosition}/>
-                        </MapContainer>
+                    <div className='mt-2 overflow-hidden rounded-lg relative'>
+                        <div ref={mapContainerRef} className="w-full h-[440px]"/>
+                        <pre ref={coordinates} className="coordinates
+                        absolute z-20 top-0 m-1 text-sm bg-black/60 p-1 rounded-md text-white"/>
                     </div>
                 </div>
                 {/* pin location */}

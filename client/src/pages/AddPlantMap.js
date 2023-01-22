@@ -1,14 +1,18 @@
-import DraggableMarker from "../components/DraggableMarker";
+
 import logo from '../assets/PLANeTlogo.png';
-import { LayersControl, MapContainer, TileLayer } from "react-leaflet";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation } from 'react-query';
 import { addPlant } from "../api/userApi";
+import mapboxgl from '!mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 const center = {
   lat: 14.6576953,
   lng: 120.9510181,
 }
+
+mapboxgl.accessToken =
+  "pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA";
 
 const AddPlantMap = () => {
 
@@ -16,13 +20,8 @@ const AddPlantMap = () => {
   const [plantName, setPlantName] = useState('');
   const [description, setDescription] = useState('');
   const [pictureUrl, setPictureUrl] = useState(null);
-
-  // console.log({
-  //   position: position,
-  //   plantName: plantName,
-  //   description: description,
-  //   pictureUrl: pictureUrl
-  // })
+  const mapContainerRef = useRef(null);
+  const coordinates = useRef(null);
   
   const { mutate, isLoading } = useMutation(addPlant,
   {
@@ -67,18 +66,35 @@ const AddPlantMap = () => {
       }
   }, [pictureUrl]);
 
-  // this function is for finding the current position of the user
-  // const getLocation = () => {
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition((position) => {
-  //       console.log("position user", position.coords.latitude, position.coords.longitude);
-  //       setPosition({lat: position.coords.latitude, lng: position.coords.longitude});
-  //     });
-     
-  //   } else { 
-  //     alert("Geolocation is not supported by this browser.");
-  //   }
-  // }
+  useEffect(() => {
+
+    const map = new mapboxgl.Map({
+      container: mapContainerRef.current,
+      // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+      style: 'mapbox://styles/mapbox/streets-v12',
+      center: [position?.lng, position?.lat],
+      zoom: 17
+    });
+
+    const marker = new mapboxgl.Marker({
+      draggable: true
+      })
+      .setLngLat([position?.lng, position?.lat])
+      .addTo(map);
+       
+      function onDragEnd() {
+        const lngLat = marker.getLngLat();
+        coordinates.current.style.display = 'block';
+        coordinates.current.innerHTML = `Longitude: ${lngLat.lng}<br />Latitude: ${lngLat.lat}`;
+        setPosition({lng: lngLat?.lng, lat: lngLat?.lat});
+      }
+       
+      marker.on('dragend', onDragEnd);
+      console.log("fires")
+
+      //Clean up function
+      return () => map.remove();
+  },[]);
   
   return (
     <div className='px-4 pt-4 b-4 w-full h-full'>
@@ -153,27 +169,11 @@ const AddPlantMap = () => {
 
         </div>
       </form>
-      <div className='mt-2 overflow-hidden rounded-lg'>
 
-        <MapContainer center={position} zoom={13} style={{height:'450px'}}>
-          <LayersControl>
-              <LayersControl.Overlay name="Street view">
-                  <TileLayer
-                      url='http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
-                      maxZoom= {20}
-                      subdomains={['mt0','mt1','mt2','mt3']}
-                  />
-              </LayersControl.Overlay>
-              <LayersControl.Overlay checked name="Satellite view">
-                  <TileLayer
-                  url='http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}'
-                  maxZoom= {20}
-                  subdomains={['mt0','mt1','mt2','mt3']}
-                  />
-              </LayersControl.Overlay>
-            </LayersControl>
-          <DraggableMarker position={position} setPosition={setPosition}/>
-        </MapContainer>
+      <div className='mt-2 overflow-hidden rounded-lg mb-3 relative'>
+        <div ref={mapContainerRef} className="w-full h-[440px]"/>
+        <pre ref={coordinates} className="coordinates
+        absolute z-20 top-0 m-1 text-sm bg-black/60 p-1 rounded-md text-white"/>
       </div>
      
     </div>

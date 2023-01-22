@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import EllipsisText from 'react-ellipsis-text/lib/components/EllipsisText';
 import { useMutation, useQuery } from 'react-query';
 import { Link, useLocation, useParams , useNavigate} from 'react-router-dom'
@@ -11,6 +11,9 @@ import { MyContext } from '../context/ContextProvider';
 import { checkOnline } from '../utils/checkOnline';
 import ProfileSidebar from '../components/ProfileSidebar';
 import ScrollTop from '../components/ScrollTop';
+import mapboxgl from '!mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css';
 
 
 const MarketplacePlant = () => {
@@ -312,34 +315,41 @@ export const icon = new Icon({
   iconSize: [30, 30]
 });
 
-const MiniMap = ({lng, lat}) => { 
-  const [position, setPosition] = useState({lat, lng});
+mapboxgl.accessToken =
+  "pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA";
 
-  // useEffect(() => {
-  //   setPosition({lat, lng});
-  // },[position, location])
+const MiniMap = ({lng, lat}) => {
+  
+  const mapContainerRef = useRef(null); 
+  // mapbox://styles/mapbox/streets-v12
+  useEffect(() => {
+ 
+    const map = new mapboxgl.Map({
+      container: mapContainerRef.current,
+      style: 'mapbox://styles/mapbox/satellite-streets-v11',
+      center: [lng, lat],
+      zoom: 17,
+    });
+
+    //Handlers
+    map['scrollZoom'].disable();
+
+
+    //Current locations
+    new mapboxgl.Marker({ color: 'red'})
+            .setLngLat([Number(lng), Number(lat)]).addTo(map);
+    
+    //Map controls
+    map.addControl(new mapboxgl.NavigationControl(), "top-right");
+    map.addControl(new mapboxgl.GeolocateControl(), "top-right");
+
+    //Clean up function
+    return () => map.remove();
+    },[lng, lat]);
 
   return (
-    <div className='mt-2 overflow-hidden rounded-lg z-10 map'>
-      <MapContainer center={position} zoom={17} style={{width: '100%', height: '160px'}}>
-        <LayersControl>
-            <LayersControl.Overlay name="Street view">
-                <TileLayer
-                    url='http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
-                    maxZoom= {20}
-                    subdomains={['mt0','mt1','mt2','mt3']}
-                />
-            </LayersControl.Overlay>
-            <LayersControl.Overlay checked name="Satellite view">
-                <TileLayer
-                url='http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}'
-                maxZoom= {20}
-                subdomains={['mt0','mt1','mt2','mt3']}
-                />
-            </LayersControl.Overlay>
-          </LayersControl>
-          <Marker position={position} icon={icon}/>
-      </MapContainer>
+    <div className='mt-2 overflow-hidden rounded-lg z-10 w-full h-[240px] sm:h-[440px]'>
+        <div className="h-full" ref={mapContainerRef} />
     </div>
   )
 }
