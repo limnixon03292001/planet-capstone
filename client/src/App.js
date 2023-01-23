@@ -13,6 +13,7 @@ import Verify from './pages/Verify';
 import Confirmation from './pages/Confirmation';
 import AccountRecover from './pages/AccountRecover';
 import ResetPassword from './pages/ResetPassword';
+import Maintenance from './pages/Maintenance';
 
 // primary text  - black
 // secondary - #536471
@@ -26,7 +27,7 @@ function App() {
       <div className="font-interFont tracking-normal antialiased text-gray-900 h-full w-full">
         <Toaster position='top-left'/>
         <Routes>
-          <Route path="/login" element={<Login/>} />
+          <Route path="/login" element={<Maintenance/>} />
           <Route path="/register" element={<Register/>} />
           <Route path="/verification" element={<Verify/>}/>
           <Route path="/account-recovery" element={<AccountRecover/>}/>
