@@ -491,7 +491,6 @@ exports.updatePost = async (req, res) => {
     }  = req.body;
 
     try {
-        
         //upload image to cloudinary
         if(picture) {
             const { secure_url } = await cloudinary.uploader.upload(picture, 

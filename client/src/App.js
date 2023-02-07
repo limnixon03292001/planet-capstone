@@ -27,7 +27,7 @@ function App() {
       <div className="font-interFont tracking-normal antialiased text-gray-900 h-full w-full">
         <Toaster position='top-left'/>
         <Routes>
-          <Route path="/login" element={<Maintenance/>} />
+          <Route path="/login" element={<Login/>} />
           <Route path="/register" element={<Register/>} />
           <Route path="/verification" element={<Verify/>}/>
           <Route path="/account-recovery" element={<AccountRecover/>}/>

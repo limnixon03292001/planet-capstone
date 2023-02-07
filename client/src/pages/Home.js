@@ -16,6 +16,7 @@ import MarketplacePlant from './MarketplacePlant';
 import PickPlant from './PickPlant';
 import AddMoreDetail from '../components/AddMoreDetail';
 import Bottombar from '../components/Bottombar';
+import SellingList from './SellingList';
 
 
 const Home = () => {
@@ -78,6 +79,7 @@ const Home = () => {
                         <Route path="/messages/*" element={<Messages/>}/>
                         <Route path="/marketplace" element={<Marketplace/>}/>
                         <Route path="/marketplace/sell-plants" element={<SellPlant/>}/>
+                        <Route path="/marketplace/selling" element={<SellingList/>}/>
                         <Route path="/marketplace/item/:id" element={<MarketplacePlant/>}/>
                         <Route path="/marketplace/pick-plantsCollection" element={<PickPlant/>}/>
                         <Route path="/marketplace/selectedPlant-addMore" element={<AddMoreDetail/>}/>

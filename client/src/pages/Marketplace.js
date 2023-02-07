@@ -55,26 +55,36 @@ const Marketplace = () => {
         const errObject = err.response.data.error;
         console.log(errObject);
     }
-  })
+  });
 
 
   return (
     // max-w-[660px]
     <div className='block border border-gray-200 w-full min-h-screen pt-4 overflow-hidden'>
-      <div className='w-full flex items-center'>
+      <div className='w-full flex items-center justify-between'>
           <h1 className='text-lg mt-1 px-4 flex items-center justify-start'>
             <ProfileSideBar/>
-            <span className='ml-3 font-extrabold '>Marketplace</span> 
+            <span className='ml-3 sm:ml-0 font-extrabold '>Marketplace</span> 
           </h1>
-          <Link to="/marketplace/sell-plants" className='ml-auto block'>
-            <button className='bg-green-200 text-green-800 rounded-full focus:outline-none focus:ring-4 
-          focus:ring-green-300 flex items-center justify-center px-3 py-2 ml-auto mr-2'>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-4 w-4 sm:w-5 sm:h-5 mr-1">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-              </svg>
-              <span className='text-sm sm:text-md block mt-[1px]'>Sell plant</span>
-            </button>
-          </Link>
+          <div className='flex items-center'>
+            <Link to="/marketplace/selling" className='ml-auto block'>
+              <button className='bg-green-200 text-green-800 rounded-full focus:outline-none focus:ring-4 
+            focus:ring-green-300 flex items-center justify-center px-3 py-3 ml-auto mr-2'>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
+                </svg>
+              </button>
+            </Link>
+            <Link to="/marketplace/sell-plants" className='ml-auto block'>
+              <button className='bg-green-200 text-green-800 rounded-full focus:outline-none focus:ring-4 
+            focus:ring-green-300 flex items-center justify-center px-3 py-2 ml-auto mr-2'>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-4 w-4 sm:w-5 sm:h-5 mr-1">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                </svg>
+                <span className='text-sm sm:text-md block mt-[1px]'>Sell plant</span>
+              </button>
+            </Link>
+          </div>
       </div>
       <div className='h-full w-full mb-14 sm:mb-0'>
 
@@ -205,7 +215,6 @@ const Marketplace = () => {
           </main>
         }
         </div>
-      
         {/* items end */}
 
       </div>

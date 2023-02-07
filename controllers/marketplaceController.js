@@ -1,6 +1,5 @@
 const pool  = require('../utils/dbConnection');
 const cloudinary = require("../utils/cloudinary");
-const format = require("pg-format");
 
 exports.addPlant = async (req,res) => {
     const authUserId = req.user.id;
@@ -71,7 +70,7 @@ exports.addPlant = async (req,res) => {
 
         await client.query('COMMIT');
 
-        return res.status(201).json({message: "Added plant successfully into marketplace! "});
+        return res.status(201).json({message: "Added plant successfully into marketplace!"});
         
     } catch (error) {
         await client.query('ROLLBACK');
@@ -83,6 +82,104 @@ exports.addPlant = async (req,res) => {
         client.release();
     }
 }
+
+exports.updatePlant = async (req, res) => {
+    const data = req.body;
+    
+    let plant_img = '';
+
+    const client = await pool.connect();
+
+    try {
+         //upload image to cloudinary
+         if(data?.plant_img.split(':')[0] !== 'https' && data?.plant_img !== '') {
+            const { secure_url } = await cloudinary.uploader.upload(data?.plant_img, 
+                {
+                    upload_preset: 'capstone',
+                    allowed_formats : ['png', 'jpg', 'jpeg',],
+                }, 
+                function(error, result) {
+                    if(error){
+                        console.log(error);
+                    }
+                }
+            );
+            plant_img = secure_url;
+        } else {
+            plant_img = data?.plant_img;
+        }
+
+        await client.query('BEGIN');
+
+        const queryPlantDetails = ` 
+            UPDATE mp_plant_details 
+            SET plant_name = $1, description = $2, category = $3, date_planted = $4, plant_img = $5, address = $6, status = $7, 
+            quantity = $8, price = $9, lat = $10, lng = $11 
+            WHERE plant_detail_id = $12
+            RETURNING plant_detail_id
+        `;
+
+        await client.query(queryPlantDetails, [ data?.plant_name, 
+            data?.description, data?.category, 
+            data?.date_planted, plant_img, data?.address, data?.status,
+            data?.quantity, data?.price, data?.lat, data?.lng, data?.plant_detail_id ]);
+        
+        const queryGrowingPref = `
+            UPDATE mp_growing_pref
+            SET sun_pref = $1, inter_light = $2, soil_pref = $3, water_req = $4, native_habitat = $5
+            WHERE plant_detail_id = $6
+        `;
+
+        await client.query(queryGrowingPref, [ data?.sun_pref.join(","), data?.inter_light.join(','), 
+        data?.soil_pref.join(','), data?.water_req.join(','), data?.native_habitat.join(','), data?.plant_detail_id]);
+
+        const queryGrowingInformation = `
+        UPDATE mp_growing_info
+        SET avg_h = $1, avg_w = $2, foliage_color = $3, foliage_type = $4,
+        foliage_scent = $5, flower_color = $6, fragrant = $7, nocturnal_flowering = $8,
+        repeat_blooming = $9, flowering_period = $10
+        WHERE plant_detail_id = $11
+        `;
+
+        await client.query(queryGrowingInformation, [
+        data?.avg_h, data?.avg_w, data?.foliage_color, data?.foliage_type,
+        data?.foliage_scent, data?.flower_color, data?.fragrant, data?.nocturnal_flowering,
+        data?.repeat_blooming, data?.flowering_period.join(','), data?.plant_detail_id
+        ]);
+
+        await client.query('COMMIT');
+        return res.status(201).json({message: "Updated Plant Successfully!"});
+    
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.log("x",error?.message);
+        return res.status(500).json({
+            error: error?.message
+        })
+    } finally {
+        client.release();
+    }
+}
+
+exports.deletePlant = async (req, res) => {
+    const { plant_detail_id } = req.body;
+
+    try {
+
+        await pool.query(`
+            DELETE FROM mp_plant_details WHERE plant_detail_id = $1
+        `, [plant_detail_id]);
+
+        res.status(202).json({message: "Plant deleted sucessfully!"});
+
+    } catch (error) {
+        console.log("x",error?.message);
+        return res.status(500).json({
+            error: error?.message
+        })
+    }
+}
+
 
 exports.addPlantFromCollection = async (req,res) => {
     const authUserId = req.user.id;
@@ -163,6 +260,43 @@ exports.getPlants = async (req, res) => {
             ORDER BY mpd.created_at DESC
         `;
         const result = await pool.query(query);
+
+        return res.status(200).json({data: result.rows});
+
+
+    } catch (error) {
+        console.log("error",error?.message);
+        return res.status(500).json({
+            error: error?.message
+        })
+    }
+}
+
+exports.getSellingUserPlants = async (req,res) => {
+
+    const authUserId = req.user.id
+    
+    try {
+        
+        const query = ` 
+            SELECT mpd.*, mgp.*, mgi.*, ua.user_id, ua.firstname, ua.lastname, ua.email, ua.profile, ua.cover, ua.description userdesc,
+            uf.followersCount as followersCount, ufv2.followingCount as followingcount
+            
+            FROM mp_plant_details mpd
+
+            LEFT JOIN user_acc ua ON mpd.user_id = ua.user_id
+            LEFT JOIN mp_growing_pref mgp ON mpd.plant_detail_id = mgp.plant_detail_id
+            LEFT JOIN mp_growing_info mgi ON mpd.plant_detail_id = mgi.plant_detail_id
+            LEFT JOIN (SELECT user_id, COUNT(*) followersCount FROM user_followers GROUP BY user_followers.user_id ) uf
+            ON mpd.user_id = uf.user_id
+            LEFT JOIN (SELECT followers_user_id, COUNT(*) followingCount FROM user_followers GROUP BY user_followers.followers_user_id) ufv2
+            ON mpd.user_id = ufv2.followers_user_id
+
+            WHERE mpd.user_id = $1
+
+            ORDER BY mpd.created_at DESC
+        `;
+        const result = await pool.query(query, [authUserId]);
 
         return res.status(200).json({data: result.rows});
 

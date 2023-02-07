@@ -75,7 +75,7 @@ const GrowingInformation = ({
         </div>
 
         <div className='mb-5 px-4'>
-            <div className='flex items-center mb-5'>
+            <div className='sm:flex sm:items-center mb-5'>
                 <div className='mr-3 flex-1'>
                     <label htmlFor="name" className="block text-[#536471] mb-3">Foliage Color</label>
                     <input type="text" placeholder="foliage color" id="name" name="name" required
@@ -93,7 +93,7 @@ const GrowingInformation = ({
                 </div>
             </div>
 
-            <div className='flex items-center mb-5'>
+            <div className='sm:flex sm:items-center mb-5'>
                 <div className='mr-3 flex-1'>
                     <label htmlFor="name" className="block text-[#536471] mb-3">Flower Color</label>
                     <input type="text" placeholder="flower color" id="name" name="name" required

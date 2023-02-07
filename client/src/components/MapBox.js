@@ -1,4 +1,5 @@
-import React, {useEffect, useRef } from 'react'
+import React, {useEffect, useRef, useState } from 'react'
+import { ReactDOM } from 'react';
 import { Link } from 'react-router-dom'
 import mapboxgl from '!mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -6,69 +7,53 @@ import MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-direct
 import '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css';
 import { useQuery } from 'react-query';
 import { getPlants } from '../api/userApi';
-import fire from '../assets/PLANeTlogo.png';
+import { MyContext } from '../context/ContextProvider'
+import moment from 'moment';
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA";
 
+let map;
+
 const MapBox = () => {
     const mapContainerRef = useRef(null);
     const menu = useRef(null);
+    const { socket } = MyContext();
+    const [ marks, setMarks] = useState([]);
     
 
-    const { data, isLoading } = useQuery('map-data', getPlants,
+    const { isLoading } = useQuery('map-data', getPlants,
     {
         onSuccess: ({data}) => {
-            // console.log("map-data", data?.data);
+            console.log("map-data", data?.data);
+            setMarks(data?.data)
         },
         onError: (err) => {
             const errObject = err.response.data.error;
             console.log(errObject);
         }
     });
+
     // mapbox://styles/mapbox/satellite-streets-v12 -- satellite-street view
     // mapbox://styles/djam/ckgojfjv329qq19mif613hvpa -- 3d map
     // mapbox://styles/mapbox/streets-v12 -- streets
 
     useEffect(() => {
-
-        const map = new mapboxgl.Map({
-          container: mapContainerRef.current,
-          style: 'mapbox://styles/mapbox/streets-v12',
-          center: [120.9658, 14.6681],
-          zoom: 13,
+        socket?.on("addedDataMap", ({ data }) => {
+            setMarks([data, ...marks])  
+            console.log("data socket x", marks);
         });
-
-        //List of tagged plants
-        data?.data?.data.forEach((location) => {
-            new mapboxgl.Marker({ color: 'green'})
-            .setLngLat([Number(location?.lng), Number(location?.lat)])
-            .setPopup(new mapboxgl.Popup({ offset: 30 })
-            .setHTML(
-              `
-              <div class="card-map">
-                <h4 class="pop-title">${location?.plant_name ?? null}</h4>
-                <img src=${location?.plant_img ?? null} alt="plant_img" class="pop-img"/>
-                <h4 class="pop-desc">Description</h4>
-                <p class="pop-descs">${location?.description ?? null}</p>
-                <div className=''>
-                    <p class='contributor'>Contributor:</p>
-                    <div class='contributor-wrapper'>
-                        <img src=${location?.profile} class="profile-img"/>
-                        <div className='inline'>
-                            <div class='name'>${location?.firstname} ${location?.lastname}</div>
-                            <span class='email'>${location?.email}</span>
-                        </div>
-                    </div>
-                 </div>
-              </div>
-              `
-            ))
-            .addTo(map);
-        });
+    },[socket])
         
-
-        //Map controls
+    useEffect(() => {
+        map = new mapboxgl.Map({
+            container: mapContainerRef.current,
+            style: 'mapbox://styles/mapbox/streets-v12',
+            center: [120.9658, 14.6681],
+            zoom: 13,
+          
+          });
+            //Map controls
         map.addControl(new mapboxgl.NavigationControl(), "top-right");
         map.addControl(new mapboxgl.GeolocateControl(), "top-right");
         map.addControl(new MapboxDirections({
@@ -79,7 +64,6 @@ const MapBox = () => {
             }
  
         }), 'top-left');
-        
 
         //Switch Layers Logic
         const inputs = menu?.current?.childNodes;
@@ -90,12 +74,45 @@ const MapBox = () => {
                 const layerId = layer.target.id;
                 map.setStyle(layerId);
             };
-         }
+            }
     
-
         //Clean up function
         return () => map.remove();
-    },[data?.data?.data]);
+    }, [])
+
+    useEffect(() => {
+      
+        //List of tagged plants
+        marks.forEach((location) => {
+            new mapboxgl.Marker({ color: 'green'})
+            .setLngLat([Number(location?.lng), Number(location?.lat)])
+            .setPopup(new mapboxgl.Popup({ offset: 30 })
+            .setHTML(
+              `
+                <div class="card-map">
+                    <div>
+                        <div class='contributor-wrapper'>
+                            <img src=${location?.profile} class="profile-img"/>
+                            <div className='inline'>
+                               <a href=/profile/${location?.user_id} class='name'>${location?.firstname} ${location?.lastname}</a>
+                                <span class='email'>${moment(location?.created_at).fromNow()}</span>
+                            </div>
+                            
+                        </div> 
+                    </div>
+                    <div>
+                        <img src=${location?.plant_img ?? null} alt="plant_img" class="pop-img"/>
+                        <h4 class="pop-title">${location?.plant_name ?? null}</h4>
+                        <p class="pop-descs">${location?.description ?? null}</p>
+                    </div>
+                </div>
+              `
+            ))
+            .addTo(map);
+        });
+
+    },[marks]);
+
   return (
     <div>
     

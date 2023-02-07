@@ -99,19 +99,19 @@ body{
 }
 
 .mapboxgl-popup-close-button{
-    margin: 4px;
+    display: none;
 }
 
 .mapboxgl-popup-content{
     display: block;
     border-radius: 4px;
-    width:100%;
-    max-width: 1500px;
+    width: 279px;
 }
 
 .pop-title {
     font-size: 1rem;
     font-weight: bold;
+    margin-top: 6px;
 }
 
 .pop-desc{
@@ -120,7 +120,9 @@ body{
 }
 
 .pop-descs{
+    margin-top: 3px;
     text-align: left;
+    line-height: 1rem;
 }
 
 .pop-img{
@@ -148,6 +150,7 @@ body{
     font-weight: bold;
     line-height: 7px;
     font-size: 13px;
+    display: block;
 }
 
 .email{
@@ -166,7 +169,7 @@ body{
 
 .animate-fadeIn{
     animation-name: fadeIn;
-    animation-duration: 1s;
+    animation-duration: 0.4s;
     transition: ease-in-out;
     
 }
@@ -182,3 +185,5 @@ body{
     to {
         opacity: 100;}
   }
+
+

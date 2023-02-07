@@ -5,6 +5,7 @@ import { useMutation } from 'react-query';
 import { addPlant } from "../api/userApi";
 import mapboxgl from '!mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { MyContext } from '../context/ContextProvider'
 
 const center = {
   lat: 14.6576953,
@@ -22,14 +23,16 @@ const AddPlantMap = () => {
   const [pictureUrl, setPictureUrl] = useState(null);
   const mapContainerRef = useRef(null);
   const coordinates = useRef(null);
-  
+  const { socket } = MyContext();
+
   const { mutate, isLoading } = useMutation(addPlant,
   {
     onSuccess: ({ data }) => {
-      console.log("added plant successfully", data);
+      // console.log("added plant successfully", data);
       setPlantName('');
       setDescription('');
       setPictureUrl(null);
+      socket?.emit("addDataMap", {data: data?.data});
     },
     onError: (err) => {
       const errObject = err.response.data.error;

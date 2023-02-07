@@ -106,13 +106,17 @@ io.on("connection", (socket) => {
     });
 
     //for realttime like
-
     socket.on("likeSend", ({ likedPost }) => {
-
         users.forEach(user => {
             socket.to(user?.socketId).emit("likeReceived", { likedPost })
         })
-        
+    });
+
+    socket.on("addDataMap", ({ data }) => {
+        console.log("socket server");
+        users.forEach(user => {
+            socket.to(user?.socketId).emit("addedDataMap", { data })
+        })
     });
 
    

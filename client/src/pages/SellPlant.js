@@ -10,6 +10,7 @@ import { plantsCategories } from "../data";
 import { NumericFormat } from 'react-number-format';
 import mapboxgl from '!mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import ButtonLoader from '../components/ButtonLoader';
 
 //default values
 const center = {
@@ -172,59 +173,59 @@ const SellPlant = () => {
             <h1 className='font-medium text-xl mt-1 px-4 py-4 border-y border-gray-200 text-emerald-600'>Plant Details</h1>
 
             <div className="px-4 mt-4">
-                <div className="flex items-center">
-                    <div className="flex-1 mr-5 self-start">
-                    <div className="mb-5">
-                        <label htmlFor="name" className="block text-[#536471] mb-3 text-sm">Plant's name</label>
-                        <input type="text" placeholder="plant's name" id="name" name="name" required
-                        value={plantName}
-                        onChange={(e) => setPlantName(e.target.value)}
-                        className="rounded-md border border-gray-200 w-full p-4 text-sm"/>
-                    </div>
+                <div className="sm:flex sm:items-center">
+                    <div className="flex-1 sm:mr-5 self-start">
+                        <div className="mb-5 w-full">
+                            <label htmlFor="name" className="block text-[#536471] mb-3 text-sm">Plant's name</label>
+                            <input type="text" placeholder="plant's name" id="name" name="name" required
+                            value={plantName}
+                            onChange={(e) => setPlantName(e.target.value)}
+                            className="rounded-md border border-gray-200 w-full p-4 text-sm"/>
+                        </div>
 
-                    <div className="mb-5">
-                        <label htmlFor="description" className="block text-[#536471] mb-3 text-sm">Description</label>
-                        <textarea placeholder="description" name="description" id="description" required
-                        onChange={(e) => setDesc(e.target.value)}
-                        value={desc}
-                        className='w-full border border-gray-200 outline-none focus:outline-none min-h-[120px] rounded-xl text-sm'/>
-                    </div>
+                        <div className="mb-5 w-full">
+                            <label htmlFor="description" className="block text-[#536471] mb-3 text-sm">Description</label>
+                            <textarea placeholder="description" name="description" id="description" required
+                            onChange={(e) => setDesc(e.target.value)}
+                            value={desc}
+                            className='w-full border border-gray-200 outline-none focus:outline-none min-h-[120px] rounded-xl text-sm'/>
+                        </div>
                     </div>
 
                     <div className="self-start">
-                    <div className="flex items-center justify-between mb-3">
-                        <label className="block text-[#536471] flex-1">Plant's image</label>
-                        <label className='text-center bg-green-200 text-gray-900 
-                        p-[5px] flex items-center justify-center rounded-full cursor-pointer 
-                        focus:outline-none focus:ring-4 focus:ring-green-100' htmlFor='picture'>
-                            <input hidden accept="image/png, image/jpg, image/jpeg" type="file" name="picture" id="picture" onChange={handleChangeImage} />
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
-                            className="w-5 h-5 inline align-middle">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
-                            </svg>
-                        </label>
-                    </div>
+                        <div className="flex items-center justify-between mb-3">
+                            <label className="block text-[#536471] flex-1">Plant's image</label>
+                            <label className='text-center bg-green-200 text-gray-900 
+                            p-[5px] flex items-center justify-center rounded-full cursor-pointer 
+                            focus:outline-none focus:ring-4 focus:ring-green-100' htmlFor='picture'>
+                                <input hidden accept="image/png, image/jpg, image/jpeg" type="file" name="picture" id="picture" onChange={handleChangeImage} />
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"
+                                className="w-5 h-5 inline align-middle">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
+                                </svg>
+                            </label>
+                        </div>
 
-                    <div className='mt-2 relative w-full h-full'>
-                        {pictureUrl && 
-                        <button onClick={() => setPictureUrl(null)} className='p-1 bg-gray-800 bg-opacity-80 rounded-full absolute m-2 focus:outline-none focus:ring-2 focus:ring-gray-300'>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#FFFFFF" className="w-5 h-5">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                        }
-                        <img src={pictureUrl ?? logo} alt="plant img" className='w-[237px] h-full object-center object-cover rounded-xl border border-gray-200'/>
-                    </div>
+                        <div className='mt-2 relative w-full h-full'>
+                            {pictureUrl && 
+                            <button onClick={() => setPictureUrl(null)} className='p-1 bg-gray-800 bg-opacity-80 rounded-full absolute m-2 focus:outline-none focus:ring-2 focus:ring-gray-300'>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#FFFFFF" className="w-5 h-5">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                            }
+                            <img src={pictureUrl ?? logo} alt="plant img" className='w-[237px] h-full object-center object-cover rounded-xl border border-gray-200'/>
+                        </div>
                     </div>
                 </div>  
                 
-                <div className=" mt-4 flex items-center justify-start">
-                    <div className="flex-1">
+                <div className=" mt-4 sm:flex sm:items-center sm:justify-start">
+                    <div className="flex-1 mt-5">
                         <p className='text-gray-500 mb-2 text-sm'>Category</p>
                         <FilterButton data={plantsCategories} setData={setPlantCat} />
                     </div>
 
-                    <div className="mr-4 flex-1">
+                    <div className="sm:mr-4 flex-1 mt-5">
                         <label htmlFor="name" className='text-gray-500 mb-2 block text-sm'>Date Planted</label>
                             <input type="date" placeholder="plant's name" id="name" name="name" required
                             value={datePlanted}
@@ -232,14 +233,14 @@ const SellPlant = () => {
                             className="rounded-md border border-gray-200 w-full text-sm p-3"/>
                     </div>
 
-                    <div className="mr-4 flex-1">
+                    <div className="sm:mr-4 flex-1 mt-5">
                         <label htmlFor="quantity" className="text-gray-500 mb-2 block text-sm">Quantity Available</label>
                         <input type="number" placeholder="quantity" id="quantity" name="quantity" required
                         className="rounded-md border border-gray-200 w-full p-3 text-sm" value={quantity} 
                         onChange={(e) => setQuantity(e.target.value)}/>
                     </div>
 
-                    <div className='flex-1'>
+                    <div className='flex-1 mt-5'>
                         <label htmlFor="price" className="text-gray-500 mb-2 block text-sm">Price</label>
                         <NumericFormat value={price} displayType={'input'} thousandSeparator={true} prefix={'₱ '} placeholder="price"
                         className="rounded-md border border-gray-200 w-full p-3 text-sm"
@@ -247,7 +248,7 @@ const SellPlant = () => {
                     </div>
                 </div>
 
-                <div className='mt-4 mb-4'>
+                <div className='mt-4 mb-4 '>
                     <div>
                         <label htmlFor="address" className="text-gray-500 mb-2 block text-sm">Address</label>
                         <input type="text" placeholder="address" id="address" name="address" required
@@ -286,11 +287,15 @@ const SellPlant = () => {
         <button type="button" 
         onClick={handleSubmit} className='bg-green-200 text-green-800 rounded-md focus:outline-none focus:ring-4 
       focus:ring-green-300 flex items-center justify-center px-4 py-2 w-full'>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 mr-1">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
 
-          <span className='text-md block mt-[1px]'>{isLoading ? <span>Loading</span> : <span>Publish Plant</span>}</span>
+          <span className='text-md block mt-[1px]'>{isLoading ? <ButtonLoader style="block mx-auto" loadingText='Adding...'/> : 
+            <span className='flex items-center'>  
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 mr-1">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                Publish Plant
+            </span>}
+        </span>
         </button>
       </div>
 

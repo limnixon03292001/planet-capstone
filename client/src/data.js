@@ -74,6 +74,11 @@ export const shortcutsNavigationBar = [
 
 //filters data
 
+export const status = [
+    { name: 'Available' },
+    { name: 'Unavailable' },
+]
+
 export const plantsCategories = [
     { name: 'Homeplant' },
     { name: 'Fruit' },

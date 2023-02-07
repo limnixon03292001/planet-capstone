@@ -1,14 +1,17 @@
 const express  = require('express');
-const { addPlant, getPlants, getPlant, getRelatedPlants, getPlantsUser, 
-        addPlantFromCollection, requestTrade, userRequests, tradeRequest, getTradeDetails, rejectTrade, approveTrade 
+const { addPlant, getPlants, getPlant, getSellingUserPlants, getRelatedPlants, getPlantsUser, 
+        addPlantFromCollection, requestTrade, userRequests, tradeRequest, getTradeDetails, rejectTrade, approveTrade, updatePlant, deletePlant, 
 } = require('../controllers/marketplaceController');
 const auth = require('../middlewares/auth');
 
 const router = express.Router();
 
 router.post("/addPlant", auth, addPlant);
+router.post("/updatePlant", auth, updatePlant);
+router.delete("/deletePlant", auth, deletePlant);
 router.post("/addPlantFromCollection", auth, addPlantFromCollection);
 router.get("/getPlants", auth, getPlants);
+router.get("/getSellingUserPlants", auth, getSellingUserPlants);
 router.get("/getPlant", auth, getPlant);
 router.get("/getRelatedPlants", auth, getRelatedPlants);
 router.get("/getPlantsUser", auth, getPlantsUser);
