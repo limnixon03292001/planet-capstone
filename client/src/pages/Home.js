@@ -74,10 +74,10 @@ const Home = () => {
               <div className='w-full h-full'>
                     <div className='min-h-screen w-full h-full'>
                       <Routes>
-                        <Route path= "/" element={<PostFeeds/>}/>
+                        {/* <Route path= "/" element={<PostFeeds/>}/> */}
                         <Route path="/profile/:id" element={<Profile/>}/>
                         <Route path="/messages/*" element={<Messages/>}/>
-                        <Route path="/marketplace" element={<Marketplace/>}/>
+                        <Route path="/" element={<Marketplace/>}/>
                         <Route path="/marketplace/sell-plants" element={<SellPlant/>}/>
                         <Route path="/marketplace/selling" element={<SellingList/>}/>
                         <Route path="/marketplace/item/:id" element={<MarketplacePlant/>}/>
