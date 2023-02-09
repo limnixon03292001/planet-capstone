@@ -8,6 +8,7 @@ import EllipsisText from "react-ellipsis-text";
 import { DebounceInput } from 'react-debounce-input'
 import PlantDetailCollectionModal from '../components/PlantDetailCollectionModal'
 import FilterPlantCollection from '../components/FilterPlantCollection'
+import ButtonLoader from '../components/ButtonLoader'
 
 export const plantsCategories = [
     { name: 'All' },
@@ -32,20 +33,8 @@ const MyPlantCollections = () => {
     //growing preferences
     const [gp, setGp] = useState(growingPrefInitialState);
     const [selectedCategory, setSelectedCategory] = useState('');
-    console.log(plantColl[4]?.soil_pref.split(","))
-    // const { data, isLoading } = useQuery(['plant-collections', authUser?.user_id], getPlantCollection,
-    // {
-    //     onSuccess: ({ data }) => {
-    //         setPlantColl(data?.data);
-    //         console.log(data?.data)
-    //     },
-    //     onError: (err) => {
-    //         const errObject = err.response.data.error;
-    //         console.log(errObject);
-    //     }
-    // });
 
-    const { isLoading: loadingFilter, refetch } = useQuery(['filteredPlant-collections', authUser?.user_id, gp, selectedCategory], filterPlantCollections,
+    const { isLoading } = useQuery(['filteredPlant-collections', authUser?.user_id, gp, selectedCategory], filterPlantCollections,
     {
         onSuccess: ({ data }) => {
             setPlantColl(data);
@@ -85,12 +74,8 @@ const MyPlantCollections = () => {
         setSelectedPlant(p);
     }
 
-    useEffect(() => {
-      console.log("x", plantColl)
-    },[plantColl])
-
   return (
-    <div className='block border border-gray-200 w-full min-h-screen pt-6 overflow-hidden'>
+    <div className='block border border-gray-200 w-full min-h-screen pt-6 overflow-hidden mb-[59px]'>
         <div className='w-full flex items-center px-4'>
             <h1 className='font-extrabold text-lg mt-1'>My Plant Collections</h1>
             
@@ -110,7 +95,7 @@ const MyPlantCollections = () => {
         <div className='transition-all z-10 block sticky top-0 w-full h-max px-4 py-4 mt-4 border-y border-gray-200 shadow'>
             <div className='flex items-center'>
 
-              <h1 className='text-xl font-bold text-gray-700 mr-auto'>
+              <h1 className='text-xl font-bold text-gray-700 mr-auto hidden md:block'>
                 <span className='text-gray-500 text-xs font-light block'>Total plants</span>
                 {plantColl?.total?.count} plants
               </h1>
@@ -140,9 +125,19 @@ const MyPlantCollections = () => {
         {/* button end*/}
 
 
-
         <div className='h-full w-full'>
-            <main className='px-4 mt-4 grid grid-cols-myGrid gap-5'>
+          {isLoading ? 
+            <div className='flex items-center justify-center w-full msgOuterContainer text-gray-700'> 
+              <ButtonLoader/>
+              <p>Loading...</p>
+            </div>
+          :
+            plantColl?.data?.length === 0 ? 
+              <div className='flex items-center justify-center w-full msgOuterContainer text-gray-700'> 
+                <p>No items found</p>
+              </div>
+            :
+              <main className='px-4 mt-4 grid grid-cols-myGrid gap-5'>
                 {plantColl?.data?.map((p, id) => (
                     <Fragment key={id}>
                         <div className="relative flex flex-row group
@@ -154,7 +149,7 @@ const MyPlantCollections = () => {
 
                             <div className='py-2 w-full bg-slate-emerald/40 text-white flex-1 flex bg-cover bg-right-bottom' style={{backgroundImage: `url(${p?.plant_img})` }}>
                             
-                               
+                                
                             </div>
 
                             <div className='absolute inset-0 w-full h-full flex '>
@@ -175,8 +170,8 @@ const MyPlantCollections = () => {
                                     </div>
                                   {/* sun_pref */}
 
-                                   {/*soil_pref */}
-                                   <div className='text-[9px] mt-4'>
+                                    {/*soil_pref */}
+                                    <div className='text-[9px] mt-4'>
                                     {p?.soil_pref.split(",")[0] !== '' &&
                                       p?.soil_pref.split(",").splice(0,4).map((sp, i) => (
                                         <span key={i} className='bg-emerald-400/30 text-white mr-1 p-1 rounded-full'>{sp}</span>
@@ -197,11 +192,12 @@ const MyPlantCollections = () => {
                                 </svg>
                               </div>
                             </div>
-                           
+                            
                         </div>
                     </Fragment>
                 ))}
-            </main>
+              </main>
+          }
         </div>
 
         {isOpen && 
@@ -218,12 +214,11 @@ export const FilterPlantCategories = ({ setSelectedCategory, selectedCategory })
 
     useEffect(() => {
         setSelectedCategory(selected?.name);
-        
     }, [selected])
 
     return (
       <Listbox value={selected} onChange={setSelected}>
-        <div className="relative w-[180px]">
+        <div className="relative w-[140px]">
           <Listbox.Button className="relative w-full cursor-pointer rounded-lg bg-white py-3 pl-3 pr-10 text-left 
             border border-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-300
              focus-visible:ring-opacity-75 text-sm">
@@ -246,7 +241,7 @@ export const FilterPlantCategories = ({ setSelectedCategory, selectedCategory })
                 <Listbox.Option
                   key={dataIdx}
                   className={({ active }) =>
-                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                    `relative cursor-default select-none py-2 px-4 ${
                       active ? 'bg-green-100 text-green-900' : 'text-gray-900'
                     }`
                   }
@@ -256,19 +251,12 @@ export const FilterPlantCategories = ({ setSelectedCategory, selectedCategory })
                     <>
                       <span
                         className={`block truncate ${
-                          selected ? 'font-medium' : 'font-normal'
+                          selected ? 'font-medium text-green-600' : 'font-normal'
                         }`}
                       >
                         {d.name}
                       </span>
-                      {selected ? (
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-green-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" 
-                            className="w-5 h-5">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                            </svg>
-                        </span>
-                      ) : null}
+                     
                     </>
                   )}
                 </Listbox.Option>

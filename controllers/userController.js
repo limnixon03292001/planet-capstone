@@ -263,7 +263,7 @@ exports.loginController = async (req, res) => {
 
         jwt.sign({ email: user.rows[0].email, id: user.rows[0].user_id },       
                 process.env.JWT_SECRET, 
-                { expiresIn: 5600 }, 
+                { expiresIn: "4h" }, 
                 (err,token) => {
 
                 //if something unexpected happened in creating token
@@ -944,47 +944,9 @@ exports.getPlantCollection = async (req, res) => {
     }
 }
 
-// exports.filterPlantCollections = async (req, res) => {
-//     const { userId, filters } = req.query;
-//     console.log("filter data", filters)
-//     try {
-        
-//         const query =  format(` 
-//             SELECT cpd.*, cgp.*, cgi.*, ua.user_id, ua.firstname, ua.lastname, ua.email, ua.profile
-//             FROM coll_plant_details cpd
-
-//             LEFT JOIN user_acc ua ON cpd.user_id = ua.user_id
-//             LEFT JOIN coll_growing_pref cgp ON cpd.plant_detail_id = cgp.plant_detail_id
-//             LEFT JOIN coll_growing_info cgi ON cpd.plant_detail_id = cgi.plant_detail_id
-
-//             WHERE cpd.user_id = $1 
-
-//            AND to_tsvector(cpd.user_id || ' ' || cpd.category || ' ' || cgp.sun_pref 
-//            || ' ' || cgp.inter_light || ' ' || cgp.soil_pref || ' ' || cgp.water_req 
-//            || ' ' || cgp.native_habitat) @@ plainto_tsquery(%L)  
-
-
-//            ORDER BY cpd.created_at DESC
-
-//         `, `%${filters}%`,)
-
-
-//         const result = await pool.query(query, [Number(userId)]);
-
-//         return res.status(200).json({data: result.rows});
-
-
-//     } catch (error) {
-//         console.log("error",error?.message);
-//         return res.status(500).json({
-//             error: error?.message
-//         })
-//     }
-// }
-
 exports.filterPlantCollections = async (req, res) => {
     const { userId, category, sunPref, interLight, soilPref, waterReq, nativeHab } = req.query;
-   
+  
     try {
         
         const query =  format(` 

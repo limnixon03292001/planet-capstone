@@ -1,5 +1,6 @@
 const pool  = require('../utils/dbConnection');
 const cloudinary = require("../utils/cloudinary");
+const format = require("pg-format");
 
 exports.addPlant = async (req,res) => {
     const authUserId = req.user.id;
@@ -179,7 +180,6 @@ exports.deletePlant = async (req, res) => {
         })
     }
 }
-
 
 exports.addPlantFromCollection = async (req,res) => {
     const authUserId = req.user.id;
@@ -412,226 +412,265 @@ exports.getPlantsUser = async (req, res) => {
     }
 }
 
+exports.filterPlantMarketplace = async (req, res) => {
+    const { category, search } = req.query;
+   
+    try {
+        const query = format(` 
+            SELECT mpd.*, mgp.*, mgi.*, ua.user_id, ua.firstname, ua.lastname, ua.email, ua.profile, ua.cover, ua.description userdesc,
+            uf.followersCount as followersCount, ufv2.followingCount as followingcount
+            
+            FROM mp_plant_details mpd
+
+            LEFT JOIN user_acc ua ON mpd.user_id = ua.user_id
+            LEFT JOIN mp_growing_pref mgp ON mpd.plant_detail_id = mgp.plant_detail_id
+            LEFT JOIN mp_growing_info mgi ON mpd.plant_detail_id = mgi.plant_detail_id
+            LEFT JOIN (SELECT user_id, COUNT(*) followersCount FROM user_followers GROUP BY user_followers.user_id ) uf
+            ON mpd.user_id = uf.user_id
+            LEFT JOIN (SELECT followers_user_id, COUNT(*) followingCount FROM user_followers GROUP BY user_followers.followers_user_id) ufv2
+            ON mpd.user_id = ufv2.followers_user_id
+
+            WHERE ${category && category !== 'All' ? `to_tsvector(mpd.user_id || ' ' || mpd.category) @@ plainto_tsquery(%L)` : 
+            `NOT to_tsvector(mpd.user_id || ' ' || mpd.category) @@ plainto_tsquery(%L)` }
+
+            ${search ? `AND to_tsvector(mpd.user_id || ' ' || mpd.*) @@ plainto_tsquery(%L)` : 
+            `AND NOT to_tsvector(mpd.user_id || ' ' || mpd.*) @@ plainto_tsquery(%L)` }
+           
+
+            ORDER BY mpd.created_at DESC
+        `, `%${category}%`, `%${search}%`);
+
+        const result = await pool.query(query);
+        return res.status(200).json({data: result.rows});
+
+    } catch (error) {
+        console.log("error",error?.message);
+        return res.status(500).json({
+            error: error?.message
+        })
+    }
+}
+
 
 // TRADE
-exports.requestTrade = async (req, res) => {
-    const { seller_id, seller_plant_id, requester_id, requester_plant_id, note } = req.body;
+// exports.requestTrade = async (req, res) => {
+//     const { seller_id, seller_plant_id, requester_id, requester_plant_id, note } = req.body;
 
-    try {
+//     try {
 
-        const trade_id = await pool.query(`INSERT INTO trades (seller_id, requester_id)
-        VALUES($1, $2) RETURNING *`,[seller_id, requester_id]);
+//         const trade_id = await pool.query(`INSERT INTO trades (seller_id, requester_id)
+//         VALUES($1, $2) RETURNING *`,[seller_id, requester_id]);
 
-        const tradeId = trade_id?.rows[0]?.trade_id;
+//         const tradeId = trade_id?.rows[0]?.trade_id;
 
-        await pool.query(`INSERT INTO plant_trade_details (trade_id, seller_plant_id, requester_plant_id, note, status)
-        VALUES($1, $2, $3, $4, $5)`,[tradeId, seller_plant_id, requester_plant_id, note, 'Pending']);
+//         await pool.query(`INSERT INTO plant_trade_details (trade_id, seller_plant_id, requester_plant_id, note, status)
+//         VALUES($1, $2, $3, $4, $5)`,[tradeId, seller_plant_id, requester_plant_id, note, 'Pending']);
 
-        res.status(201).json({msg: 'Request Sent!', success: true});
+//         res.status(201).json({msg: 'Request Sent!', success: true});
 
-    } catch (error) {
-        console.log("error",error?.message);
-        return res.status(500).json({
-            error: error?.message
-        })
-    }
-}
+//     } catch (error) {
+//         console.log("error",error?.message);
+//         return res.status(500).json({
+//             error: error?.message
+//         })
+//     }
+// }
 
-exports.userRequests = async (req, res) => {
-    const authUserId = req.user.id
+// exports.userRequests = async (req, res) => {
+//     const authUserId = req.user.id
 
-    try {
-        const seller = await pool.query(`
-            SELECT trades.*, ptd.status trade_status, ptd.note, mpd.*, mgp.*, mgi.*,
-            ua.firstname, ua.lastname, ua.profile, ua.email
+//     try {
+//         const seller = await pool.query(`
+//             SELECT trades.*, ptd.status trade_status, ptd.note, mpd.*, mgp.*, mgi.*,
+//             ua.firstname, ua.lastname, ua.profile, ua.email
             
-            FROM trades 
+//             FROM trades 
             
-            LEFT JOIN plant_trade_details ptd ON trades.trade_id = ptd.trade_id
+//             LEFT JOIN plant_trade_details ptd ON trades.trade_id = ptd.trade_id
 
-            LEFT JOIN mp_plant_details mpd ON ptd.seller_plant_id = mpd.plant_detail_id 
-            LEFT JOIN mp_growing_pref mgp ON mpd.plant_detail_id = mgp.plant_detail_id
-            LEFT JOIN mp_growing_info mgi ON mpd.plant_detail_id = mgi.plant_detail_id
-            LEFT JOIN user_acc ua ON mpd.user_id = ua.user_id
+//             LEFT JOIN mp_plant_details mpd ON ptd.seller_plant_id = mpd.plant_detail_id 
+//             LEFT JOIN mp_growing_pref mgp ON mpd.plant_detail_id = mgp.plant_detail_id
+//             LEFT JOIN mp_growing_info mgi ON mpd.plant_detail_id = mgi.plant_detail_id
+//             LEFT JOIN user_acc ua ON mpd.user_id = ua.user_id
 
-            WHERE requester_id = $1
+//             WHERE requester_id = $1
 
-            ORDER BY trades.created_at DESC
-        `,[authUserId]);
+//             ORDER BY trades.created_at DESC
+//         `,[authUserId]);
 
-        // const requester = await pool.query(`
-        //     SELECT trades.*, ptd.status trade_status, ptd.note, cpd.*, cgp.*, cgi.*
+//         // const requester = await pool.query(`
+//         //     SELECT trades.*, ptd.status trade_status, ptd.note, cpd.*, cgp.*, cgi.*
             
-        //     FROM trades 
+//         //     FROM trades 
             
-        //     LEFT JOIN plant_trade_details ptd ON trades.trade_id = ptd.trade_id
+//         //     LEFT JOIN plant_trade_details ptd ON trades.trade_id = ptd.trade_id
 
-        //     LEFT JOIN coll_plant_details cpd ON ptd.requester_plant_id = cpd.plant_detail_id
-        //     LEFT JOIN coll_growing_pref cgp ON cpd.plant_detail_id = cgp.plant_detail_id
-        //     LEFT JOIN coll_growing_info cgi ON cpd.plant_detail_id = cgi.plant_detail_id
+//         //     LEFT JOIN coll_plant_details cpd ON ptd.requester_plant_id = cpd.plant_detail_id
+//         //     LEFT JOIN coll_growing_pref cgp ON cpd.plant_detail_id = cgp.plant_detail_id
+//         //     LEFT JOIN coll_growing_info cgi ON cpd.plant_detail_id = cgi.plant_detail_id
 
-        //     WHERE requester_id = $1
-        // `,[authUserId]);
+//         //     WHERE requester_id = $1
+//         // `,[authUserId]);
 
 
-        res.status(200).json({
-            seller: seller.rows,
-            // requester: requester.rows
-        });
+//         res.status(200).json({
+//             seller: seller.rows,
+//             // requester: requester.rows
+//         });
 
-    } catch (error) {
-        console.log("error",error?.message);
-        return res.status(500).json({
-            error: error?.message
-        })
-    }
-}
+//     } catch (error) {
+//         console.log("error",error?.message);
+//         return res.status(500).json({
+//             error: error?.message
+//         })
+//     }
+// }
 
-exports.tradeRequest = async (req, res) => {
-    const authUserId = req.user.id
+// exports.tradeRequest = async (req, res) => {
+//     const authUserId = req.user.id
 
-    try {
-        const requests = await pool.query(`
-            SELECT trades.*, ptd.status trade_status, ptd.note, 
+//     try {
+//         const requests = await pool.query(`
+//             SELECT trades.*, ptd.status trade_status, ptd.note, 
             
-            mpd.plant_img s_plant_img, mpd.plant_name s_plant_name,
-            cpd.plant_img r_plant_img, cpd.plant_name r_plant_name,
+//             mpd.plant_img s_plant_img, mpd.plant_name s_plant_name,
+//             cpd.plant_img r_plant_img, cpd.plant_name r_plant_name,
 
-            ua_s.firstname s_fn, ua_s.lastname s_ln, ua_s.profile s_p, ua_s.email s_e,
-            ua_r.firstname r_fn, ua_r.lastname r_ln, ua_r.profile r_p, ua_r.email r_e
+//             ua_s.firstname s_fn, ua_s.lastname s_ln, ua_s.profile s_p, ua_s.email s_e,
+//             ua_r.firstname r_fn, ua_r.lastname r_ln, ua_r.profile r_p, ua_r.email r_e
             
-            FROM trades 
+//             FROM trades 
             
-            LEFT JOIN plant_trade_details ptd ON trades.trade_id = ptd.trade_id
+//             LEFT JOIN plant_trade_details ptd ON trades.trade_id = ptd.trade_id
 
-            LEFT JOIN mp_plant_details mpd ON ptd.seller_plant_id = mpd.plant_detail_id
-            LEFT JOIN user_acc ua_s ON mpd.user_id = ua_s.user_id
+//             LEFT JOIN mp_plant_details mpd ON ptd.seller_plant_id = mpd.plant_detail_id
+//             LEFT JOIN user_acc ua_s ON mpd.user_id = ua_s.user_id
 
-            LEFT JOIN coll_plant_details cpd ON ptd.requester_plant_id = cpd.plant_detail_id
-            LEFT JOIN user_acc ua_r ON cpd.user_id = ua_r.user_id
+//             LEFT JOIN coll_plant_details cpd ON ptd.requester_plant_id = cpd.plant_detail_id
+//             LEFT JOIN user_acc ua_r ON cpd.user_id = ua_r.user_id
 
-            WHERE seller_id = $1
+//             WHERE seller_id = $1
 
-            ORDER BY trades.created_at DESC
-        `,[authUserId]);
+//             ORDER BY trades.created_at DESC
+//         `,[authUserId]);
 
-        res.status(200).json({
-            tradeRequests: requests.rows,
-            // requester: requester.rows
-        });
+//         res.status(200).json({
+//             tradeRequests: requests.rows,
+//             // requester: requester.rows
+//         });
 
-    } catch (error) {
-        console.log("error",error?.message);
-        return res.status(500).json({
-            error: error?.message
-        })
+//     } catch (error) {
+//         console.log("error",error?.message);
+//         return res.status(500).json({
+//             error: error?.message
+//         })
         
-    }
-}
+//     }
+// }
 
-exports.getTradeDetails = async (req, res) => {
+// exports.getTradeDetails = async (req, res) => {
 
-    const { tradeId } = req.query;
-    const authUserId = req.user.id;
+//     const { tradeId } = req.query;
+//     const authUserId = req.user.id;
 
-    console.log(tradeId);
+//     console.log(tradeId);
 
-    try {
-
-
-        const check = await pool.query(`
-            SELECT * FROM trades WHERE seller_id = $1
-        `,[authUserId]);
+//     try {
 
 
-        if(check?.rows.length === 0) {
-            return res.status(404).json({message: "Not found", errorCode: 404});
-        }
+//         const check = await pool.query(`
+//             SELECT * FROM trades WHERE seller_id = $1
+//         `,[authUserId]);
 
-        const seller = await pool.query(`
-            SELECT trades.*, ptd.status trade_status, ptd.note, mpd.*, mgp.*, mgi.*,
-            ua.firstname s_fn, ua.lastname s_ln, ua.profile s_p, ua.email s_e
+
+//         if(check?.rows.length === 0) {
+//             return res.status(404).json({message: "Not found", errorCode: 404});
+//         }
+
+//         const seller = await pool.query(`
+//             SELECT trades.*, ptd.status trade_status, ptd.note, mpd.*, mgp.*, mgi.*,
+//             ua.firstname s_fn, ua.lastname s_ln, ua.profile s_p, ua.email s_e
             
-            FROM trades 
+//             FROM trades 
             
-            LEFT JOIN plant_trade_details ptd ON trades.trade_id = ptd.trade_id
+//             LEFT JOIN plant_trade_details ptd ON trades.trade_id = ptd.trade_id
 
-            LEFT JOIN mp_plant_details mpd ON ptd.seller_plant_id = mpd.plant_detail_id 
-            LEFT JOIN mp_growing_pref mgp ON mpd.plant_detail_id = mgp.plant_detail_id
-            LEFT JOIN mp_growing_info mgi ON mpd.plant_detail_id = mgi.plant_detail_id
-            LEFT JOIN user_acc ua ON mpd.user_id = ua.user_id
+//             LEFT JOIN mp_plant_details mpd ON ptd.seller_plant_id = mpd.plant_detail_id 
+//             LEFT JOIN mp_growing_pref mgp ON mpd.plant_detail_id = mgp.plant_detail_id
+//             LEFT JOIN mp_growing_info mgi ON mpd.plant_detail_id = mgi.plant_detail_id
+//             LEFT JOIN user_acc ua ON mpd.user_id = ua.user_id
 
-            WHERE ptd.trade_id = $1
-        `,[tradeId]);
+//             WHERE ptd.trade_id = $1
+//         `,[tradeId]);
 
-        const requester = await pool.query(`
-            SELECT trades.*, cpd.*, cgp.*, cgi.*,
-            ua.firstname r_fn, ua.lastname r_ln, ua.profile r_p, ua.email r_e,
-            ptd.created_at trade_creation
+//         const requester = await pool.query(`
+//             SELECT trades.*, cpd.*, cgp.*, cgi.*,
+//             ua.firstname r_fn, ua.lastname r_ln, ua.profile r_p, ua.email r_e,
+//             ptd.created_at trade_creation
             
-            FROM trades 
+//             FROM trades 
             
-            LEFT JOIN plant_trade_details ptd ON trades.trade_id = ptd.trade_id
+//             LEFT JOIN plant_trade_details ptd ON trades.trade_id = ptd.trade_id
 
-            LEFT JOIN coll_plant_details cpd ON ptd.requester_plant_id = cpd.plant_detail_id
-            LEFT JOIN coll_growing_pref cgp ON cpd.plant_detail_id = cgp.plant_detail_id
-            LEFT JOIN coll_growing_info cgi ON cpd.plant_detail_id = cgi.plant_detail_id
-            LEFT JOIN user_acc ua ON cpd.user_id = ua.user_id
+//             LEFT JOIN coll_plant_details cpd ON ptd.requester_plant_id = cpd.plant_detail_id
+//             LEFT JOIN coll_growing_pref cgp ON cpd.plant_detail_id = cgp.plant_detail_id
+//             LEFT JOIN coll_growing_info cgi ON cpd.plant_detail_id = cgi.plant_detail_id
+//             LEFT JOIN user_acc ua ON cpd.user_id = ua.user_id
 
-            WHERE ptd.trade_id = $1
-        `,[tradeId]);
+//             WHERE ptd.trade_id = $1
+//         `,[tradeId]);
 
-        res.status(200).json({
-            seller: seller.rows[0],
-            requester: requester.rows[0]
-        });
+//         res.status(200).json({
+//             seller: seller.rows[0],
+//             requester: requester.rows[0]
+//         });
             
-    } catch (error) {
-        console.log("error",error?.message);
-        return res.status(500).json({
-            error: error?.message
-        });
-    }
-}
+//     } catch (error) {
+//         console.log("error",error?.message);
+//         return res.status(500).json({
+//             error: error?.message
+//         });
+//     }
+// }
 
-exports.approveTrade = async (req, res) => {
-    const { tradeId }  = req.body;
+// exports.approveTrade = async (req, res) => {
+//     const { tradeId }  = req.body;
     
-    try {
-        const result = await pool.query(`
-            UPDATE plant_trade_details 
-            SET status = $1
-            WHERE trade_id = $2
-            RETURNING *
-        `,['Approved', tradeId]);   
+//     try {
+//         const result = await pool.query(`
+//             UPDATE plant_trade_details 
+//             SET status = $1
+//             WHERE trade_id = $2
+//             RETURNING *
+//         `,['Approved', tradeId]);   
 
-        res.status(200).json(result?.rows[0]);
+//         res.status(200).json(result?.rows[0]);
 
-    } catch (error) {
-        console.log("error",error?.message);
-        return res.status(500).json({
-            error: error?.message
-        });
-    }
-}
+//     } catch (error) {
+//         console.log("error",error?.message);
+//         return res.status(500).json({
+//             error: error?.message
+//         });
+//     }
+// }
 
-exports.rejectTrade = async (req, res) => {
-    const { tradeId } = req.body;
+// exports.rejectTrade = async (req, res) => {
+//     const { tradeId } = req.body;
 
-    console.log(tradeId)
-    try {
-        const result = await pool.query(`
-            UPDATE plant_trade_details 
-            SET status = $1
-            WHERE trade_id = $2
-            RETURNING *
-        `,['Rejected', tradeId]);
+//     console.log(tradeId)
+//     try {
+//         const result = await pool.query(`
+//             UPDATE plant_trade_details 
+//             SET status = $1
+//             WHERE trade_id = $2
+//             RETURNING *
+//         `,['Rejected', tradeId]);
 
-        res.status(200).json(result?.rows[0]);
-    } catch (error) {
-        console.log("error",error?.message);
-        return res.status(500).json({
-            error: error?.message
-        });
-    }
-}
+//         res.status(200).json(result?.rows[0]);
+//     } catch (error) {
+//         console.log("error",error?.message);
+//         return res.status(500).json({
+//             error: error?.message
+//         });
+//     }
+// }

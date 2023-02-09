@@ -6,6 +6,8 @@ import { addPlant } from "../api/userApi";
 import mapboxgl from '!mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { MyContext } from '../context/ContextProvider'
+import ButtonLoader from '../components/ButtonLoader';
+import { useNavigate } from 'react-router-dom';
 
 const center = {
   lat: 14.6576953,
@@ -24,6 +26,7 @@ const AddPlantMap = () => {
   const mapContainerRef = useRef(null);
   const coordinates = useRef(null);
   const { socket } = MyContext();
+  const navigate = useNavigate();
 
   const { mutate, isLoading } = useMutation(addPlant,
   {
@@ -32,6 +35,7 @@ const AddPlantMap = () => {
       setPlantName('');
       setDescription('');
       setPictureUrl(null);
+      navigate("/map");
       socket?.emit("addDataMap", {data: data?.data});
     },
     onError: (err) => {
@@ -93,24 +97,27 @@ const AddPlantMap = () => {
       }
        
       marker.on('dragend', onDragEnd);
-      console.log("fires")
 
       //Clean up function
       return () => map.remove();
   },[]);
   
   return (
-    <div className='px-4 pt-4 b-4 w-full h-full'>
+    <div className='px-4 pt-4 b-4 w-full h-full mb-[60px]'>
 
       <div className='mb-7 flex items-center justify-between'>
         <h1 className='font-bold text-xl inline'>Add New Plant</h1>
         <button onClick={handleSubmit} className=' bg-[#3DDAB4] text-white py-2  rounded-full focus:outline-none focus:ring-4 
       focus:ring-green-100 inline-block px-4'>
-        < span>Submit</span>
+        {isLoading ? 
+          <ButtonLoader style="block mx-auto" loadingText='Adding...'/> 
+        :
+          <span>Submit</span>
+        }
         </button>
       </div>
 
-      <form className='flex'>
+      <form className='sm:flex'>
         <div className='flex-1'>
             <div className="mb-5">
               <label htmlFor="name" className="block text-[#536471] mb-3">Plant's name</label>
@@ -126,21 +133,9 @@ const AddPlantMap = () => {
               value={description}
               className='w-full border border-gray-200 outline-none focus:outline-none min-h-[120px] rounded-xl'/>
             </div>
-            <div>
-              <div className='mt-2 flex items-center justify-between'>
-                <h1 className="block text-[#536471]">Pin Location</h1>
-                {/* <button onClick={getLocation} type="button" className=' bg-green-200 text-gray-900 py-2 px-3 rounded-lg  focus:outline-none focus:ring-4 focus:ring-green-100'>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" 
-                  className="w-6 h-6 inline align-top">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                  </svg>
-                </button> */}
-              </div>
-            </div>
         </div>
 
-        <div className='ml-5'>
+        <div className='sm:ml-5'>
           <div>
             <div className="flex items-end justify-between mb-3">
               <label className="block text-[#536471] flex-1">Plant's image</label>
@@ -173,10 +168,13 @@ const AddPlantMap = () => {
         </div>
       </form>
 
-      <div className='mt-2 overflow-hidden rounded-lg mb-3 relative'>
-        <div ref={mapContainerRef} className="w-full h-[440px]"/>
-        <pre ref={coordinates} className="coordinates
-        absolute z-20 top-0 m-1 text-sm bg-black/60 p-1 rounded-md text-white"/>
+      <div className='mt-2 mb-3'>
+        <h1 className="block text-[#536471] mb-1">Pin Location</h1>
+        <div className='overflow-hidden rounded-lg relative'>
+          <div ref={mapContainerRef} className="w-full h-[440px]"/>
+          <pre ref={coordinates} className="coordinates
+          absolute z-20 top-0 m-1 text-sm bg-black/60 p-1 rounded-md text-white"/>
+        </div>
       </div>
      
     </div>

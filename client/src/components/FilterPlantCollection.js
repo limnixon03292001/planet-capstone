@@ -25,17 +25,17 @@ const FilterPlantCollection = ({gp, setGp, resetState, handleChange}) => {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute left-0 mt-2 block w-[520px] h-full min-h-[420px] overflow-auto origin-top-right divide-y divide-gray-100 rounded-md 
+          <Menu.Items className="absolute left-0 mt-2 block w-[370px] h-full min-h-[420px] overflow-auto origin-top-right divide-y divide-gray-100 rounded-md 
           bg-white/95 backdrop-blur-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="py-1 text-gray-900 font-light">
-                <div className='px-6 py-4 w-full sticky top-0 '>
+                <div className='px-6 py-3 w-full sticky top-0 '>
                     <button type="button" onClick={() => {
                     setGp(resetState)}} 
                     className='bg-emerald-400 block ml-auto text-white py-1 px-2 rounded-full text-sm'>Reset All
                     </button>
                  </div>
 
-                <div className="w-full px-6">
+                <div className="w-full px-4">
 
                  
                     {/* Sun Preferences */} 

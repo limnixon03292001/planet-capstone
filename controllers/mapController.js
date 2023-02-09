@@ -9,12 +9,19 @@ exports.getMapPlant = async (req, res) => {
 
     try {
         
-        const row = await pool.query(`
+        const tagged = await pool.query(`
             SELECT map_plants.*, user_acc.user_id, user_acc.firstname, user_acc.lastname, user_acc.profile, user_acc.email FROM map_plants 
             LEFT JOIN user_acc ON map_plants.user_id = user_acc.user_id
         `);
 
-        return res.status(201).json({ data: row.rows });
+        const forSale = await pool.query(`
+            SELECT mpd.*, ua.user_id, ua.firstname, ua.lastname, ua.email, ua.profile, ua.cover, ua.description userdesc
+            FROM mp_plant_details mpd
+
+            LEFT JOIN user_acc ua ON mpd.user_id = ua.user_id
+        `);
+        
+        return res.status(201).json({ data: [...tagged.rows, ...forSale.rows] });
 
     } catch (error) {
         console.log(error?.message);

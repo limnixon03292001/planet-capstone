@@ -1,5 +1,4 @@
 import React, {useEffect, useRef, useState } from 'react'
-import { ReactDOM } from 'react';
 import { Link } from 'react-router-dom'
 import mapboxgl from '!mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -17,6 +16,7 @@ let map;
 
 const MapBox = () => {
     const mapContainerRef = useRef(null);
+    const marker = useRef(null);
     const menu = useRef(null);
     const { socket } = MyContext();
     const [ marks, setMarks] = useState([]);
@@ -52,7 +52,7 @@ const MapBox = () => {
             center: [120.9658, 14.6681],
             zoom: 13,
           
-          });
+        });
             //Map controls
         map.addControl(new mapboxgl.NavigationControl(), "top-right");
         map.addControl(new mapboxgl.GeolocateControl(), "top-right");
@@ -62,29 +62,26 @@ const MapBox = () => {
             controls: {
                 instructions: true,
             }
- 
         }), 'top-left');
 
         //Switch Layers Logic
         const inputs = menu?.current?.childNodes;
         for (const input of inputs) {
-            
             input.onclick = (layer) => {
                 console.log("x",layer);
                 const layerId = layer.target.id;
                 map.setStyle(layerId);
             };
-            }
+        }
     
         //Clean up function
         return () => map.remove();
     }, [])
 
     useEffect(() => {
-      
         //List of tagged plants
         marks.forEach((location) => {
-            new mapboxgl.Marker({ color: 'green'})
+            new mapboxgl.Marker( location?.price ? { color: 'yellow' } : { color: 'green' })
             .setLngLat([Number(location?.lng), Number(location?.lat)])
             .setPopup(new mapboxgl.Popup({ offset: 30 })
             .setHTML(
@@ -92,31 +89,30 @@ const MapBox = () => {
                 <div class="card-map">
                     <div>
                         <div class='contributor-wrapper'>
-                            <img src=${location?.profile} class="profile-img"/>
-                            <div className='inline'>
-                               <a href=/profile/${location?.user_id} class='name'>${location?.firstname} ${location?.lastname}</a>
-                                <span class='email'>${moment(location?.created_at).fromNow()}</span>
+                            <img src=${location?.profile ?? null} class="profile-img"/>
+                            <div>
+                               <a href=/profile/${location?.user_id} class='name'>${location?.firstname ?? null} ${location?.lastname ?? null}</a>
+                                <span class='email'>added ${moment(location?.created_at).fromNow()}</span>
                             </div>
-                            
                         </div> 
                     </div>
                     <div>
                         <img src=${location?.plant_img ?? null} alt="plant_img" class="pop-img"/>
+                       ${location?.price ? `<h4 class="pop-title">${location?.price}</h4>` : ''}
                         <h4 class="pop-title">${location?.plant_name ?? null}</h4>
                         <p class="pop-descs">${location?.description ?? null}</p>
                     </div>
                 </div>
               `
-            ))
-            .addTo(map);
+            )).addTo(map);
         });
-
     },[marks]);
 
   return (
     <div>
     
         <div className="mapWrapper relative" ref={mapContainerRef}>
+
             {/* Add Button */}
             <Link to="/map/add-plant" className='bg-[#3DDAB4] text-white p-1 rounded-full
                 focus:outline-none focus:ring-4 focus:ring-green-100 flex items-center absolute right-2 top-36 z-20'>

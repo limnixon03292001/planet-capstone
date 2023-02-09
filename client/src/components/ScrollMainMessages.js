@@ -13,7 +13,6 @@ const ScrollMainMessages = ({  scrollRef, authId, sender }) => {
         socket?.on("messageReceived", (newMsgReceived) => {
             //here its important that we check the room_id here
             //we want to send the message to the correct room and not send it to other room lol!
-            console.log("newMsgPath", newMsgReceived?.msgContent)
             if(Number(window.location.pathname.split("/")[3]) !== newMsgReceived?.msgContent?.chatroom_id){
                 return ;
             } else {

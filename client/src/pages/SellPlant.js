@@ -65,7 +65,7 @@ const SellPlant = () => {
         {
           onSuccess: ({ data }) => {
             console.log("plant added to marketpalce!",data?.message);
-            navigate("/marketplace");
+            navigate("/");
           },
           onError: (err) => {
             const errObject = err.response.data.error;

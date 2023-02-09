@@ -100,7 +100,7 @@ const AddPlantCollections = () => {
   }, [pictureUrl]);
 
   return (
-    <div className='block border-x border-gray-200 w-full max-w-[860px] min-h-screen pt-6 pb-5'>
+    <div className='block border-x border-gray-200 w-full max-w-[860px] min-h-screen pb-5 mb-[60px] sm:mb-0'>
       <div className="py-3">
         <h1 className='font-extrabold text-xl mt-1 px-4 text-gray-700'>Add Plant to your Collections!</h1>
       </div>

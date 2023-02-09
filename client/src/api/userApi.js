@@ -199,29 +199,35 @@ export const getPlantsUser = ({ queryKey }) => {
     return request({url: `/api/marketplace/getPlantsUser?userId=${id}`, method: 'GET'});
 }
 
+export const getfilterPlantMarketplace = ({ queryKey }) => {
+    const category = queryKey[1];
+    const search = queryKey[2];
+    return request({url: `/api/marketplace/filterPlantMarketplace?&category=${category}&search=${search}`, method: 'GET'});
+}
+
 // plant trade 
 
-export const tradeRequest = (data) => {
-    return request({url: '/api/marketplace/requestTrade', method: 'POST', data: data});
-}
+// export const tradeRequest = (data) => {
+//     return request({url: '/api/marketplace/requestTrade', method: 'POST', data: data});
+// }
 
-export const getRequest = () => {
-    return request({url: '/api/marketplace/getUserRequestTrade', method: 'GET' }); //users request
-}
+// export const getRequest = () => {
+//     return request({url: '/api/marketplace/getUserRequestTrade', method: 'GET' }); //users request
+// }
 
-export const getIncomingRequest = (data) => {
-    return request({url: '/api/marketplace/getIncomingRequests', method: 'GET' }); //list of requests
-}
+// export const getIncomingRequest = (data) => {
+//     return request({url: '/api/marketplace/getIncomingRequests', method: 'GET' }); //list of requests
+// }
 
-export const getTradeDetails = ({ queryKey }) => {
-    const id = queryKey[1];
-    return request({url: `/api/marketplace/getTradeDetails?tradeId=${id}`, method: 'GET'});
-}
+// export const getTradeDetails = ({ queryKey }) => {
+//     const id = queryKey[1];
+//     return request({url: `/api/marketplace/getTradeDetails?tradeId=${id}`, method: 'GET'});
+// }
 
-export const approveTrade = (data) => {
-    return request({url: `/api/marketplace/approveTrade`, method: 'POST', data: data});
-}
+// export const approveTrade = (data) => {
+//     return request({url: `/api/marketplace/approveTrade`, method: 'POST', data: data});
+// }
 
-export const rejectTrade = (data) => {
-    return request({url: `/api/marketplace/rejectTrade`, method: 'POST', data: data});
-}
+// export const rejectTrade = (data) => {
+//     return request({url: `/api/marketplace/rejectTrade`, method: 'POST', data: data});
+// }

@@ -227,7 +227,7 @@ const UpdatePlant = ({ p }) => {
         {
           onSuccess: ({ data }) => {
             toast.success('Updated Successfully!');
-            navigate("/marketplace");
+            navigate("/");
           },
           onError: (err) => {
             const errObject = err.response.data.error;
@@ -235,9 +235,6 @@ const UpdatePlant = ({ p }) => {
           }
     })
 
-    // useEffect(() => {
-    //     console.log("data", data);
-    // },[data]);
 
      // Render map
      useEffect(() => {

@@ -8,6 +8,8 @@ import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
 import { getAllChats, getAuthUser } from '../api/userApi';
+import addNotification from 'react-push-notification';
+
 
 // https://planet-capstone-production.up.railway.app/ 
 // https://planet-capstone.onrender.com/
@@ -70,6 +72,14 @@ const Sidebar = () => {
         socket?.on("messageReceived", (newMsgReceived) => {
             //checking the current url if the user is in the right room, if the user is in the right room don't make a toast!
             if(window.location.pathname !== newMsgReceived?.chatRoomLink){
+              addNotification({
+                title: `${newMsgReceived?.msgContent?.firstname} ${newMsgReceived?.msgContent?.lastname}`,
+                subtitle: `New message!`,
+                message: `${newMsgReceived?.msgContent?.msg_content}`,
+                icon: `${newMsgReceived?.msgContent?.profile}`,
+                duration: 9000,
+                native: true,
+              });
               return toast.custom((t) => (
                 <Link to={`${newMsgReceived?.chatRoomLink}`} className="w-full block max-w-md">
                   <div
@@ -111,7 +121,7 @@ const Sidebar = () => {
                     
                   </div>
                 </Link>
-                ));
+              ));
             }  else {
                 return
             }
