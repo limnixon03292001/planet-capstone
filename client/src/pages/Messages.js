@@ -15,7 +15,7 @@ const Messages = () => {
 
   //fix the duplication of code. location : 'SideBar Component'
 
-  const { refetch: refetchAllChats } = useQuery('all-chats', getAllChats,
+  const { refetch: refetchAllChats, isLoading } = useQuery('all-chats', getAllChats,
   {
       onSuccess: ({ data }) => {
           setChats(data?.allChats);
@@ -40,7 +40,7 @@ const Messages = () => {
     </div>
     <div className='h-full w-full'>
       <Routes>
-        <Route path="/" element={<MessageList/>}/>
+        <Route path="/" element={<MessageList isLoading={isLoading}/>}/>
         <Route path="/chatroom/:id" element={<MainMessages />}/>
       </Routes>
     </div>

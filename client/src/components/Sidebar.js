@@ -21,7 +21,7 @@ const Sidebar = () => {
 
    const navigate = useNavigate();
     const { id: authUserId } = decode(localStorage?.token); //id of currently logged in user
-    const { setSocket, setOnlineUsers, onlineUsers, setAuthUser, authUser, setChats, chats } = MyContext();
+    const { setSocket, setOnlineUsers, setAuthUser, authUser, setChats, chats } = MyContext();
  
 
     const Logout = () => {
@@ -29,12 +29,12 @@ const Sidebar = () => {
         socket.disconnect();
         navigate("/login",{replace: true});
     }
-
+  //   , {
+  //     reconnectionAttempts: 5,
+  //     reconnectionDelay: 1000,
+  // }
     useEffect(() => {
-        socket = io(ENDPOINT,{
-          reconnectionAttempts: 5,
-          reconnectionDelay: 1000,
-        });
+        socket = io(ENDPOINT);
 
         socket.emit("addUser", authUserId);
 
@@ -46,26 +46,21 @@ const Sidebar = () => {
         socket.io.on("error", (error) => {
           // ...
           console.log('socket io error on ' + error);
-          socket = io(ENDPOINT, {
-              reconnectionAttempts: 5,
-              reconnectionDelay: 1000,
-          });
+          socket = io(ENDPOINT);
           socket.emit("addUser", authUserId);
         });
 
         let socketArray = ['reconnect', 'reconnect_attempt', 'reconnect_error', 'reconnect_failed'];
 
-      for(let i = 0, len = socketArray.length; i < len; i++) {
-        socket.io.on(socketArray[i], (attempt) => {
-            // ...
-            console.log(socketArray[i] + ' socket io on ' + attempt);
-            socket.emit("addUser", authUserId);
-        });
-    }
-      setSocket(socket);
+        for(let i = 0, len = socketArray.length; i < len; i++) {
+          socket.io.on(socketArray[i], (attempt) => {
+              // ...
+              console.log(socketArray[i] + ' socket io on ' + attempt);
+              socket.emit("addUser", authUserId);
+          });
+        }
+        setSocket(socket);
     },[]);
-
-   
 
     //this function is listener for incoming messages, and notify the user
     useEffect(() => {
@@ -161,7 +156,7 @@ const Sidebar = () => {
 
 
   return (
-    <div className='sm:block w-full max-w-max min-w-min hidden lg:max-w-[282px] xl:max-w-[370px] transition-all
+    <div className='sm:visible sm:w-full sm:max-w-max sm:min-w-min invisible w-0 p-0 lg:max-w-[282px] xl:max-w-[370px] transition-all
      sticky top-0 overflow-auto' style={{height: '100vh'}}>
         <div className='py-4 px-4 h-full w-full max-w-[280px] ml-auto overflow-y-auto flex flex-col'>
         
@@ -205,7 +200,7 @@ const Sidebar = () => {
 
                   {linkNavigationBar?.slice(3,5)?.map((data, id) => (
                       <Link to={data?.link} key={id} className="flex items-start my-6
-                      justify-center lg:justify-start">
+                      justify-center lg:justify-start border border-blue-500">
                           {data?.icon}
                           <span className='text-xl  self-end ml-3 font-[100]
                           hidden lg:block'>{data.title}</span>

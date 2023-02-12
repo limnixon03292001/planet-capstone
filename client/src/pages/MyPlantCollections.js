@@ -29,12 +29,13 @@ const MyPlantCollections = () => {
     const [plantColl, setPlantColl] = useState({});
     let [isOpen, setIsOpen] = useState(false);
     const [selectedPlant, setSelectedPlant] = useState({});
+    const [searchData, setSearchData] = useState('');
 
     //growing preferences
     const [gp, setGp] = useState(growingPrefInitialState);
     const [selectedCategory, setSelectedCategory] = useState('');
 
-    const { isLoading } = useQuery(['filteredPlant-collections', authUser?.user_id, gp, selectedCategory], filterPlantCollections,
+    const { isLoading } = useQuery(['filteredPlant-collections', authUser?.user_id, gp, selectedCategory, searchData], filterPlantCollections,
     {
         onSuccess: ({ data }) => {
             setPlantColl(data);
@@ -115,7 +116,7 @@ const MyPlantCollections = () => {
                     debounceTimeout={300}
                     className= 'bg-white px-4 pr-7 py-2 rounded-lg w-full max-w-[280px] h-full outline-none border border-gray-300 focus:ring-2 focus:ring-green-200'
                     placeholder='Search plant...'
-                    // onChange={e => setSearchData(e.target.value)} 
+                    onChange={e => setSearchData(e.target.value)} 
                     />
                 </div>
               </div>
@@ -126,12 +127,7 @@ const MyPlantCollections = () => {
 
 
         <div className='h-full w-full'>
-          {isLoading ? 
-            <div className='flex items-center justify-center w-full msgOuterContainer text-gray-700'> 
-              <ButtonLoader/>
-              <p>Loading...</p>
-            </div>
-          :
+          {!isLoading ? 
             plantColl?.data?.length === 0 ? 
               <div className='flex items-center justify-center w-full msgOuterContainer text-gray-700'> 
                 <p>No items found</p>
@@ -197,6 +193,11 @@ const MyPlantCollections = () => {
                     </Fragment>
                 ))}
               </main>
+          :
+            <div className='flex items-center justify-center w-full msgOuterContainer text-gray-700'> 
+              <ButtonLoader/>
+              <p>Loading...</p>
+          </div>
           }
         </div>
 

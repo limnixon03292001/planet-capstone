@@ -1,9 +1,9 @@
 import moment from 'moment';
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import { MyContext } from '../context/ContextProvider';
+import ButtonLoader from './ButtonLoader';
 
-const ScrollMainMessages = ({  scrollRef, authId, sender }) => {
+const ScrollMainMessages = ({  scrollRef, authId, sender, messagesLoading }) => {
 
     const { socket, messages, setMessages } = MyContext();
     const [open, setOpen] = useState(false);
@@ -25,83 +25,86 @@ const ScrollMainMessages = ({  scrollRef, authId, sender }) => {
 
   return (
     <div className='overflow-auto w-full h-full msgOuterContainer px-4 pt-4 bg-white'>
-        {messages.length === 0 ? 
-        <div className='text-gray-500 mt-4 flex flex-col items-center justify-center'>
-            <div>
-                <img src={sender?.profile} alt="profile" className='w-24 h-24 rounded-full object-center object-cover'/>
-                <p className='font-bold mt-2 text-gray-900'>{sender?.firstname} {sender?.lastname}</p>
-            </div>
-            <div>
-                {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-14 h-14 m-auto">
-                <path d="M4.913 2.658c2.075-.27 4.19-.408 6.337-.408 2.147 0 4.262.139 6.337.408 1.922.25 3.291 1.861 3.405 3.727a4.403 4.403 0 00-1.032-.211 50.89 50.89 0 00-8.42 0c-2.358.196-4.04 2.19-4.04 4.434v4.286a4.47 4.47 0 002.433 3.984L7.28 21.53A.75.75 0 016 21v-4.03a48.527 48.527 0 01-1.087-.128C2.905 16.58 1.5 14.833 1.5 12.862V6.638c0-1.97 1.405-3.718 3.413-3.979z" />
-                <path d="M15.75 7.5c-1.376 0-2.739.057-4.086.169C10.124 7.797 9 9.103 9 10.609v4.285c0 1.507 1.128 2.814 2.67 2.94 1.243.102 2.5.157 3.768.165l2.782 2.781a.75.75 0 001.28-.53v-2.39l.33-.026c1.542-.125 2.67-1.433 2.67-2.94v-4.286c0-1.505-1.125-2.811-2.664-2.94A49.392 49.392 0 0015.75 7.5z" />
-                </svg> */}
-                <p className='text-gray-500 mt-3 text-sm'>You can now send a message to {sender?.firstname} {sender?.lastname}</p>
-            </div>
-        </div>
-        :
-            messages?.map((m, id) => {
-                if(m?.sent_by === authId) {
-                    return <div ref={scrollRef} key={id} className="flex flex-row-reverse items-center justify-start my-3 mt-6">
-                        <img src={m?.profile} alt='profile'  
-                        className='flex-shrink-0 self-end rounded-full h-10 w-10 object-center object-cover'/>
 
-                        <div className='mr-2 relative'>
-                              {/* checking if the msg_content is img or not */}
-                              {
-                                m?.msg_content.split("/")[2] === "res.cloudinary.com" &&
-                                m?.msg_content.split("/")[4] === "image" &&
-                                m?.msg_content.split("/")[5] === "upload" 
-                                ?
-                                <>
-                                    <img src={m?.msg_content} alt="pic" 
+        {messagesLoading ? 
+            <div className='h-full w-full flex items-center justify-center'>
+                <ButtonLoader/>
+            </div>
+        :
+
+            messages.length === 0 ? 
+                <div className='text-gray-500 mt-4 flex flex-col items-center justify-center'>
+                    <div>
+                        <img src={sender?.profile} alt="profile" className='w-24 h-24 rounded-full object-center object-cover'/>
+                        <p className='font-bold mt-2 text-gray-900'>{sender?.firstname} {sender?.lastname}</p>
+                    </div>
+                    <div>
+                        <p className='text-gray-500 mt-3 text-sm'>You can now send a message to {sender?.firstname} {sender?.lastname}</p>
+                    </div>
+                </div>
+            :
+                messages?.map((m, id) => {
+                    if(m?.sent_by === authId) {
+                        return <div ref={scrollRef} key={id} className="flex flex-row-reverse items-center justify-start my-3 mt-6">
+                            <img src={m?.profile} alt='profile'  
+                            className='flex-shrink-0 self-end rounded-full h-10 w-10 object-center object-cover'/>
+
+                            <div className='mr-2 relative'>
+                                {/* checking if the msg_content is img or not */}
+                                {
+                                    m?.msg_content.split("/")[2] === "res.cloudinary.com" &&
+                                    m?.msg_content.split("/")[4] === "image" &&
+                                    m?.msg_content.split("/")[5] === "upload" 
+                                    ?
+                                    <>
+                                        <img src={m?.msg_content} alt="pic" 
+                                        className='object-center object-cover w-full lg:h-80 h-48 bg-emerald-300 rounded-md cursor-pointer'
+                                        onClick={() => {
+                                            setImgLink(m?.msg_content);
+                                            setOpen(prev => !prev);
+                                        }}/>
+
+                                    </>
+                                    :
+                                    <p className='break-all text-sm text-justify bg-emerald-400 text-white p-2 rounded-md'>
+                                        {m?.msg_content}
+                                    </p>
+                                }
+                                <span className='text-gray-500 text-[10px] absolute right-0'> {moment(m?.created_at).format('LT')}</span>
+                            </div>
+                        </div>
+                    } else {
+                        return <div ref={scrollRef} key={id} className="flex items-center justify-start my-3 mt-6">
+                            <img src={m?.profile} alt='profile' 
+                            className='rounded-full self-end h-9 w-9 object-center object-cover'/>
+
+                            <div className='ml-2 relative'>
+                                {/* checking if the msg_content is img or not */}
+                                {
+                                    m?.msg_content.split("/")[2] === "res.cloudinary.com" &&
+                                    m?.msg_content.split("/")[4] === "image" &&
+                                    m?.msg_content.split("/")[5] === "upload" 
+                                    ?
+                                    
+                                    <img  src={m?.msg_content} alt="pic" 
                                     className='object-center object-cover w-full lg:h-80 h-48 bg-emerald-300 rounded-md cursor-pointer'
                                     onClick={() => {
                                         setImgLink(m?.msg_content);
                                         setOpen(prev => !prev);
                                     }}/>
 
-                                </>
-                                :
-                                <p className='break-all text-sm text-justify bg-emerald-400 text-white p-2 rounded-md'>
-                                    {m?.msg_content}
-                                </p>
-                              }
-                              <span className='text-gray-500 text-[10px] absolute right-0'> {moment(m?.created_at).format('LT')}</span>
+                                    :
+                                    
+                                    <p className='break-all text-sm text-justify bg-emerald-200 msg-item text-emerald-900 p-2 rounded-md'>
+                                        {m?.msg_content}
+                                    </p>
+                                }
+                                <span className='text-gray-500 text-[10px] absolute right-0'> {moment(m?.created_at).format('LT')}</span>
+                            </div>
+                            
                         </div>
-                    </div>
-                } else {
-                    return <div ref={scrollRef} key={id} className="flex items-center justify-start my-3 mt-6">
-                        <img src={m?.profile} alt='profile' 
-                        className='rounded-full self-end h-9 w-9 object-center object-cover'/>
-
-                        <div className='ml-2 relative'>
-                            {/* checking if the msg_content is img or not */}
-                            {
-                                m?.msg_content.split("/")[2] === "res.cloudinary.com" &&
-                                m?.msg_content.split("/")[4] === "image" &&
-                                m?.msg_content.split("/")[5] === "upload" 
-                                ?
-                                
-                                <img  src={m?.msg_content} alt="pic" 
-                                className='object-center object-cover w-full lg:h-80 h-48 bg-emerald-300 rounded-md cursor-pointer'
-                                onClick={() => {
-                                    setImgLink(m?.msg_content);
-                                    setOpen(prev => !prev);
-                                }}/>
-
-                                :
-                                
-                                <p className='break-all text-sm text-justify bg-emerald-200 msg-item text-emerald-900 p-2 rounded-md'>
-                                    {m?.msg_content}
-                                </p>
-                            }
-                            <span className='text-gray-500 text-[10px] absolute right-0'> {moment(m?.created_at).format('LT')}</span>
-                        </div>
-                        
-                    </div>
-                }
-            })
+                    }
+                })
         }
 
         

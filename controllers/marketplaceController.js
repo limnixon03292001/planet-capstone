@@ -436,7 +436,6 @@ exports.filterPlantMarketplace = async (req, res) => {
             ${search ? `AND to_tsvector(mpd.user_id || ' ' || mpd.*) @@ plainto_tsquery(%L)` : 
             `AND NOT to_tsvector(mpd.user_id || ' ' || mpd.*) @@ plainto_tsquery(%L)` }
            
-
             ORDER BY mpd.created_at DESC
         `, `%${category}%`, `%${search}%`);
 

@@ -8,6 +8,7 @@ import { useQuery } from 'react-query';
 import { getPlants } from '../api/userApi';
 import { MyContext } from '../context/ContextProvider'
 import moment from 'moment';
+import ButtonLoader from './ButtonLoader';
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA";
@@ -109,8 +110,18 @@ const MapBox = () => {
     },[marks]);
 
   return (
-    <div>
-    
+    <div className='relative w-full h-full'>
+        {/* Loader */}
+        {isLoading && 
+        <div className='absolute inset-0 w-full h-full bg-black opacity-75 z-30 flex flex-col
+        items-center justify-center text-white'>
+            <ButtonLoader/>
+            <p className='mt-1'>Fetching map data...</p>
+        </div>
+        }
+        {/* Loader */}
+        
+        {/* Map */}
         <div className="mapWrapper relative" ref={mapContainerRef}>
 
             {/* Add Button */}
@@ -144,7 +155,7 @@ const MapBox = () => {
 
             </div>  
         </div> 
-            
+        {/* Map */}
     </div>
   )
 }

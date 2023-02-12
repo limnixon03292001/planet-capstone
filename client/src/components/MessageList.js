@@ -5,13 +5,13 @@ import { checkOnline } from '../utils/checkOnline';
 import moment from 'moment';
 import { DebounceInput } from 'react-debounce-input';
 import EllipsisText from 'react-ellipsis-text/lib/components/EllipsisText';
-import { useEffect } from 'react';
+import MessagesListSkeleton from './Skeleton/MessagesListSkeleton';
 
-const MessageList = () => {
+const MessageList = ({ isLoading }) => {
 
     const { id } = decode(localStorage?.token);
     const authId = id;
-    const { onlineUsers, chats, setChats } = MyContext();
+    const { onlineUsers, chats } = MyContext();
     
     //here we are checking the user that we are sending a message
     const check = (chat, id) => {
@@ -145,11 +145,15 @@ const MessageList = () => {
                 </svg>
             </button>
         </div>
-        {chats?.map((chat, id) => (
-            <Link to={`chatroom/${chat?.chatroom_id}`} key={id}>
-                {check(chat, id)}
-            </Link>  
-        ))}
+        {isLoading ? 
+            <MessagesListSkeleton/>
+        :
+            chats?.map((chat, id) => (
+                    <Link to={`chatroom/${chat?.chatroom_id}`} key={id}>
+                        {check(chat, id)}
+                    </Link>  
+            ))
+         }
     </div>
   )
 }

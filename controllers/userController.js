@@ -945,7 +945,7 @@ exports.getPlantCollection = async (req, res) => {
 }
 
 exports.filterPlantCollections = async (req, res) => {
-    const { userId, category, sunPref, interLight, soilPref, waterReq, nativeHab } = req.query;
+    const { userId, category, sunPref, interLight, soilPref, waterReq, nativeHab, search } = req.query;
   
     try {
         
@@ -976,10 +976,13 @@ exports.filterPlantCollections = async (req, res) => {
 
             ${nativeHab ? `AND to_tsvector(cpd.user_id || ' ' || cgp.native_habitat) @@ plainto_tsquery(%L)` : 
             `AND NOT to_tsvector(cpd.user_id || ' ' || cgp.native_habitat) @@ plainto_tsquery(%L)`}
+
+            ${search ? `AND to_tsvector(cpd.user_id || ' ' || cpd.* || cgp.*) @@ plainto_tsquery(%L)` : 
+            `AND NOT to_tsvector(cpd.user_id || ' ' || cpd.* || cgp.*) @@ plainto_tsquery(%L)`}
             
             ORDER BY cpd.created_at DESC
 
-        `, `%${category}%`, `%${sunPref}%`, `%${interLight}%`, `%${soilPref}%`, `%${waterReq}%`, `%${nativeHab}%`)
+        `, `%${category}%`, `%${sunPref}%`, `%${interLight}%`, `%${soilPref}%`, `%${waterReq}%`, `%${nativeHab}%`, `%${search}%`)
 
 
         const result = await pool.query(query, [Number(userId)]);
