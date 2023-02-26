@@ -206,6 +206,31 @@ export const getfilterPlantMarketplace = ({ queryKey }) => {
     return request({url: `/api/marketplace/filterPlantMarketplace?&category=${category}&search=${search}`, method: 'GET'});
 }
 
+//admin 
+
+export const getUserAccountList = () => {
+    return request({url: `/api/admin/getUserAccountList`, method: 'GET'})
+}
+
+export const getAdminAccountList = () => {
+    return request({url: `/api/admin/getAdminAccountList`, method: 'GET'})
+}
+
+export const getCounts = () => {
+    return request({url: `/api/admin/getCounts`, method: 'GET'})
+}
+
+export const blockAccount = (data) => {
+   return request({url: '/api/admin/blockAccount', method: 'POST', data: data});
+}
+
+export const unblockAccount = (data) => {
+  
+    return request({url: '/api/admin/unblockAccount', method: 'POST', data: data});
+ }
+
+
+
 // plant trade 
 
 // export const tradeRequest = (data) => {

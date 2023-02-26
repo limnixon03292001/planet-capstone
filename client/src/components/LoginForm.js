@@ -1,7 +1,7 @@
 import { useFormik } from 'formik';
 import { useEffect, useRef, useState } from 'react';
 import { useMutation } from 'react-query';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 import { validationSchemaLogin } from '../utils/formValidationSchema';
 import { loginUser } from '../api/userApi';
@@ -13,17 +13,28 @@ import decode  from 'jwt-decode';
 const initialState = {email: '', password: ''};
 const LoginForm = () => {
 
-    const { authId, setAuthId } = MyContext();
+    const { setAuthId } = MyContext();
     const [errData, setErrData] = useState({email: '', password:''});
     const [attempt, setAttempt] = useState(0);
     const [countDown, setCountDown] = useState(30);
+    const [popUpErrNotVer, setPopUpErrNotVer] = useState(false);
+    const [popUpErrBlocked, setPopUpErrBlocked] = useState(false);
     const id = useRef(null);
+    const navigate = useNavigate();
 
     const { mutate, isLoading } = useMutation(loginUser,{
         onSuccess: ({data}) => {
+
             localStorage.setItem('token', data?.token);
-            const { id } = decode(localStorage?.token);
+            const { id, position } = decode(localStorage?.token);
+            localStorage.setItem('pstRle', position);
             setAuthId(id);
+        
+            if(data?.pstRle === '2001') {
+                navigate('/', { replace: true });
+            } else {
+                navigate('/admin', { replace: true });
+            }
         },
         onError: (err) => {
             // const error = JSON.parse(err?.response)
@@ -33,6 +44,13 @@ const LoginForm = () => {
             }
             const errObject = err.response.data.error;
             console.log(errObject);
+            if(errObject?.accVerified === false){
+                setPopUpErrNotVer(prev => !prev);
+                setPopUpErrBlocked(false);
+            } else if (errObject?.blocked !== false){
+                setPopUpErrBlocked(prev => !prev);
+                setPopUpErrNotVer(false);
+            }
             for (const [key, value] of Object.entries(errObject)) {
                 setErrData({...errData, [key]: value});
             }
@@ -80,6 +98,50 @@ const LoginForm = () => {
     <>
     {!checkToken() ? 
     <>
+        {popUpErrNotVer &&
+            <div className='text-yellow-700 bg-yellow-500/30 border-2 border-yellow-500 rounded-lg p-2 my-3
+            text-sm flex items-center justify-center gap-x-3'>
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" 
+                    className="w-10 h-10">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                </div>
+                <div>
+                    <div className='flex items-center justify-between'>
+                        <h1 className='font-semibold'>Account not verified!</h1>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" 
+                        className="w-4 h-4 cursor-pointer" onClick={() => setPopUpErrNotVer(false)}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </div>
+                    <p className='text-xs mt-1 text-ellipsis'>We noticed your account's email has not been verified. 
+                    You can check your email to see the verification link that we've sent.</p>
+                </div>
+            </div>
+        }
+        {
+            popUpErrBlocked && 
+            <div className='text-red-700 bg-red-500/30 border-2 border-red-500 rounded-lg p-2 my-3
+            text-sm flex items-center justify-center gap-x-3'>
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" 
+                    className="w-10 h-10">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                </div>
+                <div>
+                    <div className='flex items-center justify-between'>
+                        <h1 className='font-semibold'>Your account is blocked!</h1>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" 
+                        className="w-4 h-4 cursor-pointer" onClick={() => setPopUpErrBlocked(false)}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </div>
+                    <p className='text-xs mt-1 text-ellipsis'>It seems like your account has been blocked!</p>
+                </div>
+            </div>
+        }
     {
         //when user failed to login 3 times disable login for 30 seconds.
         attempt !== 3 ?

@@ -124,9 +124,9 @@ exports.confirmationController = async (req, res) => {
         const user = jwt.verify(token, process.env.EMAIL_SECRET);
 
         await pool.query(`
-            UPDATE user_acc
-            SET isverified = $1
-            WHERE user_id = $2
+            UPDATE acc_verify
+            SET verified = $1
+            WHERE acc_id = $2
         `, [true, Number(user?.user)]);
 
         res.status(200).json({message: "Your email confirmation has been successfully verified!"});
@@ -157,6 +157,7 @@ exports.registerController = async (req,res) => {
         age,
     } = req.body; 
 
+    const userx = '2001'
     try {
         const user = await pool.query("SELECT * FROM user_acc WHERE email = $1", [ email ]);
         
@@ -169,9 +170,13 @@ exports.registerController = async (req,res) => {
         const salt = await bcrypt.genSalt(10);
         const encryptedPassword = await bcrypt.hash(password, salt);
 
-        const newUser = await pool.query(`INSERT INTO user_acc (firstname, lastname, email, password, phonenumber, baranggay, city, birthday, age) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
-        [firstName, lastName, email, encryptedPassword, phoneNumber, baranggay, city, birthday, age,]);
+        const newUser = await pool.query(`INSERT INTO user_acc (firstname, lastname, email, password, phonenumber, baranggay, city, birthday, age, position) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
+        [firstName, lastName, email, encryptedPassword, phoneNumber, baranggay, city, birthday, age, userx]);
+
+        await pool.query(`INSERT INTO acc_verify (acc_id) VALUES ($1)`, [newUser?.rows[0]?.user_id]);
+
+        await pool.query(`INSERT INTO acc_list (acc_id) VALUES ($1)`, [newUser?.rows[0]?.user_id]);
 
         return res.status(201).json({ userId: newUser?.rows[0]?.user_id, email: newUser?.rows[0]?.email, });
 
@@ -259,9 +264,21 @@ exports.loginController = async (req, res) => {
             return res.status(401).json({error:{password: `Invalid Password!`}});
         }
 
-        //if all goods, then generate a token
+        const isVerified = await pool.query(`SELECT * FROM acc_verify WHERE acc_id = $1`, [user.rows[0].user_id]);
 
-        jwt.sign({ email: user.rows[0].email, id: user.rows[0].user_id },       
+        if(isVerified.rows[0].verified != true) {
+            return res.status(401).json({error: { accVerified: false }});
+        }
+        
+        //check if account has been blocked by admin or not
+        const isBlocked = await pool.query("SELECT block FROM user_acc WHERE email = $1", [ email ]);
+
+        if(isBlocked.rows[0]?.block === true) {
+            return res.status(401).json({error: { blocked: true, message: `Your account has been blocked!`}})
+        }
+
+        //if all goods, then generate a token
+        jwt.sign({ email: user.rows[0].email, id: user.rows[0].user_id, position: user.rows[0].position },       
                 process.env.JWT_SECRET, 
                 { expiresIn: "4h" }, 
                 (err,token) => {
@@ -270,10 +287,10 @@ exports.loginController = async (req, res) => {
                 if(err){
                     return res.status(401).json({error: 'Something went wrong...'});
                 }
-
+ 
                 //send the token
-                res.status(200).json({ token: token });
-            });
+                res.status(200).json({ pstRle: user?.rows[0]?.position, token: token });
+        });
 
     } catch (error) {
         console.log(error?.message);

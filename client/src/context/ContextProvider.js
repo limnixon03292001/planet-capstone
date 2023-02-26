@@ -15,7 +15,10 @@ const ContextProvider = ({ children }) => {
     const [x, setX] = useState(0);
     const [pageNumber, setPageNumber] = useState(1);
     const [selectedPlant, setSelectedPlant] = useState({}); //state for selected plant from collection and will use it to add to marketplace
-    
+    //admin
+    const [ userAccounts, setUserAccounts ] = useState([]);
+    const [ adminAccounts, setAdminAccounts ] = useState([]); 
+
     return (
         <MainContext.Provider value={{
             authUser, setAuthUser,
@@ -28,6 +31,8 @@ const ContextProvider = ({ children }) => {
             pageNumber, setPageNumber,
             x, setX,
             selectedPlant, setSelectedPlant,
+            userAccounts, setUserAccounts,
+            adminAccounts, setAdminAccounts,
         }}>
             {children}
         </MainContext.Provider>

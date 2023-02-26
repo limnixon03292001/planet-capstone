@@ -54,6 +54,7 @@ const Verify = () => {
               <h1 className='font-bold text-xl mt-2 text-gray-800'>Confirmation Link</h1>
               <p className='text-sm text-gray-600 mt-2'>You're almost there! Please check your email and click the confirmation link attached, to verify your account.</p>
               <p className='text-sm text-[#00BFA6] mt-2'>Note! If you can't find the email in your inbox, try checking your spam folder.</p>
+              <p className='text-sm text-[#00BFA6] mt-2'>You can close this tab now, and proceed to your email inbox.</p>
             </div>
           </div>
     

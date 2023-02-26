@@ -35,7 +35,7 @@ const AddPlantMap = () => {
       setPlantName('');
       setDescription('');
       setPictureUrl(null);
-      navigate("/map");
+      navigate("/");
       socket?.emit("addDataMap", {data: data?.data});
     },
     onError: (err) => {

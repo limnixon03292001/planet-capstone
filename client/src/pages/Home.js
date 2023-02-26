@@ -1,12 +1,11 @@
+import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Marketplace from './Marketplace';
 import Messages from './Messages';
 import NotFound from './NotFound';
-import PostFeeds from './PostFeeds';
 import Profile from './Profile';
 import MyMap from './MyMap';
-import { useEffect } from 'react';
 import { MyContext } from '../context/ContextProvider';
 import toast from 'react-hot-toast';
 import AddPlantCollections from '../pages/AddPlantCollections';
@@ -65,9 +64,7 @@ const Home = () => {
     <div className='block w-full max-w-[1500px] m-auto min-h-full h-full'>
         <div className='flex w-full h-full'>
          
-            <Sidebar/>
-
-            
+              <Sidebar/>
               <Bottombar/>
         
               {/* main-content */}
@@ -77,20 +74,19 @@ const Home = () => {
                         {/* <Route path= "/" element={<PostFeeds/>}/> */}
                         <Route path="/profile/:id" element={<Profile/>}/>
                         <Route path="/messages/*" element={<Messages/>}/>
-                        <Route path="/" element={<Marketplace/>}/>
+                        <Route path="/*" element={<MyMap/>}/>
                         <Route path="/marketplace/sell-plants" element={<SellPlant/>}/>
                         <Route path="/marketplace/selling" element={<SellingList/>}/>
                         <Route path="/marketplace/item/:id" element={<MarketplacePlant/>}/>
                         <Route path="/marketplace/pick-plantsCollection" element={<PickPlant/>}/>
                         <Route path="/marketplace/selectedPlant-addMore" element={<AddMoreDetail/>}/>
-                        <Route path="/map/*" element={<MyMap/>}/>
+                        <Route path="/marketplace/*" element={<Marketplace/>}/>
                         <Route path="/add-plantCollections" element={<AddPlantCollections/>}/>
                         <Route path="/my-plants" element={<MyPlantCollections/>}/>
+                      
 
                         {/* 404 PAGE  */}
-
                         <Route path="*" element={<NotFound/>}/>
-
                         {/* 404 PAGE  */}
                       </Routes>
                     </div>

@@ -7,6 +7,7 @@ const userRoutes = require('./routes/userRoutes');
 const messagesRoutes = require('./routes/messagesRoutes');
 const mapRoutes = require('./routes/mapRoutes');
 const marketplaceRoutes = require('./routes/marketplaceRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 const PORT = process.env.PORT || 5000; //dotenv config? check...
 
@@ -21,6 +22,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/chats', messagesRoutes);
 app.use('/api/map', mapRoutes);
 app.use('/api/marketplace', marketplaceRoutes);
+app.use('/api/admin', adminRoutes);
 
 //fixed when refresh cannot get the route
 if(process.env.NODE_ENV === "production") {
@@ -50,9 +52,9 @@ const io = require("socket.io")(server, {
 // this variable stores the current online users we need to keep track the user
 let users = [];
 
-const addUser = (userId, socketId) => {
+const addUser = (userId, socketId, pos) => {
     !users.some((user) => user.userId === userId) &&
-      users.push({ userId, socketId });
+      users.push({ userId, socketId, pos });
 };
 
 const removeUser = (socketId) => {
@@ -74,9 +76,9 @@ io.on("connection", (socket) => {
 
 
     //take userId and socketId from user
-    socket.on("addUser", (userId) => {
-        console.log("User connected", socket.id);
-        addUser(userId, socket.id);
+    socket.on("addUser", (userId, pos) => {
+        console.log("User connected", socket.id, pos);
+        addUser(userId, socket.id, pos);
         io.emit("getUsers", users);
     });
 

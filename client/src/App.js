@@ -14,6 +14,7 @@ import Confirmation from './pages/Confirmation';
 import AccountRecover from './pages/AccountRecover';
 import ResetPassword from './pages/ResetPassword';
 import Maintenance from './pages/Maintenance';
+import Admin from './pages/Admin';
 
 // primary text  - black
 // secondary - #536471
@@ -36,9 +37,14 @@ function App() {
           <Route path="/map-sample" element={<MyMap/>}/>
           
           {/* PROTECTED ROUTES */}
-          <Route element={<ProtectedRoutes path="/login"/>}>
+          <Route element={<ProtectedRoutes path="/login" allowedRole='0329' />}>
+            <Route path="/admin/*" element={<Admin/>}/>
+          </Route>
+          <Route element={<ProtectedRoutes path="/login" allowedRole='2001' />}>
             <Route path="/*" element={<Home/>}/>
           </Route>
+
+          
 
           {/* PROTECTED ROUTES */}
 

@@ -3,7 +3,7 @@ import { Transition, Listbox, } from '@headlessui/react'
 import { Link } from 'react-router-dom'
 import { MyContext } from '../context/ContextProvider'
 import { useQuery } from 'react-query'
-import { filterPlantCollections, getPlantCollection } from '../api/userApi'
+import { filterPlantCollections } from '../api/userApi'
 import EllipsisText from "react-ellipsis-text";
 import { DebounceInput } from 'react-debounce-input'
 import PlantDetailCollectionModal from '../components/PlantDetailCollectionModal'

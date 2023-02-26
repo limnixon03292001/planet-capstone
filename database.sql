@@ -20,8 +20,27 @@ CREATE TABLE user_acc(
     created_at DATE DEFAULT CURRENT_DATE
 );
 
+-- ALTER TABLE user_acc
+-- ADD COLUMN isVerified BOOLEAN;
+
 ALTER TABLE user_acc
-ADD COLUMN isVerified BOOLEAN;
+ADD COLUMN position TEXT;
+
+ALTER TABLE user_acc
+ADD COLUMN block BOOLEAN DEFAULT FALSE;
+
+CREATE TABLE acc_verify(
+    verify_id SERIAL PRIMARY KEY,
+    acc_id INT NOT NULL,
+    verified BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (acc_id) REFERENCES user_acc(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE acc_list(
+    accList_id SERIAL PRIMARY KEY,
+    acc_id INT NOT NULL,
+    FOREIGN KEY (acc_id) REFERENCES user_acc(user_id) ON DELETE CASCADE
+);
 
 --CREATE TABLE FOR USERS'S FOLLOWERS/FOLLOWING to test
 CREATE TABLE user_followers (

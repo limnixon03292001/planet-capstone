@@ -10,6 +10,17 @@ body{
     height:100%;
 }
 
+.xbg{
+    background: radial-gradient(circle at 85% 33%,rgba(0,255,235,.085),hsla(0,0%,100%,0) 25%),
+    radial-gradient(circle at 12% 55%,rgba(108,99,255,.1),hsla(0,0%,100%,0) 25%);
+    height: calc(100vh - 80px);
+}
+
+.xbg1{
+    background: radial-gradient(circle at 85% 33%,rgba(0,255,235,.085),hsla(0,0%,100%,0) 25%),
+    radial-gradient(circle at 12% 55%,rgba(108,99,255,.1),hsla(0,0%,100%,0) 25%);
+}
+
 .stick {
     position: sticky !important;
     top: 0 !important;;
