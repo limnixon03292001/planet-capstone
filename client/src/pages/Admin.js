@@ -7,12 +7,14 @@ import AdminUserAccounts from './AdminUserAccounts';
 import decode from 'jwt-decode'
 import AdminAccounts from '../components/AdminAccounts';
 import { Listbox, Transition } from '@headlessui/react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useQuery } from 'react-query';
 import { getCounts } from '../api/userApi';
+import AdminMarketplace from './AdminMarketplace';
+import AddAdmin from './AddAdmin';
 
 // https://planet-capstone.onrender.com/
-
+// http://localhost:5000/
 const ENDPOINT = "https://planet-capstone.onrender.com/";
 var socket;
 
@@ -21,6 +23,8 @@ const Admin = () => {
   const { onlineUsers, setOnlineUsers , setSocket } = MyContext();
   const { id: authUserId } = decode(localStorage?.token);
   const [counts, setCounts] = useState({});
+  const [menu, setMenu] = useState(false);
+  const navigate = useNavigate();
 
   //for getting current online users
   useEffect(() =>{
@@ -48,18 +52,39 @@ const Admin = () => {
     }
   });
 
+  const Logout = () => {
+    localStorage.clear("token");
+    socket.disconnect();
+    navigate("/login",{replace: true});
+}
+
   return (
     <div className='bg-gray-100/40 w-full overflow-x-hidden'>
-      <nav className='flex items-center justify-between px-4 h-[80px] bg-gradient-to-b from-[#20BF55]  00 to-[#01BAEF] text-white'>
+      <nav className='flex items-center justify-between px-4 h-[80px] bg-gradient-to-b from-[#20BF55] to-[#01BAEF] text-white'>
         <span className='font-bold text-xl'>ADMIN</span>
 
         <div className='flex gap-x-3 items-center'>
 
-          <a>Accounts</a>
-          <a>Marketplace</a>
+          <Link to='/admin/'>Accounts</Link>
+          <Link to='/admin/marketplace/'>Marketplace</Link>
 
-          <div>
-            <img src={nixon} alt='admin_picture' className='w-9 h-9 rounded-full object-cover object-center' />
+          <div className='relative'>
+            <img src={nixon} alt='admin_picture' onClick={() => setMenu(prev => !prev)}
+            className='w-9 h-9 cursor-pointer rounded-full object-cover object-center' />
+
+            {menu &&   
+              <div className='absolute right-0 block py-2 h-max w-[140px] rounded-md shadow-md bg-white mt-2'>
+                <button className='px-3 py-2 w-full text-gray-700 flex items-center justify-start
+                hover:bg-gray-100 transition-colors'>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.3} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                  </svg>
+                  <span className='ml-1' onClick={Logout} >Logout</span>
+                </button>
+              </div> 
+            }
+          
+
           </div>
         </div>
       </nav>
@@ -96,14 +121,13 @@ const Admin = () => {
             </div>
 
       </div>
-      <div className='w-full max-w-[1352px] mx-auto flex items-center px-4 mb-4'>
-          <FilterLinks/>
-      </div>
 
       <Routes>
         <Route path="/" element={<AdminUserAccounts onlineUsers={onlineUsers} authUserId={authUserId}/>}/>
         <Route path="/admin-accounts" element={<AdminAccounts />}/>
-        {/* <Route path="/" element={<AdminUserAccounts/>}/> */}
+        <Route path="/marketplace/" element={<AdminMarketplace/>}/>
+
+        <Route path="/add-admin" element={<AddAdmin />}/>
       </Routes>
     </div>
  

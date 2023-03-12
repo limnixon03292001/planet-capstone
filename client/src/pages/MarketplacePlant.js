@@ -70,7 +70,7 @@ const MarketplacePlant = () => {
   }, [location]);
 
   return (
-    <div className='block border-x border-gray-200 w-full min-h-screen pt-4 overflow-hidden mb-10'>
+    <div className='block border-x border border-gray-200 w-full min-h-screen pt-4 overflow-hidden mb-10'>
       <ScrollTop/>
       <div className='mb-1'>
         <div className='flex items-center justify-start mt-1 px-4'>
@@ -139,7 +139,7 @@ const MarketplacePlant = () => {
             {/* main description / specification / location */}
             
             <div className='py-2 w-full'>
-              <div className=''>
+              <div>
                 <div className='border-b  border-200 py-4'>
                   <h1 className='font-semibold text-lg text-emerald-400'>Growing Preference</h1>
                 </div>

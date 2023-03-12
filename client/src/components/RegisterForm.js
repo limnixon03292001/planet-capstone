@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { useMutation } from 'react-query';
@@ -11,7 +11,7 @@ import checkToken from '../utils/checkToken';
 //initialState of our forms
 const initialState = { firstName: '', lastName: '', phoneNumber: '', baranggay: '', city: '', age: '', birthday: '', email: '', confirmPassword: '', password: '' };
 
-const RegisterForm = () => {
+const RegisterForm = ({ position }) => {
 
     const navigate = useNavigate();
     const [errData, setErrData] = useState({email: ''}); //this error state comes from server
@@ -38,7 +38,7 @@ const RegisterForm = () => {
         initialValues: initialState,
         validationSchema: validationSchemaRegistration,
         onSubmit: (formData) => {
-            mutate(formData);
+            mutate({...formData, position: position});
         },
     });
 
@@ -160,8 +160,8 @@ const RegisterForm = () => {
             <Link to="/login" className="mt-3 text-xs font-light text-center block w-max ml-auto underline text-blue-500">Already have an account? Click here to Sign in!</Link>
 
         </form>
-    :
-        <Navigate to="/" replace={true} />
+      :
+         <Navigate to="/" replace={true} />
     }
     </>
   )

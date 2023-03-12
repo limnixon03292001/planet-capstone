@@ -1,9 +1,22 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
 import NotFoundSvg from '../assets/notfound.svg';
 import planetLogo from '../assets/PLANeTlogo.png';
 
 const NotFound = () => {
+
+  const rle = localStorage.getItem('pstRle');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+
+    if(rle === '0329'){
+      navigate("/admin");
+    } else if(rle === '2001'){
+      navigate("/");
+    }
+  }, []);
+
   return (
     <div className='h-screen w-full flex flex-col items-center justify-center p-2'>
       <div className='text-left sm:text-center mt-auto'>

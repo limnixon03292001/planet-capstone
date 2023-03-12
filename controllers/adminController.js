@@ -1,5 +1,4 @@
 const pool  = require('../utils/dbConnection');
-const cloudinary = require("../utils/cloudinary");
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -107,6 +106,80 @@ exports.unblockAccount = async (req, res) => {
        
         await pool.query(`UPDATE user_acc SET block = $1 WHERE user_id = $2`, [false, userId]);
         return res.status(200).json({ message: 'unblocked succesfully!', success: true});
+        
+    } catch (error) {
+        console.log(error?.message);
+        return res.status(500).json({
+            error: error?.message
+        });
+    }
+};
+
+exports.updateAccount = async (req, res) => {
+
+    const  { data } = req.body;
+
+    try {
+       
+        await pool.query(`UPDATE user_acc SET 
+                        firstname = $1, lastname = $2,
+                        birthday = $3, phonenumber = $4,
+                        baranggay = $5, city = $6
+                        WHERE user_id = 6`,
+                        [data?.firstname, data?.lastname,
+                        data?.birthday, data?.phonenumber,
+                        data?.baranggay, data?.city ]);
+  
+        return res.status(200).json({ message: 'update successfully', success: true});
+        
+    } catch (error) {
+        console.log(error?.message);
+        return res.status(500).json({
+            error: error?.message
+        });
+    }
+};
+
+exports.getMarketplaceData = async (req, res) => {
+
+    try {
+        const query = ` 
+            SELECT mpd.*, mgp.*, mgi.*, ua.user_id, ua.firstname, ua.lastname, ua.email, ua.profile, ua.cover, ua.description userdesc,
+            uf.followersCount as followersCount, ufv2.followingCount as followingcount
+            
+            FROM mp_plant_details mpd
+
+            LEFT JOIN user_acc ua ON mpd.user_id = ua.user_id
+            LEFT JOIN mp_growing_pref mgp ON mpd.plant_detail_id = mgp.plant_detail_id
+            LEFT JOIN mp_growing_info mgi ON mpd.plant_detail_id = mgi.plant_detail_id
+            LEFT JOIN (SELECT user_id, COUNT(*) followersCount FROM user_followers GROUP BY user_followers.user_id ) uf
+            ON mpd.user_id = uf.user_id
+            LEFT JOIN (SELECT followers_user_id, COUNT(*) followingCount FROM user_followers GROUP BY user_followers.followers_user_id) ufv2
+            ON mpd.user_id = ufv2.followers_user_id
+
+            ORDER BY mpd.created_at DESC
+        `;
+        const result = await pool.query(query);
+
+        return res.status(200).json({data: result.rows});
+        
+    } catch (error) {
+        console.log(error?.message);
+        return res.status(500).json({
+            error: error?.message
+        });
+    }
+};
+
+exports.removeItemMp = async (req, res) => {
+    const { plant_detail_id } = req.body;
+
+    try {
+        await pool.query(`
+            DELETE FROM mp_plant_details WHERE plant_detail_id = $1
+        `, [plant_detail_id]);
+
+        res.status(202).json({message: "Plant deleted sucessfully!"});
         
     } catch (error) {
         console.log(error?.message);

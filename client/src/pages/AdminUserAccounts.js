@@ -1,34 +1,32 @@
 import React, { useState, Fragment, useEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { blockAccount, getUserAccountList, unblockAccount } from '../api/userApi';
+import { blockAccount, getUserAccountList, unblockAccount, updateAccount } from '../api/userApi';
 import { MyContext } from '../context/ContextProvider';
 import Table from '../components/Table';
-import { classNames, closeModal, openModal } from '../utils/reusableFunctions';
+import { classNames, closeModal, openModal, FilterLinks } from '../utils/reusableFunctions';
 import { Transition, Dialog } from '@headlessui/react'
 import logo from '../assets/PLANeTlogo.png';
-
 
 let r;
 const AdminUserAccounts = () => {
     const { userAccounts, setUserAccounts } = MyContext();
 
-     //get our data
-     const { isLoading, refetch } = useQuery(['user-accounts'], getUserAccountList,
-     {
-         onSuccess: ({ data }) => {
-             setUserAccounts(data.data);
-         },
-         onError: (err) => {
-             const errObject = err.response.data.error;
-             console.log(errObject);
-         }
-     });
+    //get our data
+    const { isLoading, refetch } = useQuery(['user-accounts'], getUserAccountList,
+    {
+        onSuccess: ({ data }) => {
+            setUserAccounts(data.data);
+        },
+        onError: (err) => {
+            const errObject = err.response.data.error;
+            console.log(errObject);
+        }
+    });
 
-     //setting refetch function to r var so that it can access by other components easily!
-     useEffect(() => {
-       r = refetch;
-     }, [])
-     
+    //setting refetch function to r var so that it can access by other components easily!
+    useEffect(() => {
+    r = refetch;
+    }, []);
 
     //Columns of the table
     const columns = React.useMemo(() => [
@@ -77,7 +75,10 @@ const AdminUserAccounts = () => {
 
   return (
     <div>
-        <Table columns={columns} data={userAccounts}  titleTable='User Accounts'/>
+        <div className='w-full max-w-[1352px] mx-auto flex items-center px-4 mb-4'>
+          <FilterLinks/>
+        </div>
+        <Table columns={columns} data={userAccounts} titleTable='User Accounts'/>
     </div>
   )
 }
@@ -88,6 +89,7 @@ export default AdminUserAccounts
 
 export function Actions( value ) {
     let [isOpenView, setIsOpenView] = useState(false);
+    let [isOpenEdit, setIsOpenEdit] = useState(false);
     let [isOpenBlock, setIsOpenBlock] = useState(false);
     const [selectedData, setSelectedData] = useState({});
  
@@ -98,22 +100,23 @@ export function Actions( value ) {
 
     return (
         <div className='flex items-center justify-start gap-x-3 text-sm'>
-            <button onClick={() => setModal(openModal, value?.row.original, setIsOpenView)} className='bg-green-200 text-green-800 p-2 px-3 rounded-lg focus:ring-2 ring-green-400'>
+            <button onClick={() => setModal(openModal, value?.row?.original, setIsOpenView)} className='bg-green-200 text-green-800 p-2 px-3 rounded-lg focus:ring-2 ring-green-400'>
                 <span>View</span>
             </button>
 
-            <button className='bg-blue-200 text-blue-800 p-2 px-3 rounded-lg focus:ring-2 ring-blue-400'>
+            <button onClick={() => setModal(openModal, value?.row?.original, setIsOpenEdit)} className='bg-blue-200 text-blue-800 p-2 px-3 rounded-lg focus:ring-2 ring-blue-400'>
                 <span>Edit</span>
             </button>
 
-            <button onClick={() => setModal(openModal, value?.row.original, setIsOpenBlock)} className='bg-red-200 text-red-800 p-2 px-3 rounded-lg focus:ring-2 ring-red-400'>
+            <button onClick={() => setModal(openModal, value?.row?.original, setIsOpenBlock)} className='bg-red-200 text-red-800 p-2 px-3 rounded-lg focus:ring-2 ring-red-400'>
                 <span>
                     {value?.row.original?.block != false ? 'Unblock' : 'Block'}
                 </span>
             </button>
 
-            {isOpenView && <ViewModal closeModal={() => closeModal(setIsOpenView)} isOpen={isOpenView} data={selectedData}/> }
-            {isOpenBlock && <BlockModal closeModal={() => closeModal(setIsOpenBlock)} isOpen={isOpenBlock} data={selectedData}/> }
+            {isOpenView && <ViewModal closeModal={() => closeModal(setIsOpenView)} isOpen={isOpenView} data={selectedData}/>}
+            {isOpenEdit && <EditModal closeModal={() => closeModal(setIsOpenEdit)} isOpen={isOpenEdit} data={selectedData}/> }
+            {isOpenBlock && <BlockModal closeModal={() => closeModal(setIsOpenBlock)} isOpen={isOpenBlock} data={selectedData}/>}
         
         </div>
     );
@@ -285,6 +288,118 @@ const ViewModal = ({ isOpen, closeModal, data }) => {
     )
 }
 
+const EditModal = ({ isOpen, closeModal, data }) => {
+
+    const [updateData, setUpdateData] = useState({
+        userId: data?.user_id,
+        firstname: data?.firstname,
+        lastname: data?.lastname,
+        birthday: data?.birthday,
+        phonenumber: data?.phonenumber,
+        baranggay: data?.baranggay,
+        city: data?.city,
+    });
+
+    const { mutate: mutateUpdate, isLoading } = useMutation(updateAccount, 
+    {
+        onSuccess: ({ data }) => {
+            console.log("blocked successfully!", data);
+            r();
+            closeModal();
+        },
+        onError: (err) => {
+            const errObject = err.response.data.error;
+            console.log(errObject);
+        }
+    });
+
+    const changeData = (e) => {
+        setUpdateData({...updateData, [e.target.name]: e.target.value});
+    };
+
+    return (
+        <Transition appear show={isOpen} as={Fragment}>
+            <Dialog as="div" className="relative z-10" onClose={closeModal}>
+            <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+            >
+                <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+
+            <div className="fixed inset-0 overflow-y-auto">
+                <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0 scale-95"
+                    enterTo="opacity-100 scale-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100 scale-100"
+                    leaveTo="opacity-0 scale-95"
+                >
+                    <Dialog.Panel className="w-full max-w-xl transform overflow-hidden rounded-2xl 
+                    text-left align-middle shadow-xl transition-all h-full max-h-[558px] overflow-y-auto bg-white">
+                    <div className='h-full w-full xbg1 pb-3'>
+                        <img src={data?.cover ?? logo } className={`${data?.cover ? 'object-cover' : 'object-contain'} border-gray-200 border-b h-36 rounded-lg object-center w-full block`}/>
+                        <img src={data?.profile} className='h-20 w-20 rounded-lg shadow-md -mt-10 ml-4 object-cover object-center inline-block'/>
+                        <div className='px-4 mt-2 flex gap-x-2'>
+                            <input type="text" onChange={(e) => changeData(e)} placeholder="Firstname" id="firstname" name="firstname"
+                            value={updateData?.firstname}
+                            className="rounded-md border border-[#536471] w-full py-1"/>
+                            <input type="text" onChange={(e) => changeData(e)} placeholder="Lastname" id="lastname" name="lastname"
+                            value={updateData?.lastname}
+                            className="rounded-md border border-[#536471] w-full py-1"/>
+                        </div>
+                        <div className='px-4'>
+                            <p className='text-gray-700'>{data?.email}</p>
+                        </div>
+
+                        <div className='px-4 mt-2 grid grid-cols-2 gap-x-3 gap-y-3'>
+                            <div className='p-2 inline-block rounded-lg uppercase text-md border-gray-200 border'>
+                                <h1 className='font-medium'>Birthday</h1>
+                                <input type="text" onChange={(e) => changeData(e)} placeholder="Birthday" id="birthday" name="birthday"
+                                value={updateData?.birthday}
+                                className="rounded-md border border-[#536471] w-full py-1"/>
+                            </div>
+                            <div className='p-2 inline-block rounded-lg uppercase text-md border-gray-200 border'>
+                                <h1 className='font-medium'>Phone number</h1>
+                                <input type="text" onChange={(e) => changeData(e)} placeholder="Phone Number" id="phonenumber" name="phonenumber"
+                                value={updateData?.phonenumber}
+                                className="rounded-md border border-[#536471] w-full py-1"/>
+                            </div>
+                            <div className='p-2 inline-block rounded-lg uppercase text-md border-gray-200 border'>
+                                <h1 className='font-medium'>Baranggay</h1>
+                                <input type="text" onChange={(e) => changeData(e)} placeholder="Baranggay" id="baranggay" name="baranggay"
+                                value={updateData?.baranggay}
+                                className="rounded-md border border-[#536471] w-full py-1"/>
+                            </div>
+                            <div className='p-2 inline-block rounded-lg uppercase text-md border-gray-200 border'>
+                                <h1 className='font-medium'>City</h1>
+                                <input type="text" onChange={(e) => changeData(e)} placeholder="City" id="city" name="city"
+                                value={updateData?.city}
+                                className="rounded-md border border-[#536471] w-full py-1"/>
+                            </div>
+                        </div>
+                        <div className='px-4 mt-2 w-full'>
+                            <button onClick={() => mutateUpdate({data: updateData})}
+                            className='bg-emerald-400 text-white px-4 py-1 rounded-lg inline-block w-max ml-auto'>Update</button>
+                        </div>
+                    </div>
+                    </Dialog.Panel>
+                </Transition.Child>
+                </div>
+            </div>
+            </Dialog>
+        </Transition>
+    )
+}
+
 const BlockModal = ({ isOpen, closeModal, data }) => {
 
     const { mutate: mutateBlock, isLoading: blockLoading } = useMutation(blockAccount, 
@@ -313,7 +428,6 @@ const BlockModal = ({ isOpen, closeModal, data }) => {
             }
         });
     
-
     return (
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={closeModal}>
@@ -385,4 +499,5 @@ const BlockModal = ({ isOpen, closeModal, data }) => {
         </Transition>
     )
 }
+
 

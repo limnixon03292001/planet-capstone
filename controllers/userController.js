@@ -155,9 +155,9 @@ exports.registerController = async (req,res) => {
         city,
         birthday,
         age,
+        position
     } = req.body; 
 
-    const userx = '2001'
     try {
         const user = await pool.query("SELECT * FROM user_acc WHERE email = $1", [ email ]);
         
@@ -172,7 +172,7 @@ exports.registerController = async (req,res) => {
 
         const newUser = await pool.query(`INSERT INTO user_acc (firstname, lastname, email, password, phonenumber, baranggay, city, birthday, age, position) 
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
-        [firstName, lastName, email, encryptedPassword, phoneNumber, baranggay, city, birthday, age, userx]);
+        [firstName, lastName, email, encryptedPassword, phoneNumber, baranggay, city, birthday, age, position]);
 
         await pool.query(`INSERT INTO acc_verify (acc_id) VALUES ($1)`, [newUser?.rows[0]?.user_id]);
 

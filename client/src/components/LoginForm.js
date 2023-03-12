@@ -47,7 +47,7 @@ const LoginForm = () => {
             if(errObject?.accVerified === false){
                 setPopUpErrNotVer(prev => !prev);
                 setPopUpErrBlocked(false);
-            } else if (errObject?.blocked !== false){
+            } else if (errObject?.blocked === true){
                 setPopUpErrBlocked(prev => !prev);
                 setPopUpErrNotVer(false);
             }

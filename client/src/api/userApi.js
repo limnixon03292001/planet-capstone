@@ -221,15 +221,24 @@ export const getCounts = () => {
 }
 
 export const blockAccount = (data) => {
-   return request({url: '/api/admin/blockAccount', method: 'POST', data: data});
+    return request({url: '/api/admin/blockAccount', method: 'POST', data: data});
 }
 
 export const unblockAccount = (data) => {
-  
     return request({url: '/api/admin/unblockAccount', method: 'POST', data: data});
- }
+}
 
+export const updateAccount = (data) => {
+    return request({url: '/api/admin/updateAccount', method: 'POST', data: data});
+}
 
+export const getMarketplaceData = () => {
+    return request({url: `/api/admin/getMarketplaceData`, method: 'GET'});
+}
+
+export const removeItemMp = (data) => {
+    return request({url: `/api/admin/removeItemMp`, method: 'DELETE', data: data});
+}
 
 // plant trade 
 

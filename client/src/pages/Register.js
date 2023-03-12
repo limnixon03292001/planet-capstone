@@ -18,7 +18,7 @@ const Register = () => {
 
             <h1 className="font-bold text-3xl mb-8 ml-3">Create your account</h1>
 
-            <RegisterForm/>
+            <RegisterForm position={2001}/>
         </div>
     </div>
   )

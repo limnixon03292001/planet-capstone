@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 const AdminAccounts = () => {
 
   const { adminAccounts, setAdminAccounts } = MyContext();
+
   const columns = React.useMemo(() => [
     {
         Header: "Name",
@@ -19,18 +20,6 @@ const AdminAccounts = () => {
         Cell: AvatarCell,
         imgAccessor: "profile",
         emailAccessor: "email",
-    },
-    {
-        Header: "Phone Number",
-        accessor: 'phonenumber',
-    },
-    {
-        Header: "Baranggay",
-        accessor: 'baranggay',
-    },
-    {
-        Header: "City",
-        accessor: 'city',
     },
     // {
     //     Header: "Position",
@@ -67,6 +56,10 @@ const AdminAccounts = () => {
 
   return (
     <div>
+        <div className='w-full max-w-[1352px] mx-auto flex items-center px-4 mb-4'>
+          <FilterLinks/>
+          <Link to='/admin/add-admin' className='bg-emerald-400 p-2 rounded-lg ml-2 text-white focus:ring-2 focus:ring-green-500'>  Add admin</Link>
+        </div>
         <Table columns={columns} data={adminAccounts}  titleTable='Admin Accounts'/>
     </div>
   )
