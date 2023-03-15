@@ -118,17 +118,17 @@ exports.unblockAccount = async (req, res) => {
 exports.updateAccount = async (req, res) => {
 
     const  { data } = req.body;
-
+ 
     try {
        
         await pool.query(`UPDATE user_acc SET 
                         firstname = $1, lastname = $2,
                         birthday = $3, phonenumber = $4,
                         baranggay = $5, city = $6
-                        WHERE user_id = 6`,
+                        WHERE user_id = $7`,
                         [data?.firstname, data?.lastname,
                         data?.birthday, data?.phonenumber,
-                        data?.baranggay, data?.city ]);
+                        data?.baranggay, data?.city, data?.userId ]);
   
         return res.status(200).json({ message: 'update successfully', success: true});
         

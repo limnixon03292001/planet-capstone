@@ -155,6 +155,7 @@ export const filterPlantCollections = ({ queryKey }) => {
     const gp = queryKey[2];
     const category = queryKey[3];
     const searchData = queryKey[4];
+
     return request({url: `/api/users/filterPlantCollections?&userId=${id}&category=${category}&search=${searchData}&sunPref=${gp?.sunPref}&interLight=${gp?.interLight}&soilPref=${gp?.soilPref}&waterReq=${gp?.waterReq}&nativeHab=${gp?.nativeHab}`, method: 'GET'});
 }
 

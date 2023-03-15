@@ -1,58 +1,65 @@
-import React, {useState, Fragment} from 'react'
-import { useQuery } from 'react-query';
-import { getAdminAccountList } from '../api/userApi';
+import React, {useState, Fragment, useEffect} from 'react'
+import { useMutation, useQuery } from 'react-query';
+import { blockAccount, getAdminAccountList, unblockAccount, updateAccount } from '../api/userApi';
 import { MyContext } from '../context/ContextProvider';
 import Table from './Table';
-import { Listbox, Transition } from '@headlessui/react'
-import { classNames } from '../utils/reusableFunctions';
+import { Listbox, Transition, Dialog } from '@headlessui/react'
+import { classNames, openModal, closeModal } from '../utils/reusableFunctions';
 import { Link } from 'react-router-dom';
 
+
+let r;
 const AdminAccounts = () => {
 
-  const { adminAccounts, setAdminAccounts } = MyContext();
+    const { adminAccounts, setAdminAccounts } = MyContext();
 
-  const columns = React.useMemo(() => [
-    {
-        Header: "Name",
-        accessor: ('firstname' || 'lastname'),
-        firstnameAccessor: 'firstname',
-        lastnameAccessor: 'lastname',
-        Cell: AvatarCell,
-        imgAccessor: "profile",
-        emailAccessor: "email",
-    },
-    // {
-    //     Header: "Position",
-    //     accessor: 'position',
-    //     Filter: SelectColumnFilter,  // new
-    // },
-    {
-        Header: 'Verified',
-        accessor: 'verified',
-        Cell: VerifiedStatus,
-    },
-    {
-        Header: "Status",
-        accessor: 'user_id', 
-        Cell: StatusPill,
-    },
-    {
-        Header: "Actions",
-        accessor: 'acc_id',
-        Cell: Actions,
-    },
-  ], []);
+    const columns = React.useMemo(() => [
+        {
+            Header: "Name",
+            accessor: ('firstname' || 'lastname'),
+            firstnameAccessor: 'firstname',
+            lastnameAccessor: 'lastname',
+            Cell: AvatarCell,
+            imgAccessor: "profile",
+            emailAccessor: "email",
+        },
+        // {
+        //     Header: "Position",
+        //     accessor: 'position',
+        //     Filter: SelectColumnFilter,  // new
+        // },
+        {
+            Header: 'Verified',
+            accessor: 'verified',
+            Cell: VerifiedStatus,
+        },
+        {
+            Header: "Status",
+            accessor: 'user_id', 
+            Cell: StatusPill,
+        },
+        {
+            Header: "Actions",
+            accessor: 'acc_id',
+            Cell: Actions,
+        },
+    ], []);
 
-  const { isLoading } = useQuery(['admin-accounts'], getAdminAccountList,
-  {
-      onSuccess: ({ data }) => {
-          setAdminAccounts(data.data);
-      },
-      onError: (err) => {
-          const errObject = err.response.data.error;
-          console.log(errObject);
-      }
-  });
+    const { isLoading, refetch } = useQuery(['admin-accounts'], getAdminAccountList,
+    {
+        onSuccess: ({ data }) => {
+            setAdminAccounts(data.data);
+        },
+        onError: (err) => {
+            const errObject = err.response.data.error;
+            console.log(errObject);
+        }
+    });
+  
+    //setting refetch function to r var so that it can access by other components easily!
+    useEffect(() => {
+        r = refetch;
+    }, []);
 
   return (
     <div>
@@ -67,20 +74,36 @@ const AdminAccounts = () => {
 
 export default AdminAccounts
 
-export function Actions({ value } ) {
+export function Actions( data  ) {
+    let [isOpenView, setIsOpenView] = useState(false);
+    let [isOpenEdit, setIsOpenEdit] = useState(false);
+    let [isOpenBlock, setIsOpenBlock] = useState(false);
+    const [selectedData, setSelectedData] = useState({});
+
+    const setModal = (openModal, data, setter) => {
+        openModal(setter);
+        setSelectedData(data);
+    }
+    
   return (
       <div className='flex items-center justify-start gap-x-3 text-sm'>
-          <button className='bg-green-200 text-green-800 p-2 px-3 rounded-lg focus:ring-2 ring-green-400'>
+          <button onClick={() => setModal(openModal, data?.cell?.row?.original , setIsOpenView)} className='bg-green-200 text-green-800 p-2 px-3 rounded-lg focus:ring-2 ring-green-400'>
               <span>View</span>
           </button>
 
-          <button className='bg-blue-200 text-blue-800 p-2 px-3 rounded-lg focus:ring-2 ring-blue-400'>
+          <button onClick={() => setModal(openModal, data?.cell?.row?.original, setIsOpenEdit)} className='bg-blue-200 text-blue-800 p-2 px-3 rounded-lg focus:ring-2 ring-blue-400'>
               <span>Edit</span>
           </button>
 
-          <button className='bg-red-200 text-red-800 p-2 px-3 rounded-lg focus:ring-2 ring-red-400'>
-              <span>Block</span>
-          </button>
+          <button onClick={() => setModal(openModal, data?.cell?.row?.original, setIsOpenBlock)} className='bg-red-200 text-red-800 p-2 px-3 rounded-lg focus:ring-2 ring-red-400'>
+                <span>
+                    {data?.cell?.row?.original?.block != false ? 'Unblock' : 'Block'}
+                </span>
+            </button>
+
+          {isOpenView && <ViewModal closeModal={() => closeModal(setIsOpenView)} isOpen={isOpenView} data={selectedData}/>}
+          {isOpenEdit && <EditModal closeModal={() => closeModal(setIsOpenEdit)} isOpen={isOpenEdit} data={selectedData}/> }
+          {isOpenBlock && <BlockModal closeModal={() => closeModal(setIsOpenBlock)} isOpen={isOpenBlock} data={selectedData}/>}
       </div>
   );
 };
@@ -255,3 +278,282 @@ const FilterLinks = () => {
       </div>
   )
 }
+
+const ViewModal = ({ isOpen, closeModal, data }) => {
+
+    return (
+        <Transition appear show={isOpen} as={Fragment}>
+            <Dialog as="div" className="relative z-10" onClose={closeModal}>
+            <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+            >
+                <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+
+            <div className="fixed inset-0 overflow-y-auto">
+                <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0 scale-95"
+                    enterTo="opacity-100 scale-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100 scale-100"
+                    leaveTo="opacity-0 scale-95"
+                >
+                    <Dialog.Panel className="w-full max-w-xl transform rounded-2xl 
+                    text-left align-middle shadow-xl transition-all h-full max-h-[558px] bg-white">
+                    <div className='h-full w-full xbg1 pb-3 '>
+                        
+                        <img src={data?.profile} className='h-20 w-20 rounded-full -mt-10 ml-4 object-cover object-center
+                         inline-block border-[5px] border-white'/>
+                        <div className='px-4 mt-2'>
+                            <h3 className='text-xl font-medium'>{data?.firstname} {data?.lastname}</h3>
+                            <p className='text-gray-700'>{data?.email}</p>
+                        </div>
+
+                        <div className='px-4 mt-2 grid grid-cols-2 gap-x-3 gap-y-3'>
+                            <div className='p-2 inline-block rounded-lg uppercase text-md border-gray-200 border'>
+                                <h1 className='font-medium'>Birthday</h1>
+                                <p>{data?.birthday}</p>
+                            </div>
+                            <div className='p-2 inline-block rounded-lg uppercase text-md border-gray-200 border'>
+                                <h1 className='font-medium'>Phone number</h1>
+                                <p>{data?.phonenumber}</p>
+                            </div>
+                            <div className='p-2 inline-block rounded-lg uppercase text-md border-gray-200 border'>
+                                <h1 className='font-medium'>Baranggay</h1>
+                                <p>{data?.baranggay}</p>
+                            </div>
+                            <div className='p-2 inline-block rounded-lg uppercase text-md border-gray-200 border'>
+                                <h1 className='font-medium'>City</h1>
+                                <p>{data?.city}</p>
+                            </div>
+                        </div>
+                    </div>
+                    </Dialog.Panel>
+                </Transition.Child>
+                </div>
+            </div>
+            </Dialog>
+        </Transition>
+    )
+}
+
+const BlockModal = ({ isOpen, closeModal, data }) => {
+
+    const { mutate: mutateBlock, isLoading: blockLoading } = useMutation(blockAccount, 
+    {
+        onSuccess: ({ data }) => {
+            console.log("blocked successfully!", data);
+            r();
+            closeModal();
+        },
+        onError: (err) => {
+            const errObject = err.response.data.error;
+            console.log(errObject);
+        }
+    });
+
+    const { mutate: mutateUnblock, isLoading: unblockLoading } = useMutation(unblockAccount, 
+        {
+            onSuccess: ({ data }) => {
+                console.log("unblocked successfully!", data);
+                r();
+                closeModal();
+            },
+            onError: (err) => {
+                const errObject = err.response.data.error;
+                console.log(errObject);
+            }
+        });
+    
+        console.log(data);
+    return (
+        <Transition appear show={isOpen} as={Fragment}>
+            <Dialog as="div" className="relative z-10" onClose={closeModal}>
+            <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+            >
+                <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+
+            <div className="fixed inset-0 overflow-y-auto">
+                <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0 scale-95"
+                    enterTo="opacity-100 scale-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100 scale-100"
+                    leaveTo="opacity-0 scale-95"
+                >
+                    <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl 
+                    text-left align-middle shadow-xl transition-all h-full max-h-[558px] overflow-y-auto bg-white">
+                        {!data?.block ? 
+                            <div className='h-full w-full xbg1 pt-3 text-center'>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.4} 
+                                stroke="red" className="w-12 h-12 mx-auto">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                                </svg>
+
+                                <div className='px-3'>
+                                    <p className='font-bold text-xl'>Block Account!</p>
+                                    <p className='text-gray-800 mt-2'>Once you block {data?.firstname} {data?.lastname}, He/She will no longer be able to access or log in his/her
+                                    account.</p>
+                                </div>
+
+                                <div className='flex items-center font-medium justify-center mt-4'>
+                                    <button onClick={closeModal} className='text-white bg-red-500 w-full block py-2'>Cancel.</button>
+                                    <button onClick={() => mutateBlock({ userId: data?.user_id})} className='text-white bg-green-500 w-full block py-2'>Block account.</button>
+                                </div>
+                            </div>
+                        :
+                            <div className='h-full w-full xbg1 pt-3 text-center'>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.4} 
+                                stroke="currentColor" className="w-12 h-12 mx-auto text-yellow-400">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                                </svg>
+                                <div className='px-3'>
+                                    <p className='font-bold text-xl'>Unblock Account!</p>
+                                    <p className='text-gray-800 mt-2'>Once you unblock {data?.firstname} {data?.lastname}, He/She will be able to access or log in his/her
+                                    account.</p>
+                                </div>
+                                <div className='flex items-center font-medium justify-center mt-4'>
+                                    <button onClick={closeModal} className='text-white bg-red-500 w-full block py-2'>Cancel.</button>
+                                    <button onClick={() => mutateUnblock({userId: data?.user_id})} className='text-white bg-green-500 w-full block py-2'>Unblock account.</button>
+                                </div>
+                            </div>
+                        }
+                    </Dialog.Panel>
+                </Transition.Child>
+                </div>
+            </div>
+            </Dialog>
+        </Transition>
+    )
+}
+
+const EditModal = ({ isOpen, closeModal, data }) => {
+
+    const [updateData, setUpdateData] = useState({
+        userId: data?.user_id,
+        firstname: data?.firstname,
+        lastname: data?.lastname,
+        birthday: data?.birthday,
+        phonenumber: data?.phonenumber,
+        baranggay: data?.baranggay,
+        city: data?.city,
+    });
+
+    const { mutate: mutateUpdate, isLoading } = useMutation(updateAccount, 
+    {
+        onSuccess: ({ data }) => {
+            r();
+            closeModal();
+        },
+        onError: (err) => {
+            const errObject = err.response.data.error;
+            console.log(errObject);
+        }
+    });
+
+    const changeData = (e) => {
+        setUpdateData({...updateData, [e.target.name]: e.target.value});
+        console.log(updateData)
+    };
+
+    return (
+        <Transition appear show={isOpen} as={Fragment}>
+            <Dialog as="div" className="relative z-10" onClose={closeModal}>
+            <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+            >
+                <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+
+            <div className="fixed inset-0 overflow-y-auto">
+                <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0 scale-95"
+                    enterTo="opacity-100 scale-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100 scale-100"
+                    leaveTo="opacity-0 scale-95"
+                >
+                    <Dialog.Panel className="w-full max-w-xl transform rounded-2xl 
+                    text-left align-middle shadow-xl transition-all h-full max-h-[558px] bg-white">
+                    <div className='h-full w-full xbg1 pb-3'>
+                        <img src={data?.profile} className='h-20 w-20 rounded-full -mt-10 
+                        ml-4 object-cover object-center inline-block border-[5px] border-white'/>
+                        <div className='px-4 mt-3 flex gap-x-2'>
+                            <input type="text" onChange={(e) => changeData(e)} placeholder="Firstname" id="firstname" name="firstname"
+                            value={updateData?.firstname}
+                            className="rounded-md border border-[#536471] w-full py-1"/>
+                            <input type="text" onChange={(e) => changeData(e)} placeholder="Lastname" id="lastname" name="lastname"
+                            value={updateData?.lastname}
+                            className="rounded-md border border-[#536471] w-full py-1"/>
+                        </div>
+
+                        <div className='px-4 mt-2 grid grid-cols-2 gap-x-3 gap-y-3'>
+                            <div className='p-2 inline-block rounded-lg uppercase text-md border-gray-200 border'>
+                                <h1 className='font-medium'>Birthday</h1>
+                                <input type="text" onChange={(e) => changeData(e)} placeholder="Birthday" id="birthday" name="birthday"
+                                value={updateData?.birthday}
+                                className="rounded-md border border-[#536471] w-full py-1"/>
+                            </div>
+                            <div className='p-2 inline-block rounded-lg uppercase text-md border-gray-200 border'>
+                                <h1 className='font-medium'>Phone number</h1>
+                                <input type="text" onChange={(e) => changeData(e)} placeholder="Phone Number" id="phonenumber" name="phonenumber"
+                                value={updateData?.phonenumber}
+                                className="rounded-md border border-[#536471] w-full py-1"/>
+                            </div>
+                            <div className='p-2 inline-block rounded-lg uppercase text-md border-gray-200 border'>
+                                <h1 className='font-medium'>Baranggay</h1>
+                                <input type="text" onChange={(e) => changeData(e)} placeholder="Baranggay" id="baranggay" name="baranggay"
+                                value={updateData?.baranggay}
+                                className="rounded-md border border-[#536471] w-full py-1"/>
+                            </div>
+                            <div className='p-2 inline-block rounded-lg uppercase text-md border-gray-200 border'>
+                                <h1 className='font-medium'>City</h1>
+                                <input type="text" onChange={(e) => changeData(e)} placeholder="City" id="city" name="city"
+                                value={updateData?.city}
+                                className="rounded-md border border-[#536471] w-full py-1"/>
+                            </div>
+                        </div>
+                        <div className='px-4 mt-2 w-full'>
+                            <button onClick={() => mutateUpdate({data: updateData})}
+                            className='bg-emerald-400 text-white px-4 py-1 rounded-lg inline-block w-max ml-auto'>Update</button>
+                        </div>
+                    </div>
+                    </Dialog.Panel>
+                </Transition.Child>
+                </div>
+            </div>
+            </Dialog>
+        </Transition>
+    )
+}
+
+

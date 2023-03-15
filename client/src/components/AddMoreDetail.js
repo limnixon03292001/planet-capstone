@@ -79,7 +79,7 @@ const AddMoreDetail = () => {
     },[]);
 
   return (
-    <div className='block border-x border-gray-200 w-full max-w-[860px] min-h-screen pt-6 pb-5'>
+    <div className='block border-x border-gray-200 w-full max-w-[860px] min-h-screen pt-6 pb-5 mb-[56px] md:mb-0'>
         <p className='px-4 font-medium mb-2 text-gray-700 tracking-tight'>Selected Plant:</p>
         <div className='px-4 flex items-center mb-8'>
             <img src={selectedPlant?.plant_img} alt="plant_img" className='h-10 w-10 rounded-lg object-center object-cover mr-2'/>

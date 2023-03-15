@@ -282,4 +282,73 @@ const DeleteModal = ({ isOpen, closeModal, data }) => {
   )
 }
 
+const EditModal = ({ isOpen, closeModal, data }) => {
+
+  console.log("data");
+
+  // const { mutate: mutateUpdate, isLoading } = useMutation(updateAccount, 
+  // {
+  //     onSuccess: ({ data }) => {
+  //         console.log("blocked successfully!", data);
+  //         r();
+  //         closeModal();
+  //     },
+  //     onError: (err) => {
+  //         const errObject = err.response.data.error;
+  //         console.log(errObject);
+  //     }
+  // });
+
+  // const changeData = (e) => {
+  //     setUpdateData({...updateData, [e.target.name]: e.target.value});
+  // };
+
+  return (
+      <Transition appear show={isOpen} as={Fragment}>
+          <Dialog as="div" className="relative z-10" onClose={closeModal}>
+          <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+          >
+              <div className="fixed inset-0 bg-black bg-opacity-25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+              >
+                  <Dialog.Panel className="w-full max-w-xl transform overflow-hidden rounded-2xl 
+                  text-left align-middle shadow-xl transition-all h-full max-h-[558px] overflow-y-auto bg-white">
+                  <div className='h-full w-full xbg1 pb-3'>
+                      <div className='px-4 mt-2 flex gap-x-2'>
+                          <input type="text" placeholder="Firstname" id="firstname" name="firstname"
+                        
+                          className="rounded-md border border-[#536471] w-full py-1"/>
+                          <input type="text" placeholder="Lastname" id="lastname" name="lastname"
+                           
+                          className="rounded-md border border-[#536471] w-full py-1"/>
+                      </div>
+                    
+                  </div>
+                  </Dialog.Panel>
+              </Transition.Child>
+              </div>
+          </div>
+          </Dialog>
+      </Transition>
+  )
+}
+
 export default AdminMarketplace

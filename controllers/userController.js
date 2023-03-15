@@ -1004,7 +1004,7 @@ exports.filterPlantCollections = async (req, res) => {
 
         const result = await pool.query(query, [Number(userId)]);
         const count = await pool.query(`SELECT COUNT(cpd.plant_detail_id) FROM coll_plant_details cpd  WHERE cpd.user_id = $1`, [Number(userId)]);
-
+        
         return res.status(200).json({data: result.rows, total: count.rows[0]});
 
 

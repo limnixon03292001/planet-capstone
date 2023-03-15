@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import EllipsisText from 'react-ellipsis-text/lib/components/EllipsisText';
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +19,7 @@ const PickPlant = () => {
     const [gp, setGp] = useState(growingPrefInitialState);
     const [selectedCategory, setSelectedCategory] = useState('');
 
-    const { isLoading: loadingFilter, refetch } = useQuery(['filteredPlant-collections', authUser?.user_id, gp, selectedCategory], filterPlantCollections,
+    const { isLoading: loadingFilter, refetch } = useQuery(['filteredPlant-collections', authUser?.user_id, gp, selectedCategory, ''], filterPlantCollections,
     {
         onSuccess: ({ data }) => {
             console.log("pick", data)

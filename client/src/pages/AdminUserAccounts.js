@@ -97,7 +97,7 @@ export function Actions( value ) {
         openModal(setter);
         setSelectedData(data);
     }
-
+ 
     return (
         <div className='flex items-center justify-start gap-x-3 text-sm'>
             <button onClick={() => setModal(openModal, value?.row?.original, setIsOpenView)} className='bg-green-200 text-green-800 p-2 px-3 rounded-lg focus:ring-2 ring-green-400'>
@@ -303,7 +303,6 @@ const EditModal = ({ isOpen, closeModal, data }) => {
     const { mutate: mutateUpdate, isLoading } = useMutation(updateAccount, 
     {
         onSuccess: ({ data }) => {
-            console.log("blocked successfully!", data);
             r();
             closeModal();
         },
