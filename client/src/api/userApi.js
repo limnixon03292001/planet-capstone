@@ -233,6 +233,10 @@ export const updateAccount = (data) => {
     return request({url: '/api/admin/updateAccount', method: 'POST', data: data});
 }
 
+export const updateItemMp = (data) => {
+    return request({url: '/api/admin/updateItemMp', method: 'POST', data: data});
+}
+
 export const getMarketplaceData = () => {
     return request({url: `/api/admin/getMarketplaceData`, method: 'GET'});
 }

@@ -68,8 +68,10 @@ exports.getAdminAccountList = async (req, res) => {
             LEFT JOIN user_acc ON acc_list.acc_id = user_acc.user_id
             LEFT JOIN acc_verify ON acc_list.acc_id = acc_verify.acc_id
 
-            WHERE user_acc.position = $1
-        `, ['0329']);
+            WHERE user_acc.position = $1 OR user_acc.position = $2
+        `,['0329', '29']);
+
+        console.log("x", accountList?.rows);
 
         return res.status(200).json({data: accountList.rows })
         
@@ -129,6 +131,27 @@ exports.updateAccount = async (req, res) => {
                         [data?.firstname, data?.lastname,
                         data?.birthday, data?.phonenumber,
                         data?.baranggay, data?.city, data?.userId ]);
+  
+        return res.status(200).json({ message: 'update successfully', success: true});
+        
+    } catch (error) {
+        console.log(error?.message);
+        return res.status(500).json({
+            error: error?.message
+        });
+    }
+};
+
+exports.updateItemMp = async (req, res) => {
+
+    const  { status, plantId } = req.body;
+ 
+    try {
+       
+        await pool.query(`UPDATE mp_plant_details SET 
+                        status = $1
+                        WHERE plant_detail_id = $2`,
+                        [status?.status, plantId]);
   
         return res.status(200).json({ message: 'update successfully', success: true});
         

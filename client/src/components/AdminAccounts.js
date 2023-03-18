@@ -29,6 +29,11 @@ const AdminAccounts = () => {
         //     Filter: SelectColumnFilter,  // new
         // },
         {
+            Header: 'Role',
+            accessor: 'position',
+            Cell: Role
+        },
+        {
             Header: 'Verified',
             accessor: 'verified',
             Cell: VerifiedStatus,
@@ -65,7 +70,8 @@ const AdminAccounts = () => {
     <div>
         <div className='w-full max-w-[1352px] mx-auto flex items-center px-4 mb-4'>
           <FilterLinks/>
-          <Link to='/admin/add-admin' className='bg-emerald-400 p-2 rounded-lg ml-2 text-white focus:ring-2 focus:ring-green-500'>  Add admin</Link>
+          {localStorage.getItem('pstRle') === '29' &&   <Link to='/admin/add-admin' className='bg-emerald-400 p-2 rounded-lg ml-2 text-white focus:ring-2 focus:ring-green-500'>  Add admin</Link> }  
+        
         </div>
         <Table columns={columns} data={adminAccounts}  titleTable='Admin Accounts'/>
     </div>
@@ -154,6 +160,14 @@ export function StatusPill({ value } ) {
           </span>
   );
 };
+
+export function Role({value}) {
+    return (
+        <div>
+            <span className='text-gray-500 text-sm'>{value === '29' ? 'Super Admin' : 'Admin'}</span>
+        </div>
+    )
+}
 
 // This is a custom filter UI for selecting
 // a unique option from a list

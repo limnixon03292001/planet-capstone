@@ -51,14 +51,17 @@ const io = require("socket.io")(server, {
 
 // this variable stores the current online users we need to keep track the user
 let users = [];
+let countOnlineUsers = 0;
 
 const addUser = (userId, socketId, pos) => {
     !users.some((user) => user.userId === userId) &&
       users.push({ userId, socketId, pos });
+    countOnlineUsers += 1;
 };
 
 const removeUser = (socketId) => {
     users = users.filter((user) => user.socketId !== socketId);
+    countOnlineUsers -= 1;
 };
 
 const getUser = (userId) => {

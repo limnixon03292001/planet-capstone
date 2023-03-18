@@ -151,8 +151,8 @@ export function VerifiedStatus({ value } ) {
 export function StatusPill({ value } ) {
 
     const { onlineUsers } = MyContext();
-    const status = onlineUsers.some(({userId}) => userId === value);
-   
+    const status = onlineUsers?.some(({userId}) => userId === value);
+
         return (
             <span
             className={

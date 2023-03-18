@@ -1,11 +1,12 @@
 {
   "files": {
-    "main.css": "/static/css/main.14de312f.css",
-    "main.js": "/static/js/main.dff40158.js",
+    "main.css": "/static/css/main.b6a1a744.css",
+    "main.js": "/static/js/main.3353f823.js",
     "static/media/nixon.jpg": "/static/media/nixon.520dcdd797c54abf72bf.jpg",
     "service-worker.js": "/service-worker.js",
     "static/media/expired.svg": "/static/media/expired.5f0cffd06903297adb644793564fe47d.svg",
     "static/media/notfound.svg": "/static/media/notfound.efc892b98d37cfdb7e676c0e29e7055c.svg",
+    "static/media/cmu.png": "/static/media/cmu.15eea4c6c63938209e6d.png",
     "static/media/Lyrate.png": "/static/media/Lyrate.9bf04bde0b4ab768463b.png",
     "static/media/forgot.svg": "/static/media/forgot.9c85bbe94c2432d4109894102431bbb8.svg",
     "static/media/email_send_illustration.svg": "/static/media/email_send_illustration.4e1b0486ff581625ae927b9a21872928.svg",
@@ -13,11 +14,11 @@
     "static/media/verified.svg": "/static/media/verified.2131d3afca12eba164b3206f0674ef0e.svg",
     "static/media/email_sent_illustration.svg": "/static/media/email_sent_illustration.14adbfe137cc3b79c872c32c77d559c7.svg",
     "index.html": "/index.html",
-    "main.14de312f.css.map": "/static/css/main.14de312f.css.map",
-    "main.dff40158.js.map": "/static/js/main.dff40158.js.map"
+    "main.b6a1a744.css.map": "/static/css/main.b6a1a744.css.map",
+    "main.3353f823.js.map": "/static/js/main.3353f823.js.map"
   },
   "entrypoints": [
-    "static/css/main.14de312f.css",
-    "static/js/main.dff40158.js"
+    "static/css/main.b6a1a744.css",
+    "static/js/main.3353f823.js"
   ]
 }

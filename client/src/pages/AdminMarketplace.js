@@ -1,8 +1,9 @@
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog, Listbox, Transition } from '@headlessui/react';
 import React, { useState, Fragment, useEffect } from 'react'
 import { useMutation, useQuery } from 'react-query';
-import { getMarketplaceData, removeItemMp } from '../api/userApi';
+import { getMarketplaceData, removeItemMp, updateItemMp } from '../api/userApi';
 import Table from '../components/Table'
+import { status } from '../data';
 import { closeModal, openModal } from '../utils/reusableFunctions';
 
 let r;
@@ -284,24 +285,26 @@ const DeleteModal = ({ isOpen, closeModal, data }) => {
 
 const EditModal = ({ isOpen, closeModal, data }) => {
 
-  console.log("data");
+  console.log("data", data);
+  const [statusData, setStatusData] = useState(null);
+    console.log("statusData", statusData)
 
-  // const { mutate: mutateUpdate, isLoading } = useMutation(updateAccount, 
-  // {
-  //     onSuccess: ({ data }) => {
-  //         console.log("blocked successfully!", data);
-  //         r();
-  //         closeModal();
-  //     },
-  //     onError: (err) => {
-  //         const errObject = err.response.data.error;
-  //         console.log(errObject);
-  //     }
-  // });
+  const { mutate: mutateUpdate, isLoading } = useMutation(updateItemMp, 
+  {
+      onSuccess: ({ data }) => {
+          console.log("blocked successfully!", data);
+          r();
+          closeModal();
+      },
+      onError: (err) => {
+          const errObject = err.response.data.error;
+          console.log(errObject);
+      }
+  });
 
-  // const changeData = (e) => {
-  //     setUpdateData({...updateData, [e.target.name]: e.target.value});
-  // };
+  const handleUpdate = (id) => {
+      mutateUpdate({ status: statusData, plantId: id});
+  };
 
   return (
       <Transition appear show={isOpen} as={Fragment}>
@@ -329,18 +332,19 @@ const EditModal = ({ isOpen, closeModal, data }) => {
                   leaveFrom="opacity-100 scale-100"
                   leaveTo="opacity-0 scale-95"
               >
-                  <Dialog.Panel className="w-full max-w-xl transform overflow-hidden rounded-2xl 
-                  text-left align-middle shadow-xl transition-all h-full max-h-[558px] overflow-y-auto bg-white">
+                  <Dialog.Panel className="w-full max-w-xl transform rounded-2xl 
+                  text-left align-middle shadow-xl transition-all h-full max-h-[558px] bg-white">
                   <div className='h-full w-full xbg1 pb-3'>
+                    <img src={data?.plant_img} className="object-cover rounded-full w-20 h-20 -mt-8 block mx-auto border-4 border-white"/>
+                    <p className='font-medium text-lg text-center'>{data?.plant_name}</p>
                       <div className='px-4 mt-2 flex gap-x-2'>
-                          <input type="text" placeholder="Firstname" id="firstname" name="firstname"
-                        
-                          className="rounded-md border border-[#536471] w-full py-1"/>
-                          <input type="text" placeholder="Lastname" id="lastname" name="lastname"
-                           
-                          className="rounded-md border border-[#536471] w-full py-1"/>
+                        <div className='mx-auto text-center'>
+                            <p className='text-gray-500 mb-2 text-sm'>Edit item availability</p>
+                            <Dropdown list={status} currentData={data?.status} setData={setStatusData} data={statusData} target='status'/>
+                        </div>
                       </div>
-                    
+                      <button className='bg-green-400 p-2 px-3 mx-auto block mt-3 -mb-7 
+                      border-[4px] border-white text-white rounded-full' onClick={() => handleUpdate(data?.plant_detail_id)}>Update</button>
                   </div>
                   </Dialog.Panel>
               </Transition.Child>
@@ -352,3 +356,70 @@ const EditModal = ({ isOpen, closeModal, data }) => {
 }
 
 export default AdminMarketplace
+
+
+const Dropdown = ({ list, currentData, setData, data, target }) => {
+    const [selected, setSelected] = useState({name: currentData});
+    
+    useEffect(() => {
+        setData({...data, [target]: selected?.name});
+    },[selected])
+
+    return (
+        <Listbox value={selected} onChange={setSelected}>
+            <div className="relative  w-[150px]">
+            <Listbox.Button className="relative w-full cursor-pointer rounded-lg bg-white py-3 pl-3 pr-10 text-left 
+                border border-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-300
+                focus-visible:ring-opacity-75 text-sm">
+                <span className="block truncate">{selected?.name}</span>
+                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                </svg>
+
+                </span>
+            </Listbox.Button>
+            <Transition
+                as={Fragment}
+                leave="transition ease-in duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+            >
+                <Listbox.Options className="absolute mt-1 z-20 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                {list.map((d, dataIdx) => (
+                    <Listbox.Option
+                    key={dataIdx}
+                    className={({ active }) =>
+                        `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                        active ? 'bg-green-100 text-green-900' : 'text-gray-900'
+                        }`
+                    }
+                    value={d}
+                    >
+                    {({ selected }) => (
+                        <>
+                        <span
+                            className={`block truncate ${
+                            selected ? 'font-medium' : 'font-normal'
+                            }`}
+                        >
+                            {d.name}
+                        </span>
+                        {selected ? (
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-green-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" 
+                                className="w-5 h-5">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                            </span>
+                        ) : null}
+                        </>
+                    )}
+                    </Listbox.Option>
+                ))}
+                </Listbox.Options>
+            </Transition>
+            </div>
+        </Listbox>
+    )
+}

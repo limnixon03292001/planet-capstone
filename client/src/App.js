@@ -15,6 +15,7 @@ import AccountRecover from './pages/AccountRecover';
 import ResetPassword from './pages/ResetPassword';
 import Maintenance from './pages/Maintenance';
 import Admin from './pages/Admin';
+import Homepage from './pages/Homepage';
 
 // primary text  - black
 // secondary - #536471
@@ -29,6 +30,7 @@ function App() {
         <Toaster position='top-left'/>
         <Routes>
           <Route path="/login" element={<Login/>} />
+          <Route path="/homepage" element={<Homepage/>} />
           <Route path="/register" element={<Register/>} />
           <Route path="/verification" element={<Verify/>}/>
           <Route path="/account-recovery" element={<AccountRecover/>}/>
@@ -37,10 +39,10 @@ function App() {
           <Route path="/map-sample" element={<MyMap/>}/>
           
           {/* PROTECTED ROUTES */}
-          <Route element={<ProtectedRoutes path="/login" allowedRole='0329' />}>
+          <Route element={<ProtectedRoutes path="/homepage" allowedRole={['0329', '29']}/>}>
             <Route path="/admin/*" element={<Admin/>}/>
           </Route>
-          <Route element={<ProtectedRoutes path="/login" allowedRole='2001' />}>
+          <Route element={<ProtectedRoutes path="/homepage" allowedRole={['2001']} />}>
             <Route path="/*" element={<Home/>}/>
           </Route>
 

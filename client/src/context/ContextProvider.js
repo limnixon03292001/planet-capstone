@@ -10,6 +10,7 @@ const ContextProvider = ({ children }) => {
     const [posts, setPosts] = useState([]); //state for all posts of user.
     const [chats, setChats] = useState([]); // all chats of authenticated user.
     const [onlineUsers, setOnlineUsers] = useState([]); //state for online users.
+    const [countsOnline, setCountsOnline] = useState(0);
     const [socket, setSocket] = useState();
     const [messages, setMessages] = useState([]);
     const [x, setX] = useState(0);
@@ -33,6 +34,7 @@ const ContextProvider = ({ children }) => {
             selectedPlant, setSelectedPlant,
             userAccounts, setUserAccounts,
             adminAccounts, setAdminAccounts,
+            countsOnline, setCountsOnline
         }}>
             {children}
         </MainContext.Provider>

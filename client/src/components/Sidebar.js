@@ -2,9 +2,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import decode from 'jwt-decode'
 import io from 'socket.io-client';
 import planetLogo from '../assets/PLANeTlogo.png';
+import cmuccsLogo from '../assets/cmu.png';
 import { linkNavigationBar, shortcutsNavigationBar } from '../data';
 import { MyContext } from '../context/ContextProvider';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
 import { getAllChats, getAuthUser } from '../api/userApi';
@@ -19,10 +20,10 @@ var socket;
 
 const Sidebar = () => {
 
-   const navigate = useNavigate();
+    const navigate = useNavigate();
     const { id: authUserId } = decode(localStorage?.token); //id of currently logged in user
-    const { setSocket, setOnlineUsers, setAuthUser, authUser, setChats, chats } = MyContext();
- 
+    const { setSocket, setOnlineUsers, setCountsOnline, setAuthUser, authUser, setChats, chats } = MyContext();
+    const [sidebar, setSideBar] = useState(true);
 
     const Logout = () => {
         localStorage.clear("token");
@@ -40,6 +41,8 @@ const Sidebar = () => {
 
         socket.on("getUsers", (users) => {
           setOnlineUsers(users);
+          
+          // console.log("realtime on", users?.numVer);
         });
   
         //for the actual websocket having an error attempt to reconnect
@@ -170,46 +173,54 @@ const Sidebar = () => {
 
             <div>
               {/* links */}
-              <div className='h-full'>
-                  <p className='text-[#536471] text-md mt-6 hidden lg:block'>Links</p>
-                  {linkNavigationBar?.slice(0,2)?.map((data, id) => (
-                      <Link to={data?.link} key={id} className="flex items-start my-6
-                      justify-center lg:justify-start">
-                          {data?.icon}
-                          <span className='text-xl  self-end ml-3 font-[100]
-                          hidden lg:block'>{data.title}</span>
-                      </Link>
-                  ))}
-                  {/* Message Link */}
-                  {linkNavigationBar?.slice(2,3)?.map((data, id) => (
-                      <Link to={data?.link} key={id} className="flex items-start my-6 
-                      justify-center lg:justify-start">
-                          <div className='relative'>
+              <div className='h-max mt-10'>
+                  <button className='text-[#536471] text-md hidden lg:flex lg:items-center' onClick={() => setSideBar((prev) => !prev)}>
+                    <span className='text-gray-900'>Transaction Process </span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`w-4 h-4 ml-2 
+                     text-gray-600  ${sidebar ? `-rotate-90` : `rotate-90`}  transition-all`}>
+                      <path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                  <div className={`${sidebar ? `h-max` : `h-0`} transition-transform overflow-hidden`}>
+                    {linkNavigationBar?.slice(0,2)?.map((data, id) => (
+                        <Link to={data?.link} key={id} className="flex items-start my-6
+                        justify-center lg:justify-start">
                             {data?.icon}
-                            {chats?.filter((c) => c?.read === false && c?.sentby_id !== authUser?.user_id && c)?.length !== 0 ? 
-                            <span className='bg-red-500 py-[2px] px-[6px] text-[11px] border-2 border-white rounded-full text-white absolute
-                            -top-2 -right-2'>{chats?.filter((c) => c?.read === false && c?.sentby_id !== authUser?.user_id && c)?.length}</span>
-                            : null
-                            }
-                          </div>
-                          <span className='text-xl  self-end ml-3 font-[100]
-                          hidden lg:block'>{data.title}</span>
-                      </Link>
-                  ))}
-                  {/* End Message Link */}
+                            <span className='text-xl  self-end ml-3 font-[100]
+                            hidden lg:block'>{data.title}</span>
+                        </Link>
+                    ))}
+                    {/* Message Link */}
+                    {linkNavigationBar?.slice(2,3)?.map((data, id) => (
+                        <Link to={data?.link} key={id} className="flex items-start my-6 
+                        justify-center lg:justify-start">
+                            <div className='relative'>
+                              {data?.icon}
+                              {chats?.filter((c) => c?.read === false && c?.sentby_id !== authUser?.user_id && c)?.length !== 0 ? 
+                              <span className='bg-red-500 py-[2px] px-[6px] text-[11px] border-2 border-white rounded-full text-white absolute
+                              -top-2 -right-2'>{chats?.filter((c) => c?.read === false && c?.sentby_id !== authUser?.user_id && c)?.length}</span>
+                              : null
+                              }
+                            </div>
+                            <span className='text-xl  self-end ml-3 font-[100]
+                            hidden lg:block'>{data.title}</span>
+                        </Link>
+                    ))}
+                    {/* End Message Link */}
 
-                  {linkNavigationBar?.slice(3,5)?.map((data, id) => (
-                      <Link to={data?.link} key={id} className="flex items-start my-6
-                      justify-center lg:justify-start border border-blue-500">
-                          {data?.icon}
-                          <span className='text-xl  self-end ml-3 font-[100]
-                          hidden lg:block'>{data.title}</span>
-                      </Link>
-                  ))}
+                    {linkNavigationBar?.slice(3,5)?.map((data, id) => (
+                        <Link to={data?.link} key={id} className="flex items-start my-6
+                        justify-center lg:justify-start border border-blue-500">
+                            {data?.icon}
+                            <span className='text-xl  self-end ml-3 font-[100]
+                            hidden lg:block'>{data.title}</span>
+                        </Link>
+                    ))}
+                  </div>
               </div>
               
               {/* Shortcuts */}
-              <div>
+              {/* <div>
                   <p className='text-[#536471] text-md mt-10 hidden lg:block'>Shortcuts</p>
                   {shortcutsNavigationBar.map((data, id) => (
                       <Link to={data?.link} key={id} className="flex items-start my-6
@@ -219,7 +230,7 @@ const Sidebar = () => {
                           hidden lg:block'>{data?.title}</span>
                       </Link>
                   ))}
-              </div>
+              </div> */}
 
               {/* users-profile */}
               <Link to={`/profile/${authUser?.user_id}`}>
@@ -245,10 +256,11 @@ const Sidebar = () => {
           </div>
 
           <div className='hidden lg:block mt-auto flex-shrink-0'>
-              <p className='text-gray-500 text-[10px] px-4 leading-normal'>
+              {/* <p className='text-gray-500 text-[10px] px-4 leading-normal'>
                   PLANeT Eco-trading: Platform for Malabonian Plant Enthusiast with Geospatial Mapping Support.
                   <span className='text-emerald-900'>[Beta Version]</span>
-              </p>
+              </p> */}
+              <img src={cmuccsLogo} className="w-56 object-cover"/>
           </div> 
 
         </div>
