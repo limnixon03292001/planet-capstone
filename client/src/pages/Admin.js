@@ -6,7 +6,6 @@ import { Route, Routes } from 'react-router-dom';
 import AdminUserAccounts from './AdminUserAccounts';
 import decode from 'jwt-decode'
 import AdminAccounts from '../components/AdminAccounts';
-import { Listbox, Transition } from '@headlessui/react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQuery } from 'react-query';
 import { getCounts } from '../api/userApi';

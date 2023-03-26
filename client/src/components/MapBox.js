@@ -167,7 +167,7 @@ const MapBox = () => {
     useEffect(() => {
         map = new mapboxgl.Map({
             container: mapContainerRef.current,
-            style: 'mapbox://styles/djam/ckgojfjv329qq19mif613hvpa',
+            style: 'mapbox://styles/mapbox/satellite-streets-v11',
             center: [120.9658, 14.6681],
             zoom: 13,
           
