@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import mapboxgl from '!mapbox-gl';
+import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
 import '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css';
@@ -11,7 +11,7 @@ import moment from 'moment';
 import ButtonLoader from './ButtonLoader';
 
 mapboxgl.accessToken =
-  "pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA";
+  "pk.eyJ1Ijoib3dlbmxhbWIiLCJhIjoiY2lleWljcnF4MDBiOXQ0bHR0anRvamtucSJ9.t3YnHHqvQZ8Y0MTCNy0NNw";
 
 let map;
 
@@ -167,7 +167,7 @@ const MapBox = () => {
     useEffect(() => {
         map = new mapboxgl.Map({
             container: mapContainerRef.current,
-            style: 'mapbox://styles/mapbox/streets-v12',
+            style: 'mapbox://styles/djam/ckgojfjv329qq19mif613hvpa',
             center: [120.9658, 14.6681],
             zoom: 13,
           

@@ -8,7 +8,7 @@ import GrowingInformation from '../components/GrowingInformation';
 import GrowingPreferences from '../components/GrowingPreferences';
 import { plantsCategories } from "../data";
 import { NumericFormat } from 'react-number-format';
-import mapboxgl from '!mapbox-gl';
+import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import ButtonLoader from '../components/ButtonLoader';
 
@@ -19,7 +19,7 @@ const center = {
 };
 
 mapboxgl.accessToken =
-  "pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA";
+  "pk.eyJ1Ijoib3dlbmxhbWIiLCJhIjoiY2lleWljcnF4MDBiOXQ0bHR0anRvamtucSJ9.t3YnHHqvQZ8Y0MTCNy0NNw";
 
 const growingPrefInitialState = {sunPref: [], interLight: [], soilPref: [], waterReq: [], nativeHab: []};
 

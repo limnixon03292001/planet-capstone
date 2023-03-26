@@ -8,7 +8,7 @@ import { MyContext } from '../context/ContextProvider';
 import { checkOnline } from '../utils/checkOnline';
 import ProfileSidebar from '../components/ProfileSidebar';
 import ScrollTop from '../components/ScrollTop';
-import mapboxgl from '!mapbox-gl';
+import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css';
 import ButtonLoader from '../components/ButtonLoader';
@@ -314,7 +314,7 @@ export default MarketplacePlant
 
 
 mapboxgl.accessToken =
-  "pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA";
+  "pk.eyJ1Ijoib3dlbmxhbWIiLCJhIjoiY2lleWljcnF4MDBiOXQ0bHR0anRvamtucSJ9.t3YnHHqvQZ8Y0MTCNy0NNw";
 
 const MiniMap = ({lng, lat}) => {
   
