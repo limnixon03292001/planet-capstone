@@ -3,7 +3,7 @@ import logo from '../assets/PLANeTlogo.png';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation } from 'react-query';
 import { addPlant } from "../api/userApi";
-import mapboxgl from '!mapbox-gl';
+import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { MyContext } from '../context/ContextProvider'
 import ButtonLoader from '../components/ButtonLoader';
