@@ -11,7 +11,7 @@ import moment from 'moment';
 import ButtonLoader from './ButtonLoader';
 
 mapboxgl.accessToken =
-  "pk.eyJ1Ijoib3dlbmxhbWIiLCJhIjoiY2lleWljcnF4MDBiOXQ0bHR0anRvamtucSJ9.t3YnHHqvQZ8Y0MTCNy0NNw";
+  "pk.eyJ1IjoiZG9uYWxkdWNrMTIiLCJhIjoiY2w5MmRvY3NrMDZjNjN1bmYwaHBpYjducSJ9.xxQ3KDrlknCKa9pgj9k88A";
 
 let map;
 
