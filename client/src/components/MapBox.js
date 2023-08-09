@@ -167,6 +167,7 @@ const MapBox = () => {
 
         mapboxgl.accessToken =
   "pk.eyJ1IjoiZG9uYWxkdWNrMTIiLCJhIjoiY2w5MmRvY3NrMDZjNjN1bmYwaHBpYjducSJ9.xxQ3KDrlknCKa9pgj9k88A";
+  console.log("NEWTOKEN = pk.eyJ1IjoiZG9uYWxkdWNrMTIiLCJhIjoiY2w5MmRvY3NrMDZjNjN1bmYwaHBpYjducSJ9.xxQ3KDrlknCKa9pgj9k88A");
         map = new mapboxgl.Map({
             container: mapContainerRef.current,
             style: 'mapbox://styles/mapbox/satellite-streets-v11',
