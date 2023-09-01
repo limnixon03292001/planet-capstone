@@ -15,7 +15,7 @@ import addNotification from 'react-push-notification';
 // https://planet-capstone-production.up.railway.app/ 
 // https://planet-capstone.onrender.com/
 // http://localhost:5000/
-const ENDPOINT = "https://planet-capstone.onrender.com/";
+const ENDPOINT = "https://planet-capstone-olcl.onrender.com/";
 var socket;
 
 const Sidebar = () => {

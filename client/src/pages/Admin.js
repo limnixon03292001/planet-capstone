@@ -14,7 +14,7 @@ import AddAdmin from './AddAdmin';
 
 // https://planet-capstone.onrender.com/
 // http://localhost:5000/
-const ENDPOINT = "https://planet-capstone.onrender.com/";
+const ENDPOINT = "https://planet-capstone-olcl.onrender.com/";
 var socket;
 
 const Admin = () => {

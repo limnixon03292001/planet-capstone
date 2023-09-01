@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://planet-capstone.onrender.com/",
+  "proxy": "https://planet-capstone-olcl.onrender.com/",
   "dependencies": {
     "@headlessui/react": "^1.7.2",
     "@mapbox/mapbox-gl-directions": "^4.1.0",
