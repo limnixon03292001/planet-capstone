@@ -12,8 +12,8 @@ import { getAllChats, getAuthUser } from '../api/userApi';
 import addNotification from 'react-push-notification';
 
 
-// https://planet-capstone-production.up.railway.app/ 
-// https://planet-capstone.onrender.com/
+ 
+// https://planet-capstone-olcl.onrender.com/
 // http://localhost:5000/
 const ENDPOINT = "https://planet-capstone-olcl.onrender.com/";
 var socket;
@@ -173,15 +173,9 @@ const Sidebar = () => {
 
             <div>
               {/* links */}
-              <div className='h-max mt-10'>
-                  <button className='text-[#536471] text-md hidden lg:flex lg:items-center' onClick={() => setSideBar((prev) => !prev)}>
-                    <span className='text-gray-900'>Transaction Process </span>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`w-4 h-4 ml-2 
-                     text-gray-600  ${sidebar ? `-rotate-90` : `rotate-90`}  transition-all`}>
-                      <path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" />
-                    </svg>
-                  </button>
-                  <div className={`${sidebar ? `h-max` : `h-0`} transition-transform overflow-hidden`}>
+              <div className='h-max mt-20'>
+     
+                
                     {linkNavigationBar?.slice(0,2)?.map((data, id) => (
                         <Link to={data?.link} key={id} className="flex items-start my-6
                         justify-center lg:justify-start">
@@ -210,13 +204,13 @@ const Sidebar = () => {
 
                     {linkNavigationBar?.slice(3,5)?.map((data, id) => (
                         <Link to={data?.link} key={id} className="flex items-start my-6
-                        justify-center lg:justify-start border border-blue-500">
+                        justify-center lg:justify-start ">
                             {data?.icon}
                             <span className='text-xl  self-end ml-3 font-[100]
                             hidden lg:block'>{data.title}</span>
                         </Link>
                     ))}
-                  </div>
+                 
               </div>
               
               {/* Shortcuts */}

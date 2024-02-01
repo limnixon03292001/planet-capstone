@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 const Login = () => {
   return (
     <div className="pb-3 w-full h-screen relative overflow-hidden">
-        <nav className='flex items-center justify-center gap-3 px-4 h-[70px] bg-gradient-to-b from-[#20BF55] to-[#01BAEF] text-white'>
+        {/* <nav className='flex items-center justify-center gap-3 px-4 h-[70px] bg-gradient-to-b from-[#20BF55] to-[#01BAEF] text-white'>
             <Link to="/" className='relative group'>
                 <span>Transaction Process</span>
 
@@ -41,10 +41,15 @@ const Login = () => {
                 </div>
             </Link>
             <Link to='/homepage' className='bg-gray-800 px-4 py-2 rounded-lg'>Home</Link>
-        </nav>
+        </nav> */}
         {/* <img src={planetLogo} className="w-[233px] h-[238px] absolute rotate-[210deg] -top-[40px] -right-[45px]"/> */}
       
-      
+        {/* <div className='first-letter  
+        bg-gradient-to-r from-green-500 to-cyan-500
+        text-center text-white text-xl py-3'>
+            <p>ReactJS, NodeJS, PostgreSQL</p>
+        </div> */}
+
         <div className="w-full max-w-[1200px] overflow-auto min-h-[220px] m-auto flex justify-center items-center px-4 h-full">
 
             <div className="flex-shrink-0 w-full max-w-[540px]">
@@ -75,9 +80,7 @@ const Login = () => {
             </div>
         </div>
 
-        <div className='m-2 first-letter inline-block absolute bottom-0 right-0'>
-            <img src={cmuccsLogo} className="object-cover block w-52" />
-        </div>
+    
     </div>
   )
 }

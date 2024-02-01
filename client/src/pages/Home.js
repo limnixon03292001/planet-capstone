@@ -16,6 +16,7 @@ import PickPlant from './PickPlant';
 import AddMoreDetail from '../components/AddMoreDetail';
 import Bottombar from '../components/Bottombar';
 import SellingList from './SellingList';
+import PostFeeds from './PostFeeds';
 
 
 const Home = () => {
@@ -83,6 +84,7 @@ const Home = () => {
                         <Route path="/marketplace/*" element={<Marketplace/>}/>
                         <Route path="/add-plantCollections" element={<AddPlantCollections/>}/>
                         <Route path="/my-plants" element={<MyPlantCollections/>}/>
+                        <Route path="/posts" element={<PostFeeds/>}/>
                       
 
                         {/* 404 PAGE  */}

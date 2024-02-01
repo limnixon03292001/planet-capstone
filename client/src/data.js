@@ -37,6 +37,11 @@ export const linkNavigationBar = [
         title: "Messages",
         link: "/messages",
     },
+    {
+        icon:<svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" viewBox="0 0 24 24" role="img" aria-labelledby="feedIconTitle" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" fill="none" color="#000000"> <title id="feedIconTitle">Feed</title> <circle cx="7.5" cy="7.5" r="2.5"/> <path d="M22 13H2"/> <path d="M18 6h-5m5 3h-5"/> <path d="M5 2h14a3 3 0 0 1 3 3v17H2V5a3 3 0 0 1 3-3z"/> </svg>,
+        title: "Posts",
+        link: "/posts",
+    },
     // {
     //     icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1" stroke="currentColor" className="w-7 h-7">
     //     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />

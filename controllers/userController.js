@@ -249,6 +249,7 @@ exports.loginController = async (req, res) => {
     const { email, password } = req.body;
 
     try {
+ 
         const user = await pool.query("SELECT * FROM user_acc WHERE email = $1", [ email ]);
         
         //check email
@@ -293,7 +294,7 @@ exports.loginController = async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error?.message);
+        console.log(error);
         return res.status(500).json({
             error: error?.message
         })
