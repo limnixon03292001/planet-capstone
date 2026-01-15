@@ -3,7 +3,7 @@ import axios from "axios";
 // https://planet-capstone-olcl.onrender.com/
 // http://localhost:5000/
 const instance = axios.create({
-  baseURL: "https://planet-capstone-olcl.onrender.com/",
+  baseURL: "https://planet-2vsu.onrender.com/",
 });
 
 export const request = ({ ...options }) => {

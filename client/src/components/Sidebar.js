@@ -13,7 +13,7 @@ import addNotification from "react-push-notification";
 
 // https://planet-capstone-olcl.onrender.com/
 // http://localhost:5000/
-const ENDPOINT = "https://planet-capstone-olcl.onrender.com/";
+const ENDPOINT = "https://planet-2vsu.onrender.com/";
 var socket;
 
 const Sidebar = () => {
